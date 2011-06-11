@@ -2027,9 +2027,6 @@ c
 c
 c    atom based polarization scaling factors
 c
-         do j = i+1, npole
-            pscale(ipole(j)) = 1.0d0
-         end do
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = p12scale
             do k = 1, np11(ii)
@@ -2176,23 +2173,10 @@ c
       real*8 fi(3),fk(3)
       real*8 field(3,*)
       real*8, allocatable :: pscale(:)
-      real*8, allocatable :: uscale(:)
-      real*8, allocatable :: gscale(:)
 c
 c     perform dynamic allocation of some local arrays
 c
       allocate (pscale(n))
-      allocate (uscale(n))
-      allocate (gscale(n))
-c
-c     set arrays needed to scale atom and group interactions
-c
-      do i = 1, n
-         pscale(i) = 1.0d0
-         uscale(i) = 1.0d0
-         gscale(i) = 0.0d0
-      end do
-c
 c
 c     zero out the value of the field at each site
 c
@@ -2214,6 +2198,9 @@ c
 c
 c    atom based pscales for AMOEBA+ 
 c
+         do j = i+1, npole
+            pscale(ipole(j)) = 0.0d0
+         end do
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = 1.0d0 - p12scale
             do k = 1, np11(ii)
@@ -2230,6 +2217,7 @@ c
          end do
          do j = 1, n14(ii)
             pscale(i14(j,ii)) = 1.0d0 - p14scale
+            pscale(i14(j,ii)) = p14scale
             do k = 1, np11(ii)
                if (i14(j,ii) .eq. ip11(k,ii))
      &            pscale(i14(j,ii)) = 1.0d0 - p41scale
@@ -2242,25 +2230,6 @@ c
      &            pscale(i15(j,ii)) = 1.0d0 - p51scale
             end do
          end do
-c
-c    uscale 
-c
-         do j = 1, np11(ii)
-            uscale(ip11(j,ii)) = u1scale
-         end do
-         do j = 1, np12(ii)
-            uscale(ip12(j,ii)) = u2scale
-         end do
-         do j = 1, np13(ii)
-            uscale(ip13(j,ii)) = u3scale
-         end do
-         do j = 1, np14(ii)
-            uscale(ip14(j,ii)) = u4scale
-         end do
-         do j = i+1, npole
-            k = ipole(j)
-            gscale(k) = uscale(k) - pscale(k)
-         end do
 
          do k = i+1, npole
             kk = ipole(k)
@@ -2272,8 +2241,8 @@ c
             ukx = uind(1,k)
             uky = uind(2,k)
             ukz = uind(3,k)
-            scale3 = gscale(kk)
-            scale5 = gscale(kk)
+            scale3 = pscale(kk)
+            scale5 = pscale(kk)
             damp = pdi * pdamp(k)
             if (damp .ne. 0.0d0) then
                pgamma = min(pti,thole(k))
@@ -2301,45 +2270,14 @@ c
 c
 c       reset scaling
 c
-         do j = 1, np11(ii)
-            uscale(ip11(j,ii)) = 1.0d0
-            gscale(ip11(j,ii)) = 0.0d0
-         end do
-         do j = 1, np12(i)
-            uscale(ip12(j,ii)) = 1.0d0
-            gscale(ip12(j,ii)) = 0.0d0
-         end do
-         do j = 1, np13(i)
-            uscale(ip13(j,ii)) = 1.0d0
-            gscale(ip13(j,ii)) = 0.0d0
-         end do
-         do j = 1, np14(i)
-            uscale(ip14(j,ii)) = 1.0d0
-            gscale(ip14(j,ii)) = 0.0d0
-         end do
-         do j = 1, n12(ii)
-            pscale(i12(j,ii)) = 1.0d0
-            gscale(i12(j,ii)) = 0.0d0
-         end do
-         do j = 1, n13(ii)
-            pscale(i13(j,ii)) = 1.0d0
-            gscale(i13(j,ii)) = 0.0d0
-         end do
-         do j = 1, n14(ii)
-            pscale(i14(j,ii)) = 1.0d0
-            gscale(i14(j,ii)) = 0.0d0
-         end do
-         do j = 1, n15(ii)
-            pscale(i15(j,ii)) = 1.0d0
-            gscale(i15(j,ii)) = 0.0d0
+         do j = i+1, npole
+            pscale(ipole(j)) = 0.0d0
          end do
       end do
 c
 c     perform deallocation of some local arrays
 c
       deallocate (pscale)
-      deallocate (uscale)
-      deallocate (gscale)
       return
       end
 c
