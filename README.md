@@ -1,4 +1,4 @@
-# 
+# What is this branch? 
 AMOEBA+ potential without charge flux implementation is fully supported in the main [Tinker release](https://github.com/TinkerTools/Tinker/tree/release).
 
 This branch includes the preliminary implementation of charge flux into AMOEBA+ model.
@@ -7,36 +7,33 @@ We are currently merging charge flux implementation into the latest release.
 
 Date: 11/22/2019
 
-
-# AMOEBA+CF
-
-  AMOEBA+ model was implemented based on the Tinker 8.2. Here are new features comparing to AMOEBA:
+AMOEBA+ model was implemented based on the Tinker 8.2. Here are new features comparing to AMOEBA:
 
 ## vdW term
-  A new combining rule (W-H) for epsilon was added (kvdw.f) 
+  A new combining rule (W-H) for epsilon was added. 
 
 ## charge transfer (CT) term 
   A non-bonded interaction with user defined exclusion rules (1-2, 1-3, etc). 
   This is implemented as an individual energy term in the same manner as AMOEBA vdW term. 
-  Except that CT does not use induction factor for hydrogen (i.e. induction factor = 1.0).
-  (ect0.f, ect1.f and ect3.f)
 
 ## polarization
-  AMOEBA+ uses a new damping scheme for the direct induction, while keeps the Thole damping for the mutual part.(induce.f, epolar.f, epolar1.f, epolar3.f)
+  AMOEBA+ uses a new damping scheme for the direct induction, while keeps the Thole damping for the mutual part.
 
 ## charge penetration (CP)
-  We use slightly different damping functions than HIPPO model. (empole.f, empole1.f, empole3.f) 
+  We use slightly different damping functions than HIPPO model.
 
 ## charge flux (CF) 
 
-	!! Supported in AMOEBA+CF, not in AMOEBA+
+	__Note: Supported only in this branch (AMOEBA+CF), not in AMOEBA+__
 
-  First I looped over bond and angle to accumulate charge fluxes(chrgflux.f). 
-  Then I added the accumulated charges to the force field defined charges to get the updated charges(rotpol.f). 
-  Potential is accumulated in the empole1.f and epolar1.f, and then a chain rule term due to charge flux is calculated by calling echrgflux1.f. 
+  First I looped over bond and angle to accumulate charge fluxes. Then I added the accumulated charges to the force field defined charges to get the updated charges.
+  Potential is accumulated on the fly in the calculation of electrostatic and polarization energy.
+	A chain rule term due to charge flux is calculated finally. 
 
 ## ind&inp induced dipole
   Currently in AMOEBA we have two sets of induced dipoles. In AMOEBA+ CPU code, I have merged them and use only one set of dipole. We used two sets of scaling factors (polar-1x-intra and polar-1x-inter).
+
+	__Note: this is also supported in the latest Tinker.__
 
 ## Reference
 
