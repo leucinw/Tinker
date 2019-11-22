@@ -24,7 +24,7 @@ AMOEBA+ model was implemented based on the Tinker 8.2. Here are new features com
 
 ## charge flux (CF) 
 
-	__Note: Supported only in this branch (AMOEBA+CF), not in AMOEBA+__
+	Note: Supported only in this branch (AMOEBA+CF), not in AMOEBA+
 
   First I looped over bond and angle to accumulate charge fluxes. Then I added the accumulated charges to the force field defined charges to get the updated charges.
   Potential is accumulated on the fly in the calculation of electrostatic and polarization energy.
@@ -33,7 +33,7 @@ AMOEBA+ model was implemented based on the Tinker 8.2. Here are new features com
 ## ind&inp induced dipole
   Currently in AMOEBA we have two sets of induced dipoles. In AMOEBA+ CPU code, I have merged them and use only one set of dipole. We used two sets of scaling factors (polar-1x-intra and polar-1x-inter).
 
-	__Note: this is also supported in the latest Tinker.__
+	Note: this is also supported in the latest Tinker.
 
 ## Reference
 
