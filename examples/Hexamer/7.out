@@ -1,0 +1,28 @@
+
+     ######################################################################
+   ##########################################################################
+  ###                                                                      ###
+ ###            TINKER  ---  Software Tools for Molecular Design            ###
+ ##                                                                          ##
+ ##                          Version 8.2  June 2017                          ##
+ ##                                                                          ##
+ ##               Copyright (c)  Jay William Ponder  1990-2017               ##
+ ###                           All Rights Reserved                          ###
+  ###                                                                      ###
+   ##########################################################################
+     ######################################################################
+
+
+ Intermolecular Energy :             -46.70158535 Kcal/mole
+
+ Total Potential Energy :            -38.40258035 Kcal/mole
+
+ Energy Component Breakdown :           Kcal/mole        Interactions
+
+ Bond Stretching                       7.07684570               12
+ Angle Bending                         1.23412617                6
+ Urey-Bradley                         -0.01196687                6
+ Van der Waals                        74.98334581              135
+ Charge Transfer                     -13.72617621               68
+ Atomic Multipoles                   -82.34816066              135
+ Polarization                        -25.61059429              135

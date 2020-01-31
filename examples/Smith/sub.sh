@@ -1,0 +1,11 @@
+~/bin/tinkerOMM2019CFlux/analyze monomer_mp2.xyz E >   monomer_mp2.out
+~/bin/tinkerOMM2019CFlux/analyze smith01.xyz E >   smith01.out
+~/bin/tinkerOMM2019CFlux/analyze smith02.xyz E >   smith02.out
+~/bin/tinkerOMM2019CFlux/analyze smith03.xyz E >   smith03.out
+~/bin/tinkerOMM2019CFlux/analyze smith04.xyz E >   smith04.out
+~/bin/tinkerOMM2019CFlux/analyze smith05.xyz E >   smith05.out
+~/bin/tinkerOMM2019CFlux/analyze smith06.xyz E >   smith06.out
+~/bin/tinkerOMM2019CFlux/analyze smith07.xyz E >   smith07.out
+~/bin/tinkerOMM2019CFlux/analyze smith08.xyz E >   smith08.out
+~/bin/tinkerOMM2019CFlux/analyze smith09.xyz E >   smith09.out
+~/bin/tinkerOMM2019CFlux/analyze smith10.xyz E >   smith10.out
