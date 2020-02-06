@@ -62,6 +62,7 @@ c
       use inter 
       use iounit
       use inform
+      use mutant
       use shunt
       use usage
       implicit none
@@ -78,6 +79,7 @@ c
       real*8 rik4,rik5,taper
       real*8, allocatable :: ctscale(:)
       logical proceed,usei
+      logical muti,mutk
       logical header,huge
       character*6 mode
 c
@@ -112,7 +114,8 @@ c
       do ii = 1, nct-1
          i = ict(ii)
          it = jct(i)
-         usei = use(i) 
+         usei = use(i)
+         muti = mut(i) 
 c
 c     set interaction scaling coefficients for connected atoms
 c
@@ -133,6 +136,7 @@ c     decide whether to compute the current interaction
 c
          do kk = ii+1, nct
             k = ict(kk)
+            mutk = mut(k)
             proceed = .true.
             if (use_group)  call groups (proceed,fgrp,i,k,0,0,0,0)
             if (proceed)  proceed = (usei .or. use(k))
@@ -153,11 +157,17 @@ c
                aprek = abs(aprmct(kt))
                bexpi = abs(bprmct(it))
                bexpk = abs(bprmct(kt))
-               !alternative is to use mixing rules 
+c
+c     scale the interaction for free energy perturbation
+c
                apre = sqrt(aprei*aprek)
                bexp = 0.5d0*(bexpi + bexpk)
-
                apre = apre*ctscale(k)
+
+               if ((muti .and. .not.mutk) .or.
+     &             (mutk .and. .not.muti)) then
+                  apre = apre * elambda  
+               endif
 
                if (rik2 .le. off2) then
                   rik = sqrt(rik2)
@@ -181,6 +191,7 @@ c
                   if (use_group)  e = e * fgrp
 c
 c     increment the overallcharge transfer energy component
+c
                   if (e .ne. 0.0d0) then
                       nect = nect + 1
                       if (i .eq. k) then
@@ -246,7 +257,8 @@ c
       do ii = 1, nct
          i = ict(ii)
          it = jct(i)
-         usei = use(i) 
+         usei = use(i)
+         muti = mut(i) 
 c
 c     set interaction scaling coefficients for connected atoms
 c
@@ -267,6 +279,7 @@ c     decide whether to compute the current interaction
 c
          do kk = ii, nct
             k = ict(kk)
+            mutk = mut(k)
             proceed = .true.
             if (use_group)  call groups (proceed,fgrp,i,k,0,0,0,0)
             if (proceed)  proceed = (usei .or. use(k))
@@ -293,6 +306,11 @@ c
                   bexp = 0.5d0*(bexpi + bexpk)
 
                   apre = apre*ctscale(k)
+
+                  if ((muti .and. .not.mutk) .or.
+     &               (mutk .and. .not.muti)) then
+                     apre = apre * elambda  
+                  endif
 
                   if (rik2 .le. off2) then
                      rik = sqrt(rik2)
@@ -406,6 +424,7 @@ c
       use inform
       use iounit
       use molcul
+      use mutant
       use neigh
       use shunt
       use usage
@@ -424,6 +443,7 @@ c
       real*8 rik4,rik5,taper
       real*8, allocatable :: ctscale(:)
       logical proceed,usei
+      logical muti, mutk
       logical header
       character*6 mode
 c
@@ -458,7 +478,7 @@ c
 !$OMP PARALLEL default(private) shared(nct,ict,
 !$OMP& jct,use,nctlst,ctlst,n12,n13,n14,n15,
 !$OMP& i12,i13,i14,i15,ct2scale,ct3scale,ct4scale,ct5scale,
-!$OMP& use_group,off2,aprmct,bprmct,x,y,z,
+!$OMP& use_group,off2,aprmct,bprmct,x,y,z,mut,elambda,
 !$OMP& cut2,c0,c1,c2,c3,c4,c5,molcule,name,verbose,debug,header,iout)
 !$OMP& shared(ect,einter,nect,aect)
 !$OMP& firstprivate(ctscale)
@@ -470,6 +490,7 @@ c
          i = ict(ii)
          it = jct(i)
          usei = use(i)
+         muti = mut(i)
 c
 c     set exclusion coefficients for connected atoms
 c
@@ -490,6 +511,7 @@ c     decide whether to compute the current interaction
 c
          do kk = 1, nctlst(ii)
             k = ict(ctlst(kk,ii))
+            mutk = mut(k)
             proceed = .true.
             if (use_group)  call groups (proceed,fgrp,i,k,0,0,0,0)
             if (proceed)  proceed = (usei .or. use(k))
@@ -516,6 +538,10 @@ c
                bexp = 0.5d0*(bexpi + bexpk)
 
                apre = apre*ctscale(k)
+               if ((muti .and. .not.mutk) .or.
+     &            (mutk .and. .not.muti)) then
+                  apre = apre * elambda  
+               endif
                if (rik2 .le. off2) then
                   rik = sqrt(rik2)
                   e = -apre*1000.0d0*exp(-bexp*rik)

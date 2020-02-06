@@ -283,12 +283,13 @@ c
 c
 c     monopoles have the same value in any coordinate frame
 c
-      if (use_cflux) then
+
+      if (use_cflux) then 
         rpole(1,isite) = pole(1,isite) + pchrgflux(isite)
       else
         rpole(1,isite) = pole(1,isite)
       end if
-        
+
         
 c
 c     rotate the dipoles to the global coordinate frame

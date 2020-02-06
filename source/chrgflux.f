@@ -11,8 +11,10 @@ c
       subroutine chrgflux
       use cflux
       use atoms
+      use mutant
       implicit none
       integer i
+      logical muti
 c
 c     perform dynamic allocation of global array 
 c
@@ -53,6 +55,7 @@ c
       use group
       use limits
       use potent
+      use mutant
       use usage
       implicit none
       real*8 dq 
@@ -62,6 +65,7 @@ c
       integer ia,ib,i,j
       integer nha,nhb,n12a,n12b
       real*8 bigsign
+      logical muta,mutb
 
 c
 c     calculate the bond stretching energy term
@@ -73,6 +77,11 @@ c
          atomb = atomic(ib)
          pjb = jb(i)
          pb0 = b0(i)
+         muta = mut(ia)
+         mutb = mut(ib)
+         if ((muta) .or. (mutb)) then 
+          pjb = pjb*elambda 
+         end if
 c
 c     compute the value of the bond length deviation
 c
@@ -152,6 +161,7 @@ c
       use group
       use limits
       use math
+      use mutant
       use usage
       implicit none
       integer i,ia,ib,ic
@@ -167,6 +177,7 @@ c
       real*8 pjbp1,pjbp2
       real*8 pjtheta1,pjtheta2
       real*8 dq1,dq2
+      logical muta, mutb, mutc
 
 c
 c     loop over all angle in the system 
@@ -185,6 +196,15 @@ c
          pjbp2 = jbp(2,i)
          pjtheta1 = jtheta(1,i) 
          pjtheta2 = jtheta(2,i)
+         muta = mut(ia) 
+         mutb = mut(ib) 
+         mutc = mut(ic) 
+         if ((muta) .or. (mutb) .or. (mutc)) then
+            pjbp1 = pjbp1*elambda
+            pjbp2 = pjbp2*elambda
+            pjtheta1 = pjtheta1*elambda
+            pjtheta2 = pjtheta2*elambda
+         end if
 c
 c     calculate the bond length and angle 
 c
@@ -218,8 +238,10 @@ c
 c
 c     charge flux increment for ange ia-ib-ic
 c
+
          dq1 = pjbp1*(rcb-pb20)+pjtheta1*(angle-ptheta0)
          dq2 = pjbp2*(rab-pb10)+pjtheta2*(angle-ptheta0)
+
          pchrgflux(ia) = pchrgflux(ia) + dq1
          pchrgflux(ic) = pchrgflux(ic) + dq2
          pchrgflux(ib) = pchrgflux(ib) - (dq1+dq2)

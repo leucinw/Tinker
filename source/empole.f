@@ -66,6 +66,7 @@ c
       use math
       use mplpot
       use mpole
+      use mutant 
       use shunt
       use usage
       use potent
@@ -102,6 +103,7 @@ c
       real*8 nuci,qi,nuck,qk
       real*8, allocatable :: mscale(:)
       logical proceed,usei,usek
+      logical muti,mutk
       character*6 mode
 c
 c
@@ -169,6 +171,7 @@ c
          qiyz = rpole(10,i)
          qizz = rpole(13,i)
          usei = (use(ii) .or. use(iz) .or. use(ix) .or. use(iy))
+         muti = mut(ii)
          do j = 1, n12(ii)
             mscale(i12(j,ii)) = m2scale
          end do
@@ -190,6 +193,7 @@ c
             kx = xaxis(k)
             ky = yaxis(k)
             usek = (use(kk) .or. use(kz) .or. use(kx) .or. use(ky))
+            mutk = mut(kk)
             proceed = .true.
             if (use_group)  call groups (proceed,fgrp,ii,kk,0,0,0,0)
             if (.not. use_intra)  proceed = .true.
@@ -310,6 +314,12 @@ c
             
                   nuci = atomic(i)
                   nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+                  if (muti .and. .not.mutk) nuci = nuci*elambda 
+                  if (mutk .and. .not.muti) nuck = nuck*elambda
+
                   qi = ci - nuci
                   qk = ck - nuck
 
@@ -375,6 +385,7 @@ c
             qiyz = rpole(10,i)
             qizz = rpole(13,i)
             usei = (use(ii) .or. use(iz) .or. use(ix) .or. use(iy))
+            muti = mut(ii)
             do j = 1, n12(ii)
                mscale(i12(j,ii)) = m2scale
             end do
@@ -396,6 +407,7 @@ c
                kx = xaxis(k)
                ky = yaxis(k)
                usek = (use(kk) .or. use(kz) .or. use(kx) .or. use(ky))
+               mutk = mut(kk)
                if (use_group)  call groups (proceed,fgrp,ii,kk,0,0,0,0)
                proceed = .true.
                if (proceed)  proceed = (usei .or. usek)
@@ -525,6 +537,12 @@ c
             
                         nuci = atomic(i)
                         nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+                        if (muti .and. .not.mutk) nuci = nuci*elambda 
+                        if (mutk .and. .not.muti) nuck = nuck*elambda
+
                         qi = ci - nuci
                         qk = ck - nuck
 
@@ -601,6 +619,7 @@ c
       use math
       use mplpot
       use mpole
+      use mutant
       use neigh
       use potent
       use shunt
@@ -638,6 +657,7 @@ c
       real*8 nuci,qi,nuck,qk
       real*8, allocatable :: mscale(:)
       logical proceed,usei,usek
+      logical muti,mutk
       character*6 mode
 c
 c
@@ -689,7 +709,7 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,x,y,z,xaxis,yaxis,zaxis,rpole,use,
 !$OMP& n12,i12,n13,i13,n14,i14,n15,i15,m2scale,m3scale,m4scale,
-!$OMP& atomic,penalpha,type,use_cflux,
+!$OMP& atomic,penalpha,type,use_cflux,mut,elambda,
 !$OMP& m5scale,nelst,elst,use_group,use_intra,use_bounds,off2,f)
 !$OMP& firstprivate(mscale) shared (em)
 !$OMP DO reduction(+:em) schedule(guided)
@@ -715,6 +735,7 @@ c
          qiyz = rpole(10,i)
          qizz = rpole(13,i)
          usei = (use(ii) .or. use(iz) .or. use(ix) .or. use(iy))
+         muti = mut(ii)
          do j = 1, n12(ii)
             mscale(i12(j,ii)) = m2scale
          end do
@@ -737,6 +758,7 @@ c
             kx = xaxis(k)
             ky = yaxis(k)
             usek = (use(kk) .or. use(kz) .or. use(kx) .or. use(ky))
+            mutk = mut(kk)
             proceed = .true.
             if (use_group)  call groups (proceed,fgrp,ii,kk,0,0,0,0)
             if (.not. use_intra)  proceed = .true.
@@ -857,6 +879,11 @@ c
             
                   nuci = atomic(i)
                   nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+                  if (muti .and. .not.mutk) nuci = nuci*elambda 
+                  if (mutk .and. .not.muti) nuck = nuck*elambda
                   qi = ci - nuci
                   qk = ck - nuck
 
@@ -1043,6 +1070,7 @@ c
       use math
       use mplpot
       use mpole
+      use mutant
       use potent
       use shunt
       implicit none
@@ -1081,6 +1109,7 @@ c
       real*8, allocatable :: mscale(:)
       character*6 mode
       external erfc
+      logical muti,mutk
 c
 c
 c     perform dynamic allocation of some local arrays
@@ -1130,6 +1159,7 @@ c
          qiyy = rpole(9,i)
          qiyz = rpole(10,i)
          qizz = rpole(13,i)
+         muti = mut(ii)
          do j = 1, n12(ii)
             mscale(i12(j,ii)) = m2scale
          end do
@@ -1147,6 +1177,7 @@ c     evaluate all sites within the cutoff distance
 c
          do k = i+1, npole
             kk = ipole(k)
+            mutk = mut(kk)
             xr = x(kk) - xi
             yr = y(kk) - yi
             zr = z(kk) - zi
@@ -1279,6 +1310,12 @@ c
             
                nuci = atomic(i)
                nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+               if (muti .and. .not.mutk) nuci = nuci*elambda 
+               if (mutk .and. .not.muti) nuck = nuck*elambda
+     
                qi = ci - nuci
                qk = ck - nuck
 c
@@ -1356,6 +1393,7 @@ c
             qiyy = rpole(9,i)
             qiyz = rpole(10,i)
             qizz = rpole(13,i)
+            muti = mut(ii)
             do j = 1, n12(ii)
                mscale(i12(j,ii)) = m2scale
             end do
@@ -1373,6 +1411,7 @@ c     evaluate all sites within the cutoff distance
 c
             do k = i, npole
                kk = ipole(k)
+               mutk = mut(kk)
                do jcell = 1, ncell
                   xr = x(kk) - xi
                   yr = y(kk) - yi
@@ -1509,6 +1548,11 @@ c
             
                      nuci = atomic(i)
                      nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+                     if (muti .and. .not.mutk) nuci = nuci*elambda 
+                     if (mutk .and. .not.muti) nuck = nuck*elambda
                      qi = ci - nuci
                      qk = ck - nuck
 c
@@ -1537,9 +1581,8 @@ c
      &                   +(-dri*drk + 2.0d0*(dkqri-diqrk+qik) 
      &                   + qi*qrrk + qk*qrri)
      &                   * (bn(2)-(1.0d0-scaleik(5)*mscale(kk))) 
-
                      term4 = (dri*qrrk-drk*qrri-4.0d0*qrrik)
-     &                   * (bn(3)-(1.0d0-scaleik(7)*mscale(kk)))
+     &                   *(bn(3)-(1.0d0-scaleik(7)*mscale(kk)))
 
                      term5=qrri*qrrk*(bn(4)-(1.0d0-scaleik(9)
      &                   * mscale(kk)))
@@ -1712,6 +1755,7 @@ c
       use math
       use mplpot
       use mpole
+      use mutant
       use neigh
       use potent
       use shunt
@@ -1750,6 +1794,7 @@ c
       real*8, allocatable :: mscale(:)
       character*6 mode
       external erfc
+      logical muti,mutk
 c
 c
 c     perform dynamic allocation of some local arrays
@@ -1788,7 +1833,7 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,x,y,z,rpole,n12,i12,n13,i13,
 !$OMP& n14,i14,n15,i15,m2scale,m3scale,m4scale,m5scale,
-!$OMP& atomic,penalpha,type,use_cflux,
+!$OMP& atomic,penalpha,type,use_cflux,mut,elambda,
 !$OMP& nelst,elst,use_bounds,f,off2,aewald)
 !$OMP& firstprivate(mscale) shared (em)
 !$OMP DO reduction(+:em) schedule(guided)
@@ -1810,6 +1855,7 @@ c
          qiyy = rpole(9,i)
          qiyz = rpole(10,i)
          qizz = rpole(13,i)
+         muti = mut(ii)
          do j = 1, n12(ii)
             mscale(i12(j,ii)) = m2scale
          end do
@@ -1828,6 +1874,7 @@ c
          do kkk = 1, nelst(i)
             k = elst(kkk,i)
             kk = ipole(k)
+            mutk = mut(kk)
             xr = x(kk) - xi
             yr = y(kk) - yi
             zr = z(kk) - zi
@@ -1960,6 +2007,11 @@ c
             
                nuci = atomic(i)
                nuck = atomic(k)
+c
+c              scale the nuclei charge if necessary
+c
+               if (muti .and. .not.mutk) nuci = nuci*elambda 
+               if (mutk .and. .not.muti) nuck = nuck*elambda
                qi = ci - nuci
                qk = ck - nuck
 
@@ -2000,7 +2052,6 @@ c
      &             *(bn(3)-(1.0d0-scaleik(7)*mscale(kk)))
 
                term5=qrri*qrrk*(bn(4)-(1.0d0-scaleik(9)*mscale(kk)))
-
 c
 c     compute the energy contribution for this interaction
 c
