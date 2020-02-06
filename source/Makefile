@@ -46,7 +46,7 @@ TINKER_LIBDIR = $(TINKERDIR)/lib
 BINDIR = $(TINKERDIR)/bin
 LINKDIR = /usr/local/bin 
 
-FFTWDIR = =/home/liuchw/Softwares/tinkers/tinker8.2-intel13/fftw
+FFTWDIR = =/home/liuchw/Softwares/FFTW338
 FFTW_LIBDIR = -L$(FFTWDIR)/lib
 FFTW_LIBS = -lfftw3_threads -lfftw3
 
@@ -1540,7 +1540,7 @@ center.o: align.o
 charge.o:
 ctran.o: sizes.o
 cflux.o: sizes.o
-chrgflux.o: atomid.o atoms.o bound.o bndstr.o cflux.o group.o limits.o potent.o sizes.o usage.o 
+chrgflux.o: atomid.o atoms.o bound.o bndstr.o cflux.o group.o limits.o potent.o sizes.o usage.o mutant.o 
 chgpot.o:
 chgpen.o: sizes.o
 chkpole.o: atoms.o mpole.o sizes.o
@@ -1630,10 +1630,10 @@ elj.o: atomid.o atoms.o bound.o boxes.o cell.o couple.o energi.o group.o light.o
 elj1.o: atomid.o atoms.o bound.o boxes.o cell.o couple.o deriv.o energi.o group.o inter.o light.o limits.o math.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o virial.o warp.o
 elj2.o: atomid.o atoms.o bound.o cell.o couple.o group.o hessn.o math.o shunt.o sizes.o vdw.o vdwpot.o warp.o
 elj3.o: action.o analyz.o atomid.o atoms.o bound.o boxes.o cell.o couple.o energi.o group.o inform.o inter.o iounit.o light.o limits.o math.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o warp.o
-ect0.o: atomid.o atoms.o bound.o sizes.o ctran.o cell.o couple.o energi.o group.o shunt.o usage.o 
-ect1.o: sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o shunt.o usage.o virial.o deriv.o inter.o molcul.o  
-ect3.o: action.o analyz.o sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o molcul.o inter.o iounit.o inform.o shunt.o usage.o 
-echrgflux1.o:  atoms.o sizes.o atomid.o bound.o bndstr.o cflux.o limits.o deriv.o 
+ect0.o: atomid.o atoms.o bound.o sizes.o ctran.o cell.o couple.o energi.o group.o mutant.o shunt.o usage.o 
+ect1.o: sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o mutant.o shunt.o usage.o virial.o deriv.o inter.o molcul.o  
+ect3.o: action.o analyz.o sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o molcul.o mutant.o inter.o iounit.o inform.o shunt.o usage.o 
+echrgflux1.o:  atoms.o sizes.o atomid.o bound.o bndstr.o cflux.o limits.o deriv.o mutant.o  
 embed.o: angbnd.o atoms.o bndstr.o couple.o disgeo.o files.o inform.o iounit.o keys.o light.o math.o minima.o output.o refer.o restrn.o sizes.o tors.o units.o
 emetal.o: atomid.o atoms.o couple.o energi.o kchrge.o sizes.o
 emetal1.o: atomid.o atoms.o couple.o deriv.o energi.o kchrge.o sizes.o
@@ -1643,9 +1643,9 @@ emm3hb.o: atmlst.o atomid.o atoms.o bndstr.o bound.o boxes.o cell.o chgpot.o cou
 emm3hb1.o: atmlst.o atomid.o atoms.o bndstr.o bound.o boxes.o cell.o chgpot.o couple.o deriv.o energi.o group.o inter.o iounit.o light.o limits.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o virial.o
 emm3hb2.o: atmlst.o atomid.o atoms.o bndstr.o bound.o cell.o chgpot.o couple.o group.o hessn.o shunt.o sizes.o vdw.o vdwpot.o
 emm3hb3.o: action.o analyz.o atmlst.o atomid.o atoms.o bndstr.o bound.o boxes.o cell.o chgpot.o couple.o energi.o group.o inform.o inter.o iounit.o light.o limits.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o
-empole.o: atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o energi.o ewald.o group.o limits.o math.o mplpot.o mpole.o mrecip.o neigh.o pme.o potent.o shunt.o sizes.o usage.o
-empole1.o: atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o deriv.o energi.o ewald.o group.o inter.o limits.o math.o molcul.o mplpot.o mpole.o mrecip.o neigh.o pme.o shunt.o sizes.o usage.o virial.o
-empole3.o: action.o analyz.o atomid.o atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o energi.o ewald.o group.o inform.o inter.o iounit.o limits.o math.o molcul.o mplpot.o mpole.o neigh.o potent.o shunt.o sizes.o usage.o
+empole.o: atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o energi.o ewald.o group.o limits.o math.o mplpot.o mpole.o mrecip.o mutant.o neigh.o pme.o potent.o shunt.o sizes.o usage.o
+empole1.o: atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o deriv.o energi.o ewald.o group.o inter.o limits.o math.o molcul.o mplpot.o mpole.o mrecip.o mutant.o neigh.o pme.o shunt.o sizes.o usage.o virial.o
+empole3.o: action.o analyz.o atomid.o atoms.o bound.o boxes.o cell.o cflux.o chgpot.o chgpen.o couple.o energi.o ewald.o group.o inform.o inter.o iounit.o limits.o math.o molcul.o mplpot.o mpole.o mutant.o neigh.o potent.o shunt.o sizes.o usage.o
 energi.o:
 energy.o: bound.o energi.o iounit.o limits.o potent.o rigid.o sizes.o vdwpot.o
 eopbend.o: angbnd.o angpot.o atoms.o bound.o energi.o fields.o group.o math.o opbend.o sizes.o usage.o
