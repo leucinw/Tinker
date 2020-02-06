@@ -1,3 +1,7 @@
+# Latest update (2020, Feb)
+
+Added CT,CP,CF scalings for free energy simulations.
+
 # What is this branch? 
 AMOEBA+ potential without charge flux implementation is fully supported in the main [Tinker release](https://github.com/TinkerTools/Tinker/tree/release).
 
@@ -37,7 +41,7 @@ AMOEBA+ model was implemented based on the Tinker 8.2. Here are new features com
 
 ## Reference
 
-1. Liu, C.; Piquemal, J.-P.; Ren, P., Implementation of Geometry Dependent Charge Flux into AMOEBA+ Potential.  *submitted*
+1. Liu, C.; Piquemal, J.-P.; Ren, P., Implementation of Geometry Dependent Charge Flux into AMOEBA+ Potential.  *J. Phys. Chem. Letters*, 2020 (__Charge Flux__)
 1. Liu, C.; Piquemal, J.-P.; Ren, P., AMOEBA+ Classical Potential for Modeling Molecular Interactions. *J. Chem. Theory Comput.* **2019**, 15 (7), 4122-4139(__Vdw, CT, CP, Pol__)
 1. Liu, C.; Qi, R.; Wang, Q.; Piquemal, J.-P.; Ren, P., Capturing Many-body Interactions with Classical Dipole Induction Models. *J. Chem. Theory Comput.*, **2017**, 13 (6), 2751-2761 (__Pol__)
 1. Rackers, J. A.; Wang, Q.; Liu, C.; Piquemal, J.-P.; Ren, P.; Ponder, J. W., An optimized charge penetration model for use with the AMOEBA force field. *Phys. Chem. Chem. Phys.* **2016**, 19, 276-291 (__CP__)
