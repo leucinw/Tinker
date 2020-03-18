@@ -57,7 +57,6 @@ c
       use vdwpot
       use ctran
       use cflux
-      use chgpen
       implicit none
       integer i,j
       character*3 blank3
@@ -204,6 +203,8 @@ c
       if (.not. allocated(polr))  allocate (polr(maxtyp))
       if (.not. allocated(athl))  allocate (athl(maxtyp))
       if (.not. allocated(adird))  allocate (adird(maxtyp))
+      if (.not. allocated(apena))  allocate (apena(maxtyp))
+      if (.not. allocated(apenc))  allocate (apenc(maxtyp))
       if (.not. allocated(pgrp))  allocate (pgrp(maxval,maxtyp))
 c
 c     initialize values of some force field parameters
@@ -227,7 +228,8 @@ c
          adird(i) = 0.0d0
          aprmct(i) = 0.0d0
          bprmct(i) = 0.0d0
-         penalpha(i) = 0.0d0
+         apena(i) = 0.0d0
+         apenc(i) = 0.0d0
          do j = 1, maxval
             pgrp(j,i) = 0
          end do
@@ -302,14 +304,6 @@ c
       v4scale = 1.0d0
       v5scale = 1.0d0
       use_vcorr = .false.
-c   
-c     set default control parameters for charge transfer terms
-c
-       
-      ct2scale = 0.0d0
-      ct3scale = 0.0d0
-      ct4scale = 0.0d0
-      ct5scale = 0.0d0
 c   
 c     set default control parameters for charge flux 
 c

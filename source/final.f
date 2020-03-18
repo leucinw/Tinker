@@ -656,6 +656,8 @@ c
       if (allocated(polarity))  deallocate (polarity)
       if (allocated(thole))  deallocate (thole)
       if (allocated(dirdamp))  deallocate (dirdamp)
+      if (allocated(penalpha))  deallocate (penalpha)
+      if (allocated(pencore))  deallocate (pencore)
       if (allocated(pdamp))  deallocate (pdamp)
       if (allocated(udir))  deallocate (udir)
       if (allocated(udirp))  deallocate (udirp)

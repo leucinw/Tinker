@@ -60,7 +60,7 @@ c
       use bound
       use cell
       use cflux
-      use chgpen 
+      use polar 
       use chgpot
       use couple
       use deriv
@@ -361,8 +361,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -442,8 +444,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c
@@ -800,8 +800,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -881,8 +883,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c
@@ -1141,7 +1141,7 @@ c
       use bndstr
       use bound
       use cflux
-      use chgpen 
+      use polar 
       use chgpot
       use couple
       use deriv
@@ -1300,7 +1300,7 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,x,y,z,xaxis,yaxis,zaxis,rpole,use,n12,
 !$OMP& i12,n13,i13,n14,i14,n15,i15,m2scale,m3scale,m4scale,m5scale,
-!$OMP& atomic,penalpha,type,use_cflux,mut,elambda,
+!$OMP& pencore,penalpha,use_cflux,mut,elambda,
 !$OMP& ibnd,nbond,nangle,iang,
 !$OMP& nelst,elst,use_group,use_intra,use_bounds,off2,f,molcule)
 !$OMP& firstprivate(mscale) shared(em,einter,dem,tem,vir,damppot)
@@ -1456,8 +1456,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -1537,8 +1539,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c
@@ -2040,7 +2040,7 @@ c
       use bound
       use cell
       use cflux
-      use chgpen 
+      use polar 
       use chgpot
       use couple
       use deriv
@@ -2328,8 +2328,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -2409,8 +2411,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c
@@ -2798,8 +2798,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -2879,8 +2881,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c
@@ -3376,7 +3376,7 @@ c
       use bound
       use bndstr
       use cflux
-      use chgpen 
+      use polar 
       use chgpot
       use couple
       use deriv
@@ -3518,7 +3518,7 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,x,y,z,rpole,n12,i12,n13,i13,n14,i14,
 !$OMP& n15,i15,m2scale,m3scale,m4scale,m5scale,nelst,elst,
-!$OMP& atomic,penalpha,type,use_cflux,mut,elambda,
+!$OMP& pencore,penalpha,use_cflux,mut,elambda,
 !$OMP& ibnd,nbond,nangle,iang,
 !$OMP& use_bounds,f,off2,aewald,molcule,xaxis,yaxis,zaxis)
 !$OMP& firstprivate(mscale) shared (em,einter,dem,tem,vir,damppot)
@@ -3677,8 +3677,10 @@ c
 c
 c     read in charge penetration damping parameters
 c
-               alphai = penalpha(type(ii))
-               alphak = penalpha(type(kk))
+               alphai = penalpha(ii)
+               alphak = penalpha(kk)
+               nuci = pencore(ii)
+               nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
@@ -3758,8 +3760,6 @@ c
      &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
                end if
             
-               nuci = atomic(i)
-               nuck = atomic(k)
 c
 c              scale the nuclei charge if necessary
 c

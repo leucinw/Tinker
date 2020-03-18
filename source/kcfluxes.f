@@ -7,9 +7,9 @@ c     ##################################################################
 c
 c
 c     jb        charge flux over unit bond length
-c     b0        equilibrium bond length in charge flux
+c     beq       equilibrium bond length in charge flux
 c     ja        charge flux over unit angle 
-c     a0        equilibrium angle in charge flux
+c     theta0l   equilibrium angle in charge flux
 c
       module kcfluxes
       use sizes

@@ -28,7 +28,5 @@ c
       integer, allocatable :: jct(:)
       real*8 aprmct(maxtyp)
       real*8 bprmct(maxtyp)
-      real*8 ct2scale,ct3scale
-      real*8 ct4scale,ct5scale
       save
       end

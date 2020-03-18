@@ -42,7 +42,7 @@ c
       integer nlist,npg
       integer pg(maxval)
       integer, allocatable :: list(:)
-      real*8 pol,thl,dird
+      real*8 pol,thl,dird,pena,penc
       real*8 sixth
       logical header
       character*20 keyword
@@ -134,6 +134,8 @@ c
 c     perform dynamic allocation of some global arrays
 c
       if (allocated(polarity))  deallocate (polarity)
+      if (allocated(penalpha))  deallocate (penalpha)
+      if (allocated(pencore))  deallocate (pencore)
       if (allocated(thole))  deallocate (thole)
       if (allocated(dirdamp))  deallocate (dirdamp)
       if (allocated(pdamp))  deallocate (pdamp)
@@ -145,6 +147,8 @@ c
       allocate (polarity(n))
       allocate (thole(n))
       allocate (dirdamp(n))
+      allocate (penalpha(n))
+      allocate (pencore(n))
       allocate (pdamp(n))
       allocate (udir(3,n))
       allocate (udirp(3,n))
@@ -207,6 +211,8 @@ c
             pol = 0.0d0
             thl = -1.0d0
             dird = -1.0d0
+            pena = -1.0d0
+            penc = -1.0d0
             do j = 1, maxval
                pg(j) = 0
             end do
@@ -255,6 +261,8 @@ c
          polarity(i) = polr(type(i))
          thole(i) = athl(type(i))
          dirdamp(i) = adird(type(i))
+         penalpha(i) = apena(type(i))
+         pencore(i) = apenc(type(i))
       end do
 c
 c     process keywords containing atom specific polarizabilities
@@ -315,6 +323,8 @@ c
                polarity(npole) = polarity(i)
                thole(npole) = thole(i)
                dirdamp(npole) = dirdamp(i)
+               penalpha(npole) = penalpha(i)
+               pencore(npole) = pencore(i)
             end if
          end do
       end if

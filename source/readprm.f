@@ -19,7 +19,6 @@ c
       subroutine readprm
       use sizes
       use cflux
-      use chgpen
       use ctran
       use fields
       use iounit
@@ -69,6 +68,7 @@ c
       integer ft(6),pg(maxval)
       real*8 apre,bexp 
       real*8 alphaf 
+      real*8 coref 
       real*8 wght,rd,ep,rdn
       real*8 an1,an2,an3
       real*8 ba1,ba2
@@ -80,7 +80,7 @@ c
       real*8 at4,at5,at6
       real*8 an,pr,ds,dk
       real*8 vd,cg,dp,ps
-      real*8 fc,bd,dl,el
+      real*8 fc,fj,bd,dl,el
       real*8 pt,pol,thl,dird
       real*8 iz,rp,ss,ts
       real*8 abc,cba
@@ -307,11 +307,13 @@ c
          else if (keyword(1:3) .eq. 'CP ') then
             ia = 0
             alphaf = 0.0d0
+            coref = 0.0d0
             string = record(next:120)
-            read (string,*,err=108,end=108)  ia,alphaf
+            read (string,*,err=108,end=108)ia,alphaf,coref
   108       continue
             if (ia .ne. 0) then
-               penalpha(ia) = alphaf
+               apena(ia) = alphaf
+               apenc(ia) = coref
             end if
 c
 c     bond stretching parameters
@@ -340,11 +342,10 @@ c
          else if (keyword(1:8) .eq. 'CFLUX-B ') then
             ia = 0
             ib = 0
-            bd = 0.0d0
-            fc = 0.0d0
+            fj = 0.0d0
             dobond = .true.
             string = record(next:240)
-            read (string,*,err=115,end=115)  ia,ib,bd,fc
+            read (string,*,err=115,end=115) ia,ib,fj
   115       continue
             call numeral (ia,pa,size)
             call numeral (ib,pb,size)
@@ -354,8 +355,7 @@ c
             else
                kcfb(nbcf) = pb//pa
             end if
-            beq(nbcf) = bd
-            jbnd(nbcf) = fc
+            jbnd(nbcf) = fj
 c
 c     bond stretching parameters for 5-membered rings
 c
@@ -474,17 +474,13 @@ c
             ia = 0
             ib = 0
             ic = 0
-            tta = 0.0d0
             jtt1 = 0.0d0
             jtt2 = 0.0d0
-            bd10 = 0.0d0
-            bd20 = 0.0d0
             jb1 = 0.0d0
             jb2 = 0.0d0
             doangle = .true.
             string = record(next:240)
-            read (string,*,err=165,end=165)  ia,ib,ic,tta,jtt1,jtt2,
-     &          bd10,jb1,bd20,jb2
+            read (string,*,err=165,end=165)ia,ib,ic,jtt1,jtt2,jb1,jb2
   165       continue
             call numeral (ia,pa,size)
             call numeral (ib,pb,size)
@@ -495,13 +491,10 @@ c
             else
                kcfa(nacf) = pc//pb//pa
             end if
-            theta0l(nacf) = tta
             jthetal(1,nacf) = jtt1 
             jthetal(2,nacf) = jtt2 
             jbpl(1,nacf) = jb1 
             jbpl(2,nacf) = jb2 
-            bp0l(1,nacf) = bd10 
-            bp0l(2,nacf) = bd20
 c
 c     angle bending parameters for 5-membered rings
 c

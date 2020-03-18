@@ -1778,7 +1778,6 @@ c
       real*8 eps,epsold
       real*8 polmin,norm
       real*8 a,b,sum
-      real*8, allocatable :: pscale(:)
       real*8, allocatable :: poli(:)
       real*8, allocatable :: field(:,:)
       real*8, allocatable :: rsd(:,:)
@@ -1794,7 +1793,6 @@ c
 c
 c     perform dynamic allocation of some local arrays
 c
-      allocate (pscale(n))
       allocate (poli(npole))
       allocate (field(3,npole))
       allocate (rsd(3,npole))
@@ -1802,9 +1800,13 @@ c
       allocate (conj(3,npole))
       allocate (vec(3,npole))
 c
+c     all attach here to allocate n13,...
+c
+      call attach
+c
 c     compute induced dipoles as polarizability times field
 c
-      call dfieldi (field,pscale)
+      call dfieldi (field)
       do i = 1, npole
          do j = 1, 3
             uind(j,i) = polarity(i) * field(j,i)
@@ -1827,7 +1829,7 @@ c
       iter = 0
       eps = 100.0d0
       polmin = 0.00000001d0
-      call ufieldi (field,pscale)
+      call ufieldi (field)
       do i = 1, npole
          poli(i) = max(polmin,polarity(i))
          do j = 1, 3
@@ -1847,7 +1849,7 @@ c
                uind(j,i) = conj(j,i)
             end do
          end do
-         call ufieldi (field,pscale)
+         call ufieldi (field)
          do i = 1, npole
             do j = 1, 3
                uind(j,i) = vec(j,i)
@@ -1901,7 +1903,6 @@ c
 c
 c     perform deallocation of some local arrays
 c
-      deallocate (pscale)
       deallocate (poli)
       deallocate (field)
       deallocate (rsd)
@@ -1948,9 +1949,10 @@ c     "dfieldi" computes the electrostatic field due to permanent
 c     multipole moments
 c
 c
-      subroutine dfieldi (field,pscale)
+      subroutine dfieldi (field)
       use sizes
       use atoms
+      use couple
       use mpole
       use polar
       use polgrp
@@ -1972,7 +1974,7 @@ c
       real*8 scale3,scale5
       real*8 scale7,damp
       real*8 fi(3),fk(3)
-      real*8 pscale(*)
+      real*8, allocatable :: pscale(:)
       real*8 field(3,*)
 c
 c
@@ -1983,6 +1985,16 @@ c
             uind(j,i) = 0.0d0
             field(j,i) = 0.0d0
          end do
+      end do
+c
+c     perform dynamic allocation of some local arrays
+c
+      allocate (pscale(n))
+c
+c     set array needed to scale atom and group interactions
+c
+      do i = 1, n
+         pscale(i) = 1.0d0
       end do
 c
 c     compute the electrostatic field due to permanent multipoles
@@ -2001,21 +2013,41 @@ c
          qiyy = rpole(9,i)
          qiyz = rpole(10,i)
          qizz = rpole(13,i)
+c
+c    atom based polarization scaling factors
+c
          do j = i+1, npole
             pscale(ipole(j)) = 1.0d0
          end do
-         do j = 1, np11(ii)
-            pscale(ip11(j,ii)) = 0.0d0 
+         do j = 1, n12(ii)
+            pscale(i12(j,ii)) = p12scale
+            do k = 1, np11(ii)
+               if (i12(j,ii) .eq. ip11(k,ii))
+     &            pscale(i12(j,ii)) = p21scale
+            end do
          end do
-         do j = 1, np12(ii)
-            pscale(ip12(j,ii)) = p12scale 
+         do j = 1, n13(ii)
+            pscale(i13(j,ii)) = p13scale
+            do k = 1, np11(ii)
+               if (i13(j,ii) .eq. ip11(k,ii))
+     &            pscale(i13(j,ii)) = p31scale
+            end do
          end do
-         do j = 1, np13(ii)
-            pscale(ip13(j,ii)) = p13scale 
+         do j = 1, n14(ii)
+            pscale(i14(j,ii)) = p14scale
+            do k = 1, np11(ii)
+               if (i14(j,ii) .eq. ip11(k,ii))
+     &            pscale(i14(j,ii)) = p41scale
+            end do
          end do
-         do j = 1, np14(ii)
-            pscale(ip14(j,ii)) = p14scale 
+         do j = 1, n15(ii)
+            pscale(i15(j,ii)) = p15scale
+            do k = 1, np11(ii)
+               if (i15(j,ii) .eq. ip11(k,ii))
+     &            pscale(i15(j,ii)) = p51scale
+            end do
          end do
+
          do k = i+1, npole
             kk = ipole(k)
             xr = x(kk) - x(ii)
@@ -2077,6 +2109,21 @@ c
                field(j,k) = field(j,k) + fk(j)
             end do
          end do
+c
+c     reset exclusion coefficients for connected atoms
+c
+         do j = 1, n12(ii)
+            pscale(i12(j,ii)) = 1.0d0
+         end do
+         do j = 1, n13(ii)
+            pscale(i13(j,ii)) = 1.0d0
+         end do
+         do j = 1, n14(ii)
+            pscale(i14(j,ii)) = 1.0d0
+         end do
+         do j = 1, n15(ii)
+            pscale(i15(j,ii)) = 1.0d0
+         end do
       end do
       return
       end
@@ -2093,9 +2140,10 @@ c     "ufieldi" computes the electrostatic field due to intergroup
 c     induced dipole moments
 c
 c
-      subroutine ufieldi (field,pscale)
+      subroutine ufieldi (field)
       use sizes
       use atoms
+      use couple
       use mpole
       use polar
       use polgrp
@@ -2110,8 +2158,24 @@ c
       real*8 uir,ukr,damp
       real*8 scale3,scale5
       real*8 fi(3),fk(3)
-      real*8 pscale(*)
       real*8 field(3,*)
+      real*8, allocatable :: pscale(:)
+      real*8, allocatable :: uscale(:)
+      real*8, allocatable :: gscale(:)
+c
+c     perform dynamic allocation of some local arrays
+c
+      allocate (pscale(n))
+      allocate (uscale(n))
+      allocate (gscale(n))
+c
+c     set arrays needed to scale atom and group interactions
+c
+      do i = 1, n
+         pscale(i) = 1.0d0
+         uscale(i) = 1.0d0
+         gscale(i) = 0.0d0
+      end do
 c
 c
 c     zero out the value of the field at each site
@@ -2131,21 +2195,55 @@ c
          uix = uind(1,i)
          uiy = uind(2,i)
          uiz = uind(3,i)
-         do j = i+1, npole
-            pscale(ipole(j)) = 0.0d0
+c
+c    atom based pscales
+c
+         do j = 1, n12(ii)
+            pscale(i12(j,ii)) = 1.0d0 - p12scale
+            do k = 1, np11(ii)
+               if (i12(j,ii) .eq. ip11(k,ii))
+     &            pscale(i12(j,ii)) = 1.0d0 - p21scale
+            end do
          end do
+         do j = 1, n13(ii)
+            pscale(i13(j,ii)) = 1.0d0 - p13scale
+            do k = 1, np11(ii)
+               if (i13(j,ii) .eq. ip11(k,ii))
+     &            pscale(i13(j,ii)) = 1.0d0 - p31scale
+            end do
+         end do
+         do j = 1, n14(ii)
+            pscale(i14(j,ii)) = 1.0d0 - p14scale
+            do k = 1, np11(ii)
+               if (i14(j,ii) .eq. ip11(k,ii))
+     &            pscale(i14(j,ii)) = 1.0d0 - p41scale
+            end do
+         end do
+         do j = 1, n15(ii)
+            pscale(i15(j,ii)) = 1.0d0 - p15scale
+            do k = 1, np11(ii)
+               if (i15(j,ii) .eq. ip11(k,ii))
+     &            pscale(i15(j,ii)) = 1.0d0 - p51scale
+            end do
+         end do
+cc
          do j = 1, np11(ii)
-            pscale(ip11(j,ii)) = u1scale - 0.0d0 
+            uscale(ip11(j,ii)) = u1scale
          end do
          do j = 1, np12(ii)
-            pscale(ip12(j,ii)) = u2scale - p12scale
+            uscale(ip12(j,ii)) = u2scale
          end do
          do j = 1, np13(ii)
-            pscale(ip13(j,ii)) = u3scale - p13scale
+            uscale(ip13(j,ii)) = u3scale
          end do
          do j = 1, np14(ii)
-            pscale(ip14(j,ii)) = u4scale - p14scale
+            uscale(ip14(j,ii)) = u4scale
          end do
+         do j = i+1, npole
+            k = ipole(j)
+            gscale(k) = uscale(k) - pscale(k)
+         end do
+
          do k = i+1, npole
             kk = ipole(k)
             xr = x(kk) - x(ii)
@@ -2156,8 +2254,8 @@ c
             ukx = uind(1,k)
             uky = uind(2,k)
             ukz = uind(3,k)
-            scale3 = pscale(kk)
-            scale5 = pscale(kk)
+            scale3 = gscale(kk)
+            scale5 = gscale(kk)
             damp = pdi * pdamp(k)
             if (damp .ne. 0.0d0) then
                pgamma = min(pti,thole(k))
@@ -2182,7 +2280,48 @@ c
                field(j,k) = field(j,k) + fk(j)
             end do
          end do
+c
+c       reset scaling
+c
+         do j = 1, np11(ii)
+            uscale(ip11(j,ii)) = 1.0d0
+            gscale(ip11(j,ii)) = 0.0d0
+         end do
+         do j = 1, np12(i)
+            uscale(ip12(j,ii)) = 1.0d0
+            gscale(ip12(j,ii)) = 0.0d0
+         end do
+         do j = 1, np13(i)
+            uscale(ip13(j,ii)) = 1.0d0
+            gscale(ip13(j,ii)) = 0.0d0
+         end do
+         do j = 1, np14(i)
+            uscale(ip14(j,ii)) = 1.0d0
+            gscale(ip14(j,ii)) = 0.0d0
+         end do
+         do j = 1, n12(ii)
+            pscale(i12(j,ii)) = 1.0d0
+            gscale(i12(j,ii)) = 0.0d0
+         end do
+         do j = 1, n13(ii)
+            pscale(i13(j,ii)) = 1.0d0
+            gscale(i13(j,ii)) = 0.0d0
+         end do
+         do j = 1, n14(ii)
+            pscale(i14(j,ii)) = 1.0d0
+            gscale(i14(j,ii)) = 0.0d0
+         end do
+         do j = 1, n15(ii)
+            pscale(i15(j,ii)) = 1.0d0
+            gscale(i15(j,ii)) = 0.0d0
+         end do
       end do
+c
+c     perform deallocation of some local arrays
+c
+      deallocate (pscale)
+      deallocate (uscale)
+      deallocate (gscale)
       return
       end
 c

@@ -15,6 +15,7 @@ c
 c     polr   dipole polarizability parameters for each atom type
 c     athl   Thole polarizability damping value for each atom type
 c     adird  Direct polarizability damping value for each atom type
+c     apena
 c     pgrp   connected types in polarization group of each atom type
 c
 c
@@ -24,5 +25,7 @@ c
       real*8, allocatable :: polr(:)
       real*8, allocatable :: athl(:)
       real*8, allocatable :: adird(:)
+      real*8, allocatable :: apena(:)
+      real*8, allocatable :: apenc(:)
       save
       end

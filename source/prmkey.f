@@ -318,21 +318,6 @@ c
       else if (keyword(1:15) .eq. 'VDW-CORRECTION ') then
          use_vcorr = .true.
 c
-c     Set control parameters for charge transfer potential
-c
-      else if (keyword(1:13) .eq. 'CT-12-SCALE ') then
-         read (string,*,err=10,end=10)  ct2scale
-         if (ct2scale .gt. 1.0d0)  ct2scale = 1.0d0 / ct2scale
-      else if (keyword(1:13) .eq. 'CT-13-SCALE ') then
-         read (string,*,err=10,end=10)  ct3scale
-         if (ct2scale .gt. 1.0d0)  ct3scale = 1.0d0 / ct3scale
-      else if (keyword(1:13) .eq. 'CT-14-SCALE ') then
-         read (string,*,err=10,end=10)  ct4scale
-         if (ct4scale .gt. 1.0d0)  ct4scale = 1.0d0 / ct4scale
-      else if (keyword(1:13) .eq. 'CT-15-SCALE ') then
-         read (string,*,err=10,end=10)  ct5scale
-         if (ct5scale .gt. 1.0d0)  ct5scale = 1.0d0 / ct5scale
-c
 c     set control parameters for charge-charge potentials
 c
       else if (keyword(1:9) .eq. 'ELECTRIC ') then
@@ -383,19 +368,6 @@ c
          read (string,*,err=10,end=10)  poleps
       else if (keyword(1:12) .eq. 'USOLVE-DIAG ') then
          read (string,*,err=10,end=10)  udiag
-      else if (keyword(1:15) .eq. 'POLAR-12-SCALE ') then
-         read (string,*,err=10,end=10)  p2scale
-         if (p2scale .gt. 1.0d0)  p2scale = 1.0d0 / p2scale
-      else if (keyword(1:15) .eq. 'POLAR-13-SCALE ') then
-         read (string,*,err=10,end=10)  p3scale
-         if (p3scale .gt. 1.0d0)  p3scale = 1.0d0 / p3scale
-      else if (keyword(1:15) .eq. 'POLAR-14-SCALE ') then
-         read (string,*,err=10,end=10)  p4scale
-         if (p4scale .gt. 1.0d0)  p4scale = 1.0d0 / p4scale
-      else if (keyword(1:15) .eq. 'POLAR-15-SCALE ') then
-         read (string,*,err=10,end=10)  p5scale
-         if (p5scale .gt. 1.0d0)  p5scale = 1.0d0 / p5scale
-
       else if (keyword(1:15) .eq. 'POLAR-12-INTER ') then
          read (string,*,err=10,end=10)  p12scale
          if (p12scale .gt. 1.0d0)  p12scale = 1.0d0 / p12scale
@@ -408,7 +380,6 @@ c
       else if (keyword(1:15) .eq. 'POLAR-15-INTER ') then
          read (string,*,err=10,end=10)  p15scale
          if (p15scale .gt. 1.0d0)  p15scale = 1.0d0 / p15scale
-
       else if (keyword(1:15) .eq. 'POLAR-12-INTRA ') then
          read (string,*,err=10,end=10)  p21scale
          if (p21scale .gt. 1.0d0)  p21scale = 1.0d0 / p21scale
@@ -421,19 +392,6 @@ c
       else if (keyword(1:15) .eq. 'POLAR-15-INTRA ') then
          read (string,*,err=10,end=10)  p51scale
          if (p51scale .gt. 1.0d0)  p51scale = 1.0d0 / p51scale
-
-      else if (keyword(1:16) .eq. 'DIRECT-11-SCALE ') then
-         read (string,*,err=10,end=10)  d1scale
-         if (d1scale .gt. 1.0d0)  d1scale = 1.0d0 / d1scale
-      else if (keyword(1:16) .eq. 'DIRECT-12-SCALE ') then
-         read (string,*,err=10,end=10)  d2scale
-         if (d2scale .gt. 1.0d0)  d2scale = 1.0d0 / d2scale
-      else if (keyword(1:16) .eq. 'DIRECT-13-SCALE ') then
-         read (string,*,err=10,end=10)  d3scale
-         if (d3scale .gt. 1.0d0)  d3scale = 1.0d0 / d3scale
-      else if (keyword(1:16) .eq. 'DIRECT-14-SCALE ') then
-         read (string,*,err=10,end=10)  d4scale
-         if (d4scale .gt. 1.0d0)  d4scale = 1.0d0 / d4scale
       else if (keyword(1:16) .eq. 'MUTUAL-11-SCALE ') then
          read (string,*,err=10,end=10)  u1scale
          if (u1scale .gt. 1.0d0)  u1scale = 1.0d0 / u1scale

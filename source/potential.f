@@ -1026,7 +1026,6 @@ c
       call kcharge
       call kdipole
       call kmpole
-      call kcp
       call kpolar
       return
       end
@@ -1048,7 +1047,6 @@ c
       use atomid
       use atoms
       use charge
-      use chgpen
       use chgpot
       use dipole
       use mplpot

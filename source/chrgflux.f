@@ -76,7 +76,7 @@ c
          atoma = atomic(ia)
          atomb = atomic(ib)
          pjb = jb(i)
-         pb0 = b0(i)
+         pb0 = bl(i)
          muta = mut(ia)
          mutb = mut(ib)
          if ((muta) .or. (mutb)) then 
@@ -189,7 +189,7 @@ c
 c
 c     assign the charge flux parameters  
 c
-         ptheta0 = theta0(i)
+         ptheta0 = anat(i)
          pb10 = bp0(1,i)
          pb20 = bp0(2,i)
          pjbp1 = jbp(1,i)
