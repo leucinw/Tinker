@@ -73,6 +73,7 @@ c
          call katom
          call kmpole
          call kpolar
+         call kcp
          call fixframe
          call prtpolar
       else if (mode .eq. 3) then
@@ -82,6 +83,7 @@ c
          call katom
          call kmpole
          call kpolar
+         call kcp
          call alterpol
          call fixpolar
          call prtpolar

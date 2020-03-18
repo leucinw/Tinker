@@ -58,7 +58,7 @@ c
       use bound
       use cell
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use energi
@@ -611,7 +611,7 @@ c
       use atoms
       use bound
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use energi
@@ -1062,7 +1062,7 @@ c
       use bound
       use cell
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use energi
@@ -1747,7 +1747,7 @@ c
       use atoms
       use bound
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use energi

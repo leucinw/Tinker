@@ -39,6 +39,7 @@ c
       use korbs
       use kpitor
       use kpolr
+      use kcps
       use kstbnd
       use ksttor
       use ktorsn
@@ -309,7 +310,7 @@ c
             alphaf = 0.0d0
             coref = 0.0d0
             string = record(next:120)
-            read (string,*,err=108,end=108)ia,alphaf,coref
+            read (string,*,err=108,end=108) ia,alphaf,coref
   108       continue
             if (ia .ne. 0) then
                apena(ia) = alphaf

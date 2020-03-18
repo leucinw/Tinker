@@ -39,6 +39,7 @@ c
       use korbs
       use kpitor
       use kpolr
+      use kcps
       use kstbnd
       use ksttor
       use ktorsn
@@ -226,10 +227,10 @@ c
          polr(i) = 0.0d0
          athl(i) = 0.0d0
          adird(i) = 0.0d0
-         aprmct(i) = 0.0d0
-         bprmct(i) = 0.0d0
          apena(i) = 0.0d0
          apenc(i) = 0.0d0
+         aprmct(i) = 0.0d0
+         bprmct(i) = 0.0d0
          do j = 1, maxval
             pgrp(j,i) = 0
          end do

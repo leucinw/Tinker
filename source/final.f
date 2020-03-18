@@ -27,6 +27,7 @@ c
       use atmlst
       use bitor
       use bndstr
+      use chgpen
       use cell
       use charge
       use chunks
@@ -49,6 +50,7 @@ c
       use katoms
       use kchrge
       use kpolr
+      use kcps
       use kvdws
       use light
       use merck
@@ -411,6 +413,11 @@ c
       if (allocated(polr))  deallocate (polr)
       if (allocated(athl))  deallocate (athl)
       if (allocated(pgrp))  deallocate (pgrp)
+c
+c     deallocation of global arrays from module kcps
+c
+      if (allocated(apena))  deallocate (apena)
+      if (allocated(apenc))  deallocate (apenc)
 c
 c     deallocation of global arrays from module kvdws
 c

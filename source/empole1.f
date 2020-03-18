@@ -60,7 +60,7 @@ c
       use bound
       use cell
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use deriv
@@ -1141,7 +1141,7 @@ c
       use bndstr
       use bound
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use deriv
@@ -2040,7 +2040,7 @@ c
       use bound
       use cell
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use deriv
@@ -3376,7 +3376,7 @@ c
       use bound
       use bndstr
       use cflux
-      use polar 
+      use chgpen 
       use chgpot
       use couple
       use deriv

@@ -1027,6 +1027,7 @@ c
       call kdipole
       call kmpole
       call kpolar
+      call kcp
       return
       end
 c
@@ -1051,7 +1052,8 @@ c
       use dipole
       use mplpot
       use mpole
-      use polar
+      use chgpen
+      use polar 
       use potent
       use units
       implicit none
@@ -1173,7 +1175,7 @@ c
 c
 c     compute the potential contributions for this site
 c
-         alphak = penalpha(type(kk))
+         alphak = penalpha(kk)
          if (alphak .gt. 0.0d0) then
             dampk = alphak*r
             expdampk = exp(-dampk)
