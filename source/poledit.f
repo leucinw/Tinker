@@ -597,6 +597,7 @@ c     perform dynamic allocation of some global arrays
 c
       if (.not. allocated(polarity))  allocate (polarity(n))
       if (.not. allocated(thole))  allocate (thole(n))
+      if (.not. allocated(dirdamp))  allocate (dirdamp(n))
       if (.not. allocated(pdamp))  allocate (pdamp(n))
       if (.not. allocated(ipole))  allocate (ipole(n))
       if (.not. allocated(polsiz))  allocate (polsiz(n))
@@ -609,6 +610,7 @@ c
          mass(i) = 1.0d0
          polarity(i) = 0.0d0
          thole(i) = 0.39d0
+         dirdamp(i) = 0.70d0
          if (atmnum .eq. 1) then
             mass(i) = 1.008d0
             polarity(i) = 0.496d0
@@ -1477,7 +1479,7 @@ c
       implicit none
       integer i,j,k,ii
       integer ia,ib
-      real*8 pol,thl
+      real*8 pol,thl,dird
       logical exist,query
       logical change
       character*240 record
@@ -1489,15 +1491,16 @@ c
       write (iout,10)
    10 format (/,' Atomic Polarizabilities for Multipole Sites :')
       write (iout,20)
-   20 format (/,5x,'Atom',5x,'Name',7x,'Polarize',10x,'Thole',/)
+   20 format (/,5x,'Atom',5x,'Name',7x,'Polarize',10x,'Thole',10x, 
+     &     'Dirdamp'/)
       do ii = 1, n
          i = pollist(ii)
          if (i .eq. 0) then
             write (iout,30)  ii,name(ii)
    30       format (i8,6x,a3,12x,'--',13x,'--')
          else
-            write (iout,40)  ii,name(ii),polarity(i),thole(i)
-   40       format (i8,6x,a3,4x,f12.4,3x,f12.4)
+            write (iout,40)  ii,name(ii),polarity(i),thole(i),dirdamp(i)
+   40       format (i8,6x,a3,4x,f12.4,3x,f12.4,3x,f12.4)
          end if
       end do
 c
@@ -1522,7 +1525,7 @@ c
      &              ' [<CR>=Exit] :  ',$)
          read (input,70)  record
    70    format (a240)
-         read (record,*,err=80,end=80)  ii,pol,thl
+         read (record,*,err=80,end=80)  ii,pol,thl,dird
    80    continue
          if (ii .eq. 0) then
             query = .false.
@@ -1533,6 +1536,7 @@ c
             change = .true.
             polarity(i) = pol
             thole(i) = thl
+            dirdamp(i) = dird
          end if
       end do
 c
@@ -1542,15 +1546,17 @@ c
          write (iout,90)
    90    format (/,' Atomic Polarizabilities for Multipole Sites :')
          write (iout,100)
-  100    format (/,5x,'Atom',5x,'Name',7x,'Polarize',10x,'Thole',/)
+  100    format (/,5x,'Atom',5x,'Name',7x,'Polarize',10x,'Thole',
+     &           10x, 'Dirdamp'/)
          do ii = 1, n
             i = pollist(ii)
             if (i .eq. 0) then
                write (iout,110)  ii,name(ii)
   110          format (i8,6x,a3,12x,'--',13x,'--')
             else
-               write (iout,120)  ii,name(ii),polarity(i),thole(i)
-  120          format (i8,6x,a3,4x,f12.4,3x,f12.4)
+               write (iout,120)  ii,name(ii),polarity(i),thole(i),
+     &              dirdamp(i)
+  120          format (i8,6x,a3,4x,f12.4,3x,f12.4,3x,f12.4)
             end if
          end do
       end if
@@ -1964,6 +1970,7 @@ c
       real*8 r,r2,xr,yr,zr
       real*8 rr3,rr5,rr7
       real*8 pdi,pti,pgamma
+      real*8 expdamp,pdiri
       real*8 ci,dix,diy,diz
       real*8 qixx,qixy,qixz
       real*8 qiyy,qiyz,qizz
@@ -2005,6 +2012,7 @@ c
          ii = ipole(i)
          pdi = pdamp(i)
          pti = thole(i)
+         pdiri = dirdamp(i)
          ci = rpole(1,i)
          dix = rpole(2,i)
          diy = rpole(3,i)
@@ -2071,16 +2079,21 @@ c
             scale5 = pscale(kk)
             scale7 = pscale(kk)
             damp = pdi * pdamp(k)
+c
+c     use direct damping for AMOEBA+
+c
             if (damp .ne. 0.0d0) then
-               pgamma = min(pti,thole(k))
-               damp = -pgamma * (r/damp)**3
-               if (damp .gt. -50.0d0) then
-                  scale3 = scale3 * (1.0d0-exp(damp))
-                  scale5 = scale5 * (1.0d0-(1.0d0-damp)*exp(damp))
-                  scale7 = scale7 * (1.0d0-(1.0d0-damp+0.6d0*damp**2)
-     &                                               *exp(damp))
-               end if
-            end if
+              pgamma = min(pdiri, dirdamp(k))
+              damp  = pgamma*sqrt((r/damp)**3)
+              if (damp .gt. -50.0d0) then
+                expdamp= exp(-damp) 
+                scale3 = scale3*(1.0d0 - expdamp)
+                scale5 = scale5*(1.0d0-(1.0d0 + 0.5d0*damp)*expdamp)
+                scale7 = scale7*(1.0d0-(1.0d0 + 0.65d0*damp + 
+     &                   0.15d0*damp**2)*expdamp)
+              end if
+            endif
+
             rr3 = scale3 / (r*r2)
             rr5 = 3.0d0 * scale5 / (r*r2*r2)
             rr7 = 15.0d0 * scale7 / (r*r2*r2*r2)
@@ -2198,7 +2211,7 @@ c
          uiy = uind(2,i)
          uiz = uind(3,i)
 c
-c    atom based pscales
+c    atom based pscales for AMOEBA+ 
 c
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = 1.0d0 - p12scale
@@ -2228,7 +2241,9 @@ c
      &            pscale(i15(j,ii)) = 1.0d0 - p51scale
             end do
          end do
-cc
+c
+c    uscale 
+c
          do j = 1, np11(ii)
             uscale(ip11(j,ii)) = u1scale
          end do
@@ -2716,9 +2731,9 @@ c
             do j = 1, maxval
                if (pgrp(j,i) .ne. 0)  k = j
             end do
-            write (ikey,180)  ipole(i),polarity(i),thole(i),
+            write (ikey,180)  ipole(i),polarity(i),thole(i),dirdamp(i),
      &                        (pgrp(j,i),j=1,k)
-  180       format ('polarize',2x,i5,5x,2f11.4,2x,20i5)
+  180       format ('polarize',2x,i5,5x,3f11.4,2x,20i5)
          end do
       end if
       close (unit=ikey)
