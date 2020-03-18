@@ -117,8 +117,8 @@ APBS_LIBS = -lapbsmainroutines -lapbs -lmaloc -lapbsblas
 
 F77 = ifort
 F77FLAGS = -c -xHost
-#OPTFLAGS = -O3 -no-ipo -no-prec-div -recursive -openmp 
-OPTFLAGS =  -g -check all -fpe0 -warn -traceback -debug extended -openmp -fp-stack-check -O0 -assume realloc_lhs #debug options
+OPTFLAGS = -O3 -no-ipo -no-prec-div -recursive -openmp 
+#OPTFLAGS =  -g -check all -fpe0 -warn -traceback -debug extended -openmp -fp-stack-check -O0 -assume realloc_lhs #debug options
 LIBS = -L/opt/intel/composer_xe_2013/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core 
 LIBFLAGS = -crusv
 RANLIB = echo
