@@ -160,5 +160,11 @@ cp            2     3.254109630751e+00 1.0 # PRM 2
       ##                                    ##
       ########################################
 
+# Version before Mar.2020 should use this format 
 CFLUX-B  1   2   0.9572 -0.030289
 CFLUX-A  2   1   2 104.5  1.986575880558e-03  1.986575880558e-03 0.9572 -0.045337 0.9572 -0.045337 
+
+# Mar.2020 version directly read bond/angle from "bond" and "angle" keywords
+# so the following is used for Charge flux parameters
+CFLUX-B  1   2   -0.030289
+CFLUX-A  2   1   2  1.986575880558e-03  1.986575880558e-03 -0.045337 -0.045337 

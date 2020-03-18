@@ -1,3 +1,8 @@
+
+# Latest update (2020, Mar)
+
+Same exclusion rules are used for CT and polarization (atom-based)
+
 # Latest update (2020, Feb)
 
 Added CT,CP,CF scalings for free energy simulations.
