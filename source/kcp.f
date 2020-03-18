@@ -116,7 +116,5 @@ c
             end if
          end do
       end if
-      write(*,*) "penalpha", penalpha(1), penalpha(2), penalpha(3),
-     & penalpha(4)
       return
       end
