@@ -502,11 +502,15 @@ c
       mode = 'CT'
       call switch (mode)
 c
+c     call kpolar to allocate np11 etc
+c
+      call kpolar
+c
 c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(nct,ict,
 !$OMP& jct,use,x,y,z,nctlst,ctlst,n12,n13,n14,n15,
-!$OMP& i12,i13,i14,i15,p12scale,p13scale,p14scale,
+!$OMP& i12,i13,i14,i15,p12scale,p13scale,p14scale,ip11,np11,
 !$OMP& p15scale,p21scale,p31scale,p41scale,p51scale,
 !$OMP& use_group,off2,aprmct,bprmct,mut,elambda,
 !$OMP& cut2,c0,c1,c2,c3,c4,c5,molcule,name,verbose,debug,header,iout)
