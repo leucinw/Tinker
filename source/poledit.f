@@ -59,6 +59,7 @@ c
          use_polar = .true.
          call readgdma
          call initprm
+         call field
          call molsetup
          call setframe
          call rotframe
