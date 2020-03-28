@@ -2178,6 +2178,12 @@ c     perform dynamic allocation of some local arrays
 c
       allocate (pscale(n))
 c
+c     set arrays needed to scale atom and group interactions
+c
+      do i = 1, n
+         pscale(i) = 0.0d0
+      end do
+c
 c     zero out the value of the field at each site
 c
       do i = 1, npole
@@ -2198,9 +2204,6 @@ c
 c
 c    atom based pscales for AMOEBA+ 
 c
-         do j = i+1, npole
-            pscale(ipole(j)) = 0.0d0
-         end do
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = 1.0d0 - p12scale
             do k = 1, np11(ii)
@@ -2217,7 +2220,6 @@ c
          end do
          do j = 1, n14(ii)
             pscale(i14(j,ii)) = 1.0d0 - p14scale
-            pscale(i14(j,ii)) = p14scale
             do k = 1, np11(ii)
                if (i14(j,ii) .eq. ip11(k,ii))
      &            pscale(i14(j,ii)) = 1.0d0 - p41scale
@@ -2270,8 +2272,8 @@ c
 c
 c       reset scaling
 c
-         do j = i+1, npole
-            pscale(ipole(j)) = 0.0d0
+         do j = 1, n
+            pscale(j) = 0.0d0
          end do
       end do
 c
