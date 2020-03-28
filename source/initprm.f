@@ -335,6 +335,7 @@ c
       p5scale = 1.0d0
 c
 c     default polar atom-based scaling factors
+c
       p12scale = 0.0d0
       p13scale = 0.0d0
       p14scale = 1.0d0
@@ -343,6 +344,17 @@ c     default polar atom-based scaling factors
       p31scale = 0.0d0
       p41scale = 1.0d0
       p51scale = 1.0d0
+c
+c     default charge transfer atom-based scaling factors
+c
+      ct12scale = 0.0d0
+      ct13scale = 0.0d0
+      ct14scale = 1.0d0
+      ct15scale = 1.0d0
+      ct21scale = 0.0d0
+      ct31scale = 0.0d0
+      ct41scale = 1.0d0
+      ct51scale = 1.0d0
 c
 c     set default control parameters for induced dipoles
 c

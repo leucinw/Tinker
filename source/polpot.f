@@ -41,6 +41,8 @@ c
       real*8 d3scale,d4scale
       real*8 u1scale,u2scale
       real*8 u3scale,u4scale
+      real*8 ct12scale,ct13scale, ct14scale, ct15scale
+      real*8 ct21scale,ct31scale, ct41scale, ct51scale
       real*8 udiag
       real*8 p12scale,p13scale,p14scale,p15scale
       real*8 p21scale,p31scale,p41scale,p51scale

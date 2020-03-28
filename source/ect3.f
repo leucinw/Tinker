@@ -52,6 +52,7 @@ c     ##################################################################
       use cell
       use couple
       use energi
+      use polpot
       use group
       use molcul
       use inter 
@@ -116,32 +117,33 @@ c
 c
 c     set interaction scaling coefficients for connected atoms
 c
+
          do j = 1, n12(i)
-            ctscale(i12(j,i)) = p12scale
+            ctscale(i12(j,i)) = ct12scale
             do k = 1, np11(i)
                if (i12(j,i) .eq. ip11(k,i))
-     &            ctscale(i12(j,i)) = p21scale
+     &            ctscale(i12(j,i)) = ct21scale
             end do
          end do
          do j = 1, n13(i)
-            ctscale(i13(j,i)) = p13scale
+            ctscale(i13(j,i)) = ct13scale
             do k = 1, np11(i)
                if (i13(j,i) .eq. ip11(k,i))
-     &            ctscale(i13(j,i)) = p31scale
+     &            ctscale(i13(j,i)) = ct31scale
             end do
          end do
          do j = 1, n14(i)
-            ctscale(i14(j,i)) = p14scale
+            ctscale(i14(j,i)) = ct14scale
             do k = 1, np11(i)
                if (i14(j,i) .eq. ip11(k,i))
-     &            ctscale(i14(j,i)) = p41scale
+     &            ctscale(i14(j,i)) = ct41scale
             end do
          end do
          do j = 1, n15(i)
-            ctscale(i15(j,i)) = p15scale
+            ctscale(i15(j,i)) = ct15scale
             do k = 1, np11(i)
                if (i15(j,i) .eq. ip11(k,i))
-     &            ctscale(i15(j,i)) = p51scale
+     &            ctscale(i15(j,i)) = ct51scale
             end do
          end do
 c
@@ -274,33 +276,34 @@ c     set interaction scaling coefficients for connected atoms
 c
 
          do j = 1, n12(i)
-            ctscale(i12(j,i)) = p12scale
+            ctscale(i12(j,i)) = ct12scale
             do k = 1, np11(i)
                if (i12(j,i) .eq. ip11(k,i))
-     &            ctscale(i12(j,i)) = p21scale
+     &            ctscale(i12(j,i)) = ct21scale
             end do
          end do
          do j = 1, n13(i)
-            ctscale(i13(j,i)) = p13scale
+            ctscale(i13(j,i)) = ct13scale
             do k = 1, np11(i)
                if (i13(j,i) .eq. ip11(k,i))
-     &            ctscale(i13(j,i)) = p31scale
+     &            ctscale(i13(j,i)) = ct31scale
             end do
          end do
          do j = 1, n14(i)
-            ctscale(i14(j,i)) = p14scale
+            ctscale(i14(j,i)) = ct14scale
             do k = 1, np11(i)
                if (i14(j,i) .eq. ip11(k,i))
-     &            ctscale(i14(j,i)) = p41scale
+     &            ctscale(i14(j,i)) = ct41scale
             end do
          end do
          do j = 1, n15(i)
-            ctscale(i15(j,i)) = p15scale
+            ctscale(i15(j,i)) = ct15scale
             do k = 1, np11(i)
                if (i15(j,i) .eq. ip11(k,i))
-     &            ctscale(i15(j,i)) = p51scale
+     &            ctscale(i15(j,i)) = ct51scale
             end do
          end do
+
 c
 c     decide whether to compute the current interaction
 c
@@ -510,8 +513,8 @@ c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(nct,ict,
 !$OMP& jct,use,x,y,z,nctlst,ctlst,n12,n13,n14,n15,
-!$OMP& i12,i13,i14,i15,p12scale,p13scale,p14scale,ip11,np11,
-!$OMP& p15scale,p21scale,p31scale,p41scale,p51scale,
+!$OMP& i12,i13,i14,i15,ct12scale,ct13scale,ct14scale,ip11,np11,
+!$OMP& ct15scale,ct21scale,ct31scale,ct41scale,ct51scale,
 !$OMP& use_group,off2,aprmct,bprmct,mut,elambda,
 !$OMP& cut2,c0,c1,c2,c3,c4,c5,molcule,name,verbose,debug,header,iout)
 !$OMP& shared(ect,einter,nect,aect)
@@ -529,31 +532,31 @@ c
 c     set exclusion coefficients for connected atoms
 c
          do j = 1, n12(i)
-            ctscale(i12(j,i)) = p12scale
+            ctscale(i12(j,i)) = ct12scale
             do k = 1, np11(i)
                if (i12(j,i) .eq. ip11(k,i))
-     &            ctscale(i12(j,i)) = p21scale
+     &            ctscale(i12(j,i)) = ct21scale
             end do
          end do
          do j = 1, n13(i)
-            ctscale(i13(j,i)) = p13scale
+            ctscale(i13(j,i)) = ct13scale
             do k = 1, np11(i)
                if (i13(j,i) .eq. ip11(k,i))
-     &            ctscale(i13(j,i)) = p31scale
+     &            ctscale(i13(j,i)) = ct31scale
             end do
          end do
          do j = 1, n14(i)
-            ctscale(i14(j,i)) = p14scale
+            ctscale(i14(j,i)) = ct14scale
             do k = 1, np11(i)
                if (i14(j,i) .eq. ip11(k,i))
-     &            ctscale(i14(j,i)) = p41scale
+     &            ctscale(i14(j,i)) = ct41scale
             end do
          end do
          do j = 1, n15(i)
-            ctscale(i15(j,i)) = p15scale
+            ctscale(i15(j,i)) = ct15scale
             do k = 1, np11(i)
                if (i15(j,i) .eq. ip11(k,i))
-     &            ctscale(i15(j,i)) = p51scale
+     &            ctscale(i15(j,i)) = ct51scale
             end do
          end do
 c

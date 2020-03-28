@@ -343,6 +343,33 @@ c
       else if (keyword(1:15) .eq. 'NEUTRAL-GROUPS ') then
          neutcut = .true.
 c
+c     set control parameters for charge transfer potentials
+c
+      else if (keyword(1:12) .eq. 'CT-12-SCALE ') then
+         read (string,*,err=10,end=10)  ct12scale
+         if (ct12scale .gt. 1.0d0)  ct12scale = 1.0d0 / ct12scale
+      else if (keyword(1:12) .eq. 'CT-13-SCALE ') then
+         read (string,*,err=10,end=10)  ct13scale
+         if (ct13scale .gt. 1.0d0)  ct13scale = 1.0d0 / ct13scale
+      else if (keyword(1:12) .eq. 'CT-14-SCALE ') then
+         read (string,*,err=10,end=10)  ct14scale
+         if (ct14scale .gt. 1.0d0)  ct14scale = 1.0d0 / ct14scale
+      else if (keyword(1:12) .eq. 'CT-15-SCALE ') then
+         read (string,*,err=10,end=10)  ct15scale
+         if (ct15scale .gt. 1.0d0)  ct15scale = 1.0d0 / ct15scale
+      else if (keyword(1:12) .eq. 'CT-21-SCALE ') then
+         read (string,*,err=10,end=10)  ct21scale
+         if (ct21scale .gt. 1.0d0)  ct21scale = 1.0d0 / ct21scale
+      else if (keyword(1:12) .eq. 'CT-31-SCALE ') then
+         read (string,*,err=10,end=10)  ct31scale
+         if (ct31scale .gt. 1.0d0)  ct31scale = 1.0d0 / ct31scale
+      else if (keyword(1:12) .eq. 'CT-41-SCALE ') then
+         read (string,*,err=10,end=10)  ct41scale
+         if (ct41scale .gt. 1.0d0)  ct41scale = 1.0d0 / ct41scale
+      else if (keyword(1:12) .eq. 'CT-51-SCALE ') then
+         read (string,*,err=10,end=10)  ct51scale
+         if (ct51scale .gt. 1.0d0)  ct51scale = 1.0d0 / ct51scale
+c
 c     set control parameters for atomic multipole potentials
 c
       else if (keyword(1:15) .eq. 'MPOLE-12-SCALE ') then
