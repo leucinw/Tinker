@@ -1734,7 +1734,6 @@ c     copy multipole moments and coordinates to local storage
 c
       do i = 1, npole
          cmp(1,i) = rpole(1,i)
-         cmp(1,i) = cmp(1,i) 
          cmp(2,i) = rpole(2,i)
          cmp(3,i) = rpole(3,i)
          cmp(4,i) = rpole(4,i)
