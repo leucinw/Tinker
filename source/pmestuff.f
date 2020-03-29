@@ -1193,6 +1193,9 @@ c
          fdip_phi1(8,isite) = tuv110_1
          fdip_phi1(9,isite) = tuv101_1
          fdip_phi1(10,isite) = tuv011_1
+c
+c   correctness of *2?
+c
          fdip_sum_phi(1,isite) = 2.0d0*tuv000
          fdip_sum_phi(2,isite) = 2.0d0*tuv100
          fdip_sum_phi(3,isite) = 2.0d0*tuv010

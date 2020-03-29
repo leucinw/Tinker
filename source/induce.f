@@ -649,12 +649,12 @@ c
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
                      pgamma = min(pdiri,dirdamp(k))
-                     damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                     damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                      if (damp .gt. -50.0d0) then
-                       expdamp= exp(-damp) 
+                       expdamp= exp(damp) 
                        scale3 = 1.0d0 - expdamp 
-                       scale5 = 1.0d0-(1.0d0+(1.0d0/2.0d0)*damp)*expdamp
-                       scale7 = 1.0d0-(1.0d0+(39.0d0/60.0d0)*damp + 
+                       scale5 = 1.0d0-(1.0d0-(1.0d0/2.0d0)*damp)*expdamp
+                       scale7 = 1.0d0-(1.0d0-(39.0d0/60.0d0)*damp + 
      &                          (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                      end if
                   end if
@@ -795,13 +795,13 @@ c
                      damp = pdi * pdamp(k)
                      if (damp .ne. 0.0d0) then
                         pgamma = min(pdiri,dirdamp(k))
-                        damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                        damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                         if (damp .gt. -50.0d0) then
-                           expdamp= exp(-damp) 
+                           expdamp= exp(damp) 
                            scale3 = 1.0d0 - expdamp 
-                           scale5 = 1.0d0-(1.0d0 + 
+                           scale5 = 1.0d0-(1.0d0 - 
      &                              (1.0d0/2.0d0)*damp)*expdamp
-                           scale7 = 1.0d0-(1.0d0 +(39.0d0/60.0d0)*damp 
+                           scale7 = 1.0d0-(1.0d0 -(39.0d0/60.0d0)*damp 
      &                             + (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                         end if
                      end if
@@ -1284,13 +1284,13 @@ c
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
                     pgamma = min(pdiri, dirdamp(k))
-                    damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                    damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                     if (damp .gt. -50.0d0) then
-                      expdamp= exp(-damp) 
+                      expdamp= exp(damp) 
                       scale3 = 1.0d0 - expdamp 
-                      scale5 = 1.0d0-(1.0d0 + (1.0d0/2.0d0)*damp)
+                      scale5 = 1.0d0-(1.0d0 - (1.0d0/2.0d0)*damp)
      &                          *expdamp
-                      scale7 = 1.0d0-(1.0d0 + (39.0d0/60.0d0)*damp + 
+                      scale7 = 1.0d0-(1.0d0 - (39.0d0/60.0d0)*damp + 
      &                         (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                     end if
                   endif
@@ -2018,12 +2018,12 @@ c
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
                  pgamma = min(pdiri, dirdamp(k))
-                 damp  = pgamma*(r/(pdi*pdamp(k)))**(3.0d0/2.0d0)
+                 damp  = -pgamma*(r/(pdi*pdamp(k)))**(3.0d0/2.0d0)
                  if (damp .gt. -50.0d0) then
-                   expdamp= exp(-damp) 
+                   expdamp= exp(damp) 
                    scale3 = 1.0d0 - expdamp 
-                   scale5 = 1.0d0-(1.0d0 + (1.0d0/2.0d0)*damp)*expdamp
-                   scale7 = 1.0d0-(1.0d0 + (39.0d0/60.0d0)*damp + 
+                   scale5 = 1.0d0-(1.0d0 - (1.0d0/2.0d0)*damp)*expdamp
+                   scale7 = 1.0d0-(1.0d0 - (39.0d0/60.0d0)*damp + 
      &                      (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                  end if
                end if
@@ -2189,13 +2189,13 @@ c
                      damp = pdi * pdamp(k)
                      if (damp .ne. 0.0d0) then
                        pgamma = min(pdiri, dirdamp(k))
-                       damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                       damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                        if (damp .gt. -50.0d0) then
-                         expdamp= exp(-damp) 
+                         expdamp= exp(damp) 
                          scale3 = 1.0d0 - expdamp 
-                         scale5 = 1.0d0-(1.0d0 + 
+                         scale5 = 1.0d0-(1.0d0 - 
      &                            (1.0d0/2.0d0)*damp)*expdamp
-                         scale7 = 1.0d0-(1.0d0 + (39.0d0/60.0d0)*damp  
+                         scale7 = 1.0d0-(1.0d0 - (39.0d0/60.0d0)*damp  
      &                            + (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                        end if
                      endif
@@ -2519,12 +2519,12 @@ c
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
                  pgamma = min(pdiri, dirdamp(k))
-                 damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                 damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                    if (damp .gt. -50.0d0) then
-                     expdamp= exp(-damp) 
+                     expdamp= exp(damp) 
                      scale3 = 1.0d0 - expdamp 
-                     scale5 = 1.0d0-(1.0d0 + 0.5d0*damp)*expdamp
-                     scale7 = 1.0d0-(1.0d0 + 0.65d0*damp + 
+                     scale5 = 1.0d0-(1.0d0 - 0.5d0*damp)*expdamp
+                     scale7 = 1.0d0-(1.0d0 - 0.65d0*damp + 
      &                        0.15d0*damp**2)*expdamp
                    end if
                endif
@@ -2563,7 +2563,6 @@ c
                if (poltyp .ne. 'DIRECT') then
                   scale3 = 1.0d0
                   scale5 = 1.0d0
-                  scale7 = 1.0d0
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
                      pgamma = min(pti,thole(k))
@@ -2572,8 +2571,6 @@ c
                         expdamp = exp(damp)
                         scale3 = 1.0d0 - expdamp
                         scale5 = 1.0d0 - expdamp*(1.0d0-damp)
-                        scale7 = 1.0d0 - expdamp
-     &                              *(1.0d0-damp+0.6d0*damp**2)
                      end if
                   end if
                   bcn(1) = bn(1) - (1.0d0-scale3*uscale(kk))*rr3
@@ -3855,13 +3852,13 @@ c
                      damp = pdi * pdamp(k)
                      if (damp .ne. 0.0d0) then
                        pgamma = min(pdiri, dirdamp(k))
-                       damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                       damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                        if (damp .gt. -50.0d0) then
-                         expdamp= exp(-damp) 
+                         expdamp= exp(damp) 
                          scale3 = 1.0d0 - expdamp 
-                         scale5 = 1.0d0-(1.0d0 + 
+                         scale5 = 1.0d0-(1.0d0 - 
      &                           (1.0d0/2.0d0)*damp)*expdamp
-                         scale7 = 1.0d0-(1.0d0 + (39.0d0/60.0d0)*damp + 
+                         scale7 = 1.0d0-(1.0d0 - (39.0d0/60.0d0)*damp + 
      &                            (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                        end if
                      endif
@@ -5073,12 +5070,12 @@ c
                   scale7 = 1.0d0
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    damp  = pgamma*(r/damp)**(3.0d0/2.0d0)
+                    damp  = -pgamma*(r/damp)**(3.0d0/2.0d0)
                     if (damp .gt. -50.0d0) then
-                      expdamp= exp(-damp) 
+                      expdamp= exp(damp) 
                       scale3 = 1.0d0 - expdamp 
-                      scale5 = 1.0d0-(1.0d0+(1.0d0/2.0d0)*damp)*expdamp
-                      scale7 = 1.0d0-(1.0d0 + (39.0d0/60.0d0)*damp + 
+                      scale5 = 1.0d0-(1.0d0-(1.0d0/2.0d0)*damp)*expdamp
+                      scale7 = 1.0d0-(1.0d0 - (39.0d0/60.0d0)*damp + 
      &                         (9.0d0/60.0d0)*damp**2.0d0)*expdamp
                     end if
                   end if

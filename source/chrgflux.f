@@ -14,7 +14,6 @@ c
       use mutant
       implicit none
       integer i
-      logical muti
 c
 c     perform dynamic allocation of global array 
 c

@@ -347,14 +347,10 @@ c
 c
 c     default charge transfer atom-based scaling factors
 c
-      ct12scale = 0.0d0
-      ct13scale = 0.0d0
-      ct14scale = 1.0d0
-      ct15scale = 1.0d0
-      ct21scale = 0.0d0
-      ct31scale = 0.0d0
-      ct41scale = 1.0d0
-      ct51scale = 1.0d0
+      ct1scale = 0.0d0
+      ct2scale = 0.0d0
+      ct3scale = 0.0d0
+      ct4scale = 1.0d0
 c
 c     set default control parameters for induced dipoles
 c
