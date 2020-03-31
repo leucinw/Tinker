@@ -130,6 +130,11 @@ c
          use_ct = .true.
          if (value .eq. 'NONE')  use_ct = .false.
 
+      else if (keyword(1:7) .eq. 'CPTERM ') then
+         call getword (record,value,next)
+         use_chgpen = .true.
+         if (value .eq. 'NONE')  use_chgpen = .false.
+
       else if (keyword(1:10) .eq. 'CFLUXTERM ') then
          call getword (record,value,next)
          if (value .eq. 'ONLY')  call potoff

@@ -359,151 +359,185 @@ c
      &                     - 2.0d0*(qixx*qkxy+qixy*qkyy+qixz*qkyz
      &                             -qixy*qkxx-qiyy*qkxy-qiyz*qkxz)
 c
-c     read in charge penetration damping parameters
+c     charge penetration correction is used
 c
-               alphai = penalpha(ii)
-               alphak = penalpha(kk)
-               nuci = pencore(ii)
-               nuck = pencore(kk)
+               if (use_chgpen) then
+                  alphai = penalpha(ii)
+                  alphak = penalpha(kk)
+                  nuci = pencore(ii)
+                  nuck = pencore(kk)
 c
 c     compute common factors for damping
 c
-               dampi = alphai*r
-               dampk = alphak*r
-               expdampi = exp(-dampi)
-               expdampk = exp(-dampk)
+                  dampi = alphai*r
+                  dampk = alphak*r
+                  expdampi = exp(-dampi)
+                  expdampk = exp(-dampk)
 c
 c     calculate one-site scale factors
 c
-               scalei(1) = 1.0d0 - expdampi
-               scalek(1) = 1.0d0 - expdampk
-               scalei(3) = 1.0d0 - (1.0d0 + dampi)*expdampi
-               scalek(3) = 1.0d0 - (1.0d0 +dampk)*expdampk
-               scalei(5) = 1.0d0 - (1.0d0 + dampi + 
-     &              (1.0d0/3.0d0)*dampi**2)*expdampi
-               scalek(5) = 1.0d0-(1.0d0 +dampk +
-     &              (1.0d0/3.0d0)*dampk**2)*expdampk
-               scalei(7) = 1.0d0-(1.0d0 + dampi + 0.4d0*dampi**2 +
-     &              (1.0d0/15.0d0)*dampi**3)*expdampi
-               scalek(7) = 1.0d0-(1.0d0 + dampk + 0.4d0*dampk**2 +
-     &              (1.0d0/15.0d0)*dampk**3)*expdampk
+                  scalei(1) = 1.0d0 - expdampi
+                  scalek(1) = 1.0d0 - expdampk
+                  scalei(3) = 1.0d0 - (1.0d0 + dampi)*expdampi
+                  scalek(3) = 1.0d0 - (1.0d0 +dampk)*expdampk
+                  scalei(5) = 1.0d0 - (1.0d0 + dampi + 
+     &                 (1.0d0/3.0d0)*dampi**2)*expdampi
+                  scalek(5) = 1.0d0-(1.0d0 +dampk +
+     &                 (1.0d0/3.0d0)*dampk**2)*expdampk
+                  scalei(7) = 1.0d0-(1.0d0 + dampi + 0.4d0*dampi**2 +
+     &                 (1.0d0/15.0d0)*dampi**3)*expdampi
+                  scalek(7) = 1.0d0-(1.0d0 + dampk + 0.4d0*dampk**2 +
+     &                 (1.0d0/15.0d0)*dampk**3)*expdampk
 c
 c     calculate two-site scale factors
 c
-               if (alphai .ne. alphak) then
-                  termi = alphak**2/(alphak**2 - alphai**2)
-                  termk = alphai**2/(alphai**2 - alphak**2)
-                  scaleik(1) =1.0d0-termi*expdampi -termk*expdampk
-                  scaleik(3) =1.0d0-termi*(1.0d0 +dampi)*expdampi
-     &                        - termk*(1.0d0 + dampk)*expdampk
-                  scaleik(5) = 1.0d0 - termi*(1.0d0 + dampi +
-     &                 (1.0d0/3.0d0)*dampi**2)*expdampi -
-     &                 termk*(1.0d0 + dampk +
-     &                 (1.0d0/3.0d0)*dampk**2)*expdampk
-                  scaleik(7) = 1.0d0 - termi*(1.0d0 + dampi +
-     &                 0.4d0*dampi**2 + (1.0d0/15.0d0)*dampi**3)*
-     &                 expdampi -
-     &                 termk*(1.0d0 + dampk +
-     &                 0.4d0*dampk**2 + (1.0d0/15.0d0)*dampk**3)*
-     &                 expdampk
-                  scaleik(9) = 1.0d0 - termi*(1.0d0 + dampi +
-     &                 (3.0d0/7.0d0)*dampi**2 +
-     &                 (2.0d0/21.0d0)*dampi**3 +
-     &                 (1.0d0/105.0d0)*dampi**4)*expdampi -
-     &                 termk*(1.0d0 + dampk +
-     &                 (3.0d0/7.0d0)*dampk**2 +
-     &                 (2.0d0/21.0d0)*dampk**3 +
-     &                 (1.0d0/105.0d0)*dampk**4)*expdampk
-                  scaleik(11) = 1.0d0 - termi*(1.0d0 + dampi +
-     &                 (4.0d0/9.0d0)*dampi**2 +
-     &                 (1.0d0/9.0d0)*dampi**3 +
-     &                 (1.0d0/63.0d0)*dampi**4 + 
-     &                 (1.0d0/945.0d0)*dampi**5)*expdampi - 
-     &                 termk*(1.0d0 + dampk +
-     &                 (4.0d0/9.0d0)*dampk**2+
-     &                 (1.0d0/9.0d0)*dampk**3+
-     &                 (1.0d0/63.0d0)*dampk**4 +
-     &                 (1.0d0/945.0d0)*dampk**5)*expdampk
-               else
-                  scaleik(1) = 1.0d0 -(1.0d0+0.5d0*dampi)*expdampi
-                  scaleik(3) = 1.0d0 -(1.0d0+dampi+0.5d0*dampi**2)
-     &                 *expdampi
-                  scaleik(5) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
-     &                 + (1.0d0/6.0d0)*dampi**3)*expdampi
-                  scaleik(7) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
-     &                 + (1.0d0/6.0d0)*dampi**3
-     &                 + (1.0d0/30.0d0)*dampi**4)*expdampi
-                  scaleik(9) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
-     &                 + (1.0d0/6.0d0)*dampi**3
-     &                 + (4.0d0/105.0d0)*dampi**4
-     &                 + (1.0d0/210.0d0)*dampi**5)*expdampi
-                  scaleik(11) = 1.0d0-(1.0d0+dampi+0.5d0*dampi**2
-     &                 + (1.0d0/6.0d0)*dampi**3 
-     &                 + (5.0d0/126.0d0)*dampi**4
-     &                 + (2.0d0/315.0d0)*dampi**5
-     &                 + (1.0d0/1890.0d0)*dampi**6)*expdampi
-               end if
+                  if (alphai .ne. alphak) then
+                     termi = alphak**2/(alphak**2 - alphai**2)
+                     termk = alphai**2/(alphai**2 - alphak**2)
+                     scaleik(1) =1.0d0-termi*expdampi -termk*expdampk
+                     scaleik(3) =1.0d0-termi*(1.0d0 +dampi)*expdampi
+     &                           - termk*(1.0d0 + dampk)*expdampk
+                     scaleik(5) = 1.0d0 - termi*(1.0d0 + dampi +
+     &                    (1.0d0/3.0d0)*dampi**2)*expdampi -
+     &                    termk*(1.0d0 + dampk +
+     &                    (1.0d0/3.0d0)*dampk**2)*expdampk
+                     scaleik(7) = 1.0d0 - termi*(1.0d0 + dampi +
+     &                    0.4d0*dampi**2 + (1.0d0/15.0d0)*dampi**3)*
+     &                    expdampi -
+     &                    termk*(1.0d0 + dampk +
+     &                    0.4d0*dampk**2 + (1.0d0/15.0d0)*dampk**3)*
+     &                    expdampk
+                     scaleik(9) = 1.0d0 - termi*(1.0d0 + dampi +
+     &                    (3.0d0/7.0d0)*dampi**2 +
+     &                    (2.0d0/21.0d0)*dampi**3 +
+     &                    (1.0d0/105.0d0)*dampi**4)*expdampi -
+     &                    termk*(1.0d0 + dampk +
+     &                    (3.0d0/7.0d0)*dampk**2 +
+     &                    (2.0d0/21.0d0)*dampk**3 +
+     &                    (1.0d0/105.0d0)*dampk**4)*expdampk
+                     scaleik(11) = 1.0d0 - termi*(1.0d0 + dampi +
+     &                    (4.0d0/9.0d0)*dampi**2 +
+     &                    (1.0d0/9.0d0)*dampi**3 +
+     &                    (1.0d0/63.0d0)*dampi**4 + 
+     &                    (1.0d0/945.0d0)*dampi**5)*expdampi - 
+     &                    termk*(1.0d0 + dampk +
+     &                    (4.0d0/9.0d0)*dampk**2+
+     &                    (1.0d0/9.0d0)*dampk**3+
+     &                    (1.0d0/63.0d0)*dampk**4 +
+     &                    (1.0d0/945.0d0)*dampk**5)*expdampk
+                  else
+                     scaleik(1) = 1.0d0 -(1.0d0+0.5d0*dampi)*expdampi
+                     scaleik(3) = 1.0d0 -(1.0d0+dampi+0.5d0*dampi**2)
+     &                    *expdampi
+                     scaleik(5) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
+     &                    + (1.0d0/6.0d0)*dampi**3)*expdampi
+                     scaleik(7) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
+     &                    + (1.0d0/6.0d0)*dampi**3
+     &                    + (1.0d0/30.0d0)*dampi**4)*expdampi
+                     scaleik(9) = 1.0d0 - (1.0d0+dampi+0.5d0*dampi**2
+     &                    + (1.0d0/6.0d0)*dampi**3
+     &                    + (4.0d0/105.0d0)*dampi**4
+     &                    + (1.0d0/210.0d0)*dampi**5)*expdampi
+                     scaleik(11) = 1.0d0-(1.0d0+dampi+0.5d0*dampi**2
+     &                    + (1.0d0/6.0d0)*dampi**3 
+     &                    + (5.0d0/126.0d0)*dampi**4
+     &                    + (2.0d0/315.0d0)*dampi**5
+     &                    + (1.0d0/1890.0d0)*dampi**6)*expdampi
+                  end if
             
 c
-c              scale the nuclei charge if necessary
+c    scale the nuclei charge if necessary
 c
-               if (muti .and. .not.mutk) nuci = nuci*elambda 
-               if (mutk .and. .not.muti) nuck = nuck*elambda
-               qi = ci - nuci
-               qk = ck - nuck
+                  if (muti .and. .not.mutk) nuci = nuci*elambda 
+                  if (mutk .and. .not.muti) nuck = nuck*elambda
+                  qi = ci - nuci
+                  qk = ck - nuck
 
-               term1 = nuci*nuck + nuci*qk*scalek(1) 
-     &                 + nuck*qi*scalei(1) + qi*qk*scaleik(1)
-               term2 = nuck*dri*scalei(3) - nuci*drk*scalek(3)
-     &                 + (dik + qk*dri - qi*drk)*scaleik(3)
-               term3 = nuci*qrrk*scalek(5) + nuck*qrri*scalei(5)+
-     &                 (-dri*drk + 2.0d0*(dkqri-diqrk+qik) + 
-     &                 qi*qrrk + qk*qrri)*scaleik(5) 
-               term4 = (dri*qrrk-drk*qrri-4.0d0*qrrik)*scaleik(7)
-               term5 = qrri*qrrk*scaleik(9)
+                  term1 = nuci*nuck + nuci*qk*scalek(1) 
+     &                    + nuck*qi*scalei(1) + qi*qk*scaleik(1)
+                  term2 = nuck*dri*scalei(3) - nuci*drk*scalek(3)
+     &                    + (dik + qk*dri - qi*drk)*scaleik(3)
+                  term3 = nuci*qrrk*scalek(5) + nuck*qrri*scalei(5)+
+     &                    (-dri*drk + 2.0d0*(dkqri-diqrk+qik) + 
+     &                    qi*qrrk + qk*qrri)*scaleik(5) 
+                  term4 = (dri*qrrk-drk*qrri-4.0d0*qrrik)*scaleik(7)
+                  term5 = qrri*qrrk*scaleik(9)
+c
+c     compute t   he energy contribution for this interaction
+c
+                  e = term1*rr1 + term2*rr3 + term3*rr5
+     &                   + term4*rr7 + term5*rr9
+                  em = em + e
+                  if (molcule(ii) .ne. molcule(kk))
+     &               einter = einter + e
+c
+c     calculate    intermediate terms for force and torque
+c
+                  de =  nuci*nuck*rr3 
+     &                + nuci * qk*rr3*scalek(3)
+     &                + nuck * qi*rr3*scalei(3) 
+     &                + qi * qk  *rr3*scaleik(3)
+     &                + nuck*dri *rr5*scalei(5) 
+     &                - nuci*drk *rr5*scalek(5)
+     &                + (dik + qk*dri - qi*drk)*rr5*scaleik(5)
+     &                + nuci*qrrk*rr7*scalek(7) 
+     &                + nuck*qrri*rr7*scalei(7)
+     &                +(-dri*drk + 2.0d0*(dkqri-diqrk+qik)  
+     &                + qi*qrrk + qk*qrri)*rr7*scaleik(7) 
+     &                +(dri*qrrk-drk*qrri-4.0d0*qrrik)*rr9*scaleik(9)
+     &                + qrri*qrrk*rr11*scaleik(11)
+
+                  term1 = -nuck*rr3*scalei(3) 
+     &                    - qk*rr3*scaleik(3) 
+     &                    + drk*rr5*scaleik(5) 
+     &                    - qrrk*rr7*scaleik(7)
+                  term2 = nuci*rr3*scalek(3) 
+     &                    + qi*rr3*scaleik(3)  
+     &                    + dri*rr5*scaleik(5) 
+     &                    + qrri*rr7*scaleik(7)
+                  term3 = 2.0d0 * rr5 * scaleik(5) 
+                  term4 = 2.0d0 *(-nuck*rr5*scalei(5)
+     &                          -qk*rr5*scaleik(5)
+     &                          +drk*rr7*scaleik(7)
+     &                          -qrrk*rr9*scaleik(9))
+                  term5 = 2.0d0 *(-nuci*rr5*scalek(5)
+     &                          -qi*rr5*scaleik(5)
+     &                          -dri*rr7*scaleik(7)
+     &                          -qrri*rr9*scaleik(9))
+                  term6 = 4.0d0 * rr7 *scaleik(7)
+c
+c    charge penetration is not used
+c
+               else
+c
+c     calculate intermediate terms for multipole energy
+c
+                  term1 = ci*ck
+                  term2 = ck*dri - ci*drk + dik
+                  term3 = ci*qrrk + ck*qrri - dri*drk
+     &                       + 2.0d0*(dkqri-diqrk+qik)
+                  term4 = dri*qrrk - drk*qrri - 4.0d0*qrrik
+                  term5 = qrri*qrrk
 c
 c     compute the energy contribution for this interaction
 c
-               e = term1*rr1 + term2*rr3 + term3*rr5
-     &                + term4*rr7 + term5*rr9
-               em = em + e
-               if (molcule(ii) .ne. molcule(kk))
-     &            einter = einter + e
+                  e = term1*rr1 + term2*rr3 + term3*rr5
+     &                   + term4*rr7 + term5*rr9
+                  em = em + e
+                  if (molcule(ii) .ne. molcule(kk))
+     &               einter = einter + e
 c
 c     calculate intermediate terms for force and torque
 c
-               de =  nuci*nuck*rr3 
-     &             + nuci * qk*rr3*scalek(3)
-     &             + nuck * qi*rr3*scalei(3) 
-     &             + qi * qk  *rr3*scaleik(3)
-     &             + nuck*dri *rr5*scalei(5) 
-     &             - nuci*drk *rr5*scalek(5)
-     &             + (dik + qk*dri - qi*drk)*rr5*scaleik(5)
-     &             + nuci*qrrk*rr7*scalek(7) 
-     &             + nuck*qrri*rr7*scalei(7)
-     &             +(-dri*drk + 2.0d0*(dkqri-diqrk+qik)  
-     &             + qi*qrrk + qk*qrri)*rr7*scaleik(7) 
-     &             +(dri*qrrk-drk*qrri-4.0d0*qrrik)*rr9*scaleik(9)
-     &             + qrri*qrrk*rr11*scaleik(11)
-
-               term1 = -nuck*rr3*scalei(3) 
-     &                 - qk*rr3*scaleik(3) 
-     &                 + drk*rr5*scaleik(5) 
-     &                 - qrrk*rr7*scaleik(7)
-               term2 = nuci*rr3*scalek(3) 
-     &                 + qi*rr3*scaleik(3)  
-     &                 + dri*rr5*scaleik(5) 
-     &                 + qrri*rr7*scaleik(7)
-               term3 = 2.0d0 * rr5 * scaleik(5) 
-               term4 = 2.0d0 *(-nuck*rr5*scalei(5)
-     &                       -qk*rr5*scaleik(5)
-     &                       +drk*rr7*scaleik(7)
-     &                       -qrrk*rr9*scaleik(9))
-               term5 = 2.0d0 *(-nuci*rr5*scalek(5)
-     &                       -qi*rr5*scaleik(5)
-     &                       -dri*rr7*scaleik(7)
-     &                       -qrri*rr9*scaleik(9))
-               term6 = 4.0d0 * rr7 *scaleik(7) 
+                  de = term1*rr3 + term2*rr5 + term3*rr7
+     &                    + term4*rr9 + term5*rr11
+                  term1 = -ck*rr3 + drk*rr5 - qrrk*rr7
+                  term2 = ci*rr3 + dri*rr5 + qrri*rr7
+                  term3 = 2.0d0 * rr5
+                  term4 = 2.0d0 * (-ck*rr5+drk*rr7-qrrk*rr9)
+                  term5 = 2.0d0 * (-ci*rr5-dri*rr7-qrri*rr9)
+                  term6 = 4.0d0 * rr7
+               end if    
 
 c
 c     compute the force components for this interaction
@@ -520,7 +554,7 @@ c
 c
 c     calculate the CP-damped potential at each mpole site 
 c
-               if (use_cflux) then
+               if (use_cflux .and. use_chgpen) then
                   term1i = nuck*scalei(1) + qk*scaleik(1) 
                   term1k = nuci*scalek(1) + qi*scaleik(1) 
                   term2i = -drk*scaleik(3)
@@ -626,7 +660,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             dem(1,i) = dem(1,i) + decfbemx(i) 
@@ -635,7 +669,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             dem(1,i) = dem(1,i) + decfaemx(i) 
