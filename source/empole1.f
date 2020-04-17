@@ -663,18 +663,62 @@ c
       if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbemx(i) 
-            dem(2,i) = dem(2,i) + decfbemy(i) 
-            dem(3,i) = dem(3,i) + decfbemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
       if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaemx(i) 
-            dem(2,i) = dem(2,i) + decfaemy(i) 
-            dem(3,i) = dem(3,i) + decfaemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 c
@@ -1099,6 +1143,67 @@ c
             mscale(i15(j,ii)) = 1.0d0
          end do
       end do
+      if (use_cflux .and. use_chgpen .and. dobond) then 
+          call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
+          do i = 1, npole 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
+          end do
+      end if
+
+      if (use_cflux .and. use_chgpen .and. doangle) then
+          call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
+          do i = 1, npole 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
+          end do
+      end if
       end if
 c
 c     resolve site torques then increment forces and virial
@@ -1800,21 +1905,64 @@ c
 !$OMP END DO
 !$OMP END PARALLEL
 
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbemx(i) 
-            dem(2,i) = dem(2,i) + decfbemy(i) 
-            dem(3,i) = dem(3,i) + decfbemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
-
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaemx(i) 
-            dem(2,i) = dem(2,i) + decfaemy(i) 
-            dem(3,i) = dem(3,i) + decfaemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 c
@@ -1875,6 +2023,10 @@ c
       real*8 qiyy,qiyz,qizz
       real*8 xdfield,ydfield
       real*8 zdfield
+      real*8 forcex,forcey,forcez
+      real*8 xi,yi,zi
+      real*8 vxx,vyy,vzz
+      real*8 vxy,vxz,vyz
       real*8 trq(3),frcx(3)
       real*8 frcy(3),frcz(3)
       real*8, allocatable :: decfbselfemx(:)
@@ -1961,18 +2113,62 @@ c
       if (use_cflux .and. dobond) then 
           call cfbondem(selfpot,decfbselfemx,decfbselfemy,decfbselfemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbselfemx(i)
-            dem(2,i) = dem(2,i) + decfbselfemy(i)
-            dem(3,i) = dem(3,i) + decfbselfemz(i)
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            forcex = decfbselfemx(i)
+            forcey = decfbselfemy(i)
+            forcez = decfbselfemz(i)
+            dem(1,i) = dem(1,i) +  forcex
+            dem(2,i) = dem(2,i) +  forcey
+            dem(3,i) = dem(3,i) +  forcez
+            vxx = xi * forcex
+            vxy = yi * forcex
+            vxz = zi * forcex
+            vyy = yi * forcey
+            vyz = zi * forcey
+            vzz = zi * forcez
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
       if (use_cflux .and. doangle) then
           call cfangleem(selfpot,decfaselfemx,decfaselfemy,decfaselfemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaselfemx(i)
-            dem(2,i) = dem(2,i) + decfaselfemy(i)
-            dem(3,i) = dem(3,i) + decfaselfemz(i)
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            forcex = decfaselfemx(i)
+            forcey = decfaselfemy(i)
+            forcez = decfaselfemz(i)
+            dem(1,i) = dem(1,i) +  forcex
+            dem(2,i) = dem(2,i) +  forcey
+            dem(3,i) = dem(3,i) +  forcez
+            vxx = xi * forcex
+            vxy = yi * forcex
+            vxz = zi * forcex
+            vyy = yi * forcey
+            vyz = zi * forcey
+            vzz = zi * forcez
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
@@ -2653,21 +2849,65 @@ c
 c
 c     charge flux force
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbemx(i) 
-            dem(2,i) = dem(2,i) + decfbemy(i) 
-            dem(3,i) = dem(3,i) + decfbemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaemx(i) 
-            dem(2,i) = dem(2,i) + decfaemy(i) 
-            dem(3,i) = dem(3,i) + decfaemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 c
@@ -3115,6 +3355,67 @@ c
             mscale(i15(j,ii)) = 1.0d0
          end do
       end do
+      if (use_cflux .and. use_chgpen .and. dobond) then 
+          call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
+          do i = 1, npole 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
+          end do
+      end if
+
+      if (use_cflux .and. use_chgpen .and. doangle) then
+          call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
+          do i = 1, npole 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
+          end do
+      end if
       end if
 c
 c     resolve site torques then increment forces and virial
@@ -3212,6 +3513,10 @@ c
       real*8 zdfield
       real*8 trq(3),frcx(3)
       real*8 frcy(3),frcz(3)
+      real*8 xi,yi,zi
+      real*8 forcex,forcey,forcez
+      real*8 vxx,vyy,vzz
+      real*8 vxy,vxz,vyz
       real*8, allocatable :: decfbselfemx(:)
       real*8, allocatable :: decfbselfemy(:)
       real*8, allocatable :: decfbselfemz(:)
@@ -3294,22 +3599,65 @@ c
 c
 c     force due to charge flux-bond for self energy
 c
-      ! this is oxygen
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(selfpot,decfbselfemx,decfbselfemy,decfbselfemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbselfemx(i)
-            dem(2,i) = dem(2,i) + decfbselfemy(i)
-            dem(3,i) = dem(3,i) + decfbselfemz(i)
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            forcex = decfbselfemx(i)
+            forcey = decfbselfemy(i)
+            forcez = decfbselfemz(i)
+            dem(1,i) = dem(1,i) +  forcex
+            dem(2,i) = dem(2,i) +  forcey
+            dem(3,i) = dem(3,i) +  forcez
+            vxx = xi * forcex
+            vxy = yi * forcex
+            vxz = zi * forcex
+            vyy = yi * forcey
+            vyz = zi * forcey
+            vzz = zi * forcez
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(selfpot,decfaselfemx,decfaselfemy,decfaselfemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaselfemx(i)
-            dem(2,i) = dem(2,i) + decfaselfemy(i)
-            dem(3,i) = dem(3,i) + decfaselfemz(i)
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            forcex = decfaselfemx(i)
+            forcey = decfaselfemy(i)
+            forcez = decfaselfemz(i)
+            dem(1,i) = dem(1,i) + forcex 
+            dem(2,i) = dem(2,i) + forcey 
+            dem(3,i) = dem(3,i) + forcez
+            vxx = xi * forcex
+            vxy = yi * forcex
+            vxz = zi * forcex
+            vyy = yi * forcey
+            vyz = zi * forcey
+            vzz = zi * forcez
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 c
@@ -4053,21 +4401,65 @@ c
 c
 c     charge flux force
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobond) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfbemx(i) 
-            dem(2,i) = dem(2,i) + decfbemy(i) 
-            dem(3,i) = dem(3,i) + decfbemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfbemx(i)
+            frcy = decfbemy(i)
+            frcz = decfbemz(i)
+            dem(1,i) = dem(1,i) +  frcx
+            dem(2,i) = dem(2,i) +  frcy
+            dem(3,i) = dem(3,i) +  frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doangle) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
-            dem(1,i) = dem(1,i) + decfaemx(i) 
-            dem(2,i) = dem(2,i) + decfaemy(i) 
-            dem(3,i) = dem(3,i) + decfaemz(i) 
+            ii = ipole(i)
+            xi = x(ii)
+            yi = y(ii)
+            zi = z(ii)
+            frcx = decfaemx(i)
+            frcy = decfaemy(i)
+            frcz = decfaemz(i)
+            dem(1,i) = dem(1,i) + frcx 
+            dem(2,i) = dem(2,i) + frcy 
+            dem(3,i) = dem(3,i) + frcz
+            vxx = xi * frcx
+            vxy = yi * frcx
+            vxz = zi * frcx
+            vyy = yi * frcy
+            vyz = zi * frcy
+            vzz = zi * frcz
+            vir(1,1) = vir(1,1) + vxx
+            vir(2,1) = vir(2,1) + vxy
+            vir(3,1) = vir(3,1) + vxz
+            vir(1,2) = vir(1,2) + vxy
+            vir(2,2) = vir(2,2) + vyy
+            vir(3,2) = vir(3,2) + vyz
+            vir(1,3) = vir(1,3) + vxz
+            vir(2,3) = vir(2,3) + vyz
+            vir(3,3) = vir(3,3) + vzz
           end do
       end if
 c
@@ -4145,12 +4537,16 @@ c
       real*8 xiz,yiz,ziz
       real*8 vxx,vyy,vzz
       real*8 vxy,vxz,vyz
+      real*8 vxxcf,vyycf,vzzcf
+      real*8 vxycf,vxzcf,vyzcf
       real*8 volterm,denom
       real*8 hsq,expterm
       real*8 term,pterm
       real*8 vterm,struc2
       real*8 trq(3),fix(3)
       real*8 fiy(3),fiz(3)
+      real*8 frcx,frcy,frcz
+      real*8 xi,yi,zi
       real*8, allocatable :: cphi1d(:)
       real*8, allocatable :: decfbemx(:)
       real*8, allocatable :: decfbemy(:)
@@ -4373,19 +4769,63 @@ c
 
       if (use_cflux .and. dobond) then 
         call cfbondem(cphi1d,decfbemx,decfbemy,decfbemz)
-        do i = 1, npole 
-          dem(1,i) = dem(1,i) + decfbemx(i) 
-          dem(2,i) = dem(2,i) + decfbemy(i) 
-          dem(3,i) = dem(3,i) + decfbemz(i) 
+        do i = 1, npole
+          ii = ipole(i)
+          xi = x(ii)
+          yi = y(ii)
+          zi = z(ii)
+          frcx = decfbemx(i)
+          frcy = decfbemy(i)
+          frcz = decfbemz(i) 
+          dem(1,i) = dem(1,i) + frcx
+          dem(2,i) = dem(2,i) + frcy
+          dem(3,i) = dem(3,i) + frcz
+          vxxcf = xi * frcx
+          vxycf = yi * frcx
+          vxzcf = zi * frcx
+          vyycf = yi * frcy
+          vyzcf = zi * frcy
+          vzzcf = zi * frcz
+          vir(1,1) = vir(1,1) + vxxcf 
+          vir(2,1) = vir(2,1) + vxycf
+          vir(3,1) = vir(3,1) + vxzcf
+          vir(1,2) = vir(1,2) + vxycf
+          vir(2,2) = vir(2,2) + vyycf
+          vir(3,2) = vir(3,2) + vyzcf
+          vir(1,3) = vir(1,3) + vxzcf
+          vir(2,3) = vir(2,3) + vyzcf
+          vir(3,3) = vir(3,3) + vzzcf
         end do
       end if
 
       if (use_cflux .and. doangle) then
         call cfangleem(cphi1d,decfaemx,decfaemy,decfaemz)
-        do i = 1, npole 
-          dem(1,i) = dem(1,i) + decfaemx(i) 
-          dem(2,i) = dem(2,i) + decfaemy(i) 
-          dem(3,i) = dem(3,i) + decfaemz(i) 
+        do i = 1, npole
+          ii = ipole(i) 
+          xi = x(ii)
+          yi = y(ii)
+          zi = z(ii)
+          frcx = decfaemx(i)
+          frcy = decfaemy(i)
+          frcz = decfaemz(i) 
+          dem(1,i) = dem(1,i) + frcx
+          dem(2,i) = dem(2,i) + frcy
+          dem(3,i) = dem(3,i) + frcz
+          vxxcf = xi * frcx
+          vxycf = yi * frcx
+          vxzcf = zi * frcx
+          vyycf = yi * frcy
+          vyzcf = zi * frcy
+          vzzcf = zi * frcz
+          vir(1,1) = vir(1,1) + vxxcf 
+          vir(2,1) = vir(2,1) + vxycf
+          vir(3,1) = vir(3,1) + vxzcf
+          vir(1,2) = vir(1,2) + vxycf
+          vir(2,2) = vir(2,2) + vyycf
+          vir(3,2) = vir(3,2) + vyzcf
+          vir(1,3) = vir(1,3) + vxzcf
+          vir(2,3) = vir(2,3) + vyzcf
+          vir(3,3) = vir(3,3) + vzzcf
         end do
       end if 
 c
