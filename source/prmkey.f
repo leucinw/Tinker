@@ -323,6 +323,13 @@ c
       else if (keyword(1:15) .eq. 'VDW-CORRECTION ') then
          use_vcorr = .true.
 c
+c     Set control parameters for charge transfer potential
+c
+      else if (keyword(1:9) .eq. 'APRERULE ') then
+         call getword (record,aprerule,next)
+      else if (keyword(1:9) .eq. 'BEXPRULE ') then
+         call getword (record,bexprule,next)
+c
 c     set control parameters for charge-charge potentials
 c
       else if (keyword(1:9) .eq. 'ELECTRIC ') then
@@ -347,21 +354,6 @@ c
          neutnbr = .true.
       else if (keyword(1:15) .eq. 'NEUTRAL-GROUPS ') then
          neutcut = .true.
-c
-c     set control parameters for charge transfer potentials
-c
-      else if (keyword(1:12) .eq. 'CT-11-SCALE ') then
-         read (string,*,err=10,end=10)  ct1scale
-         if (ct1scale .gt. 1.0d0)  ct1scale = 1.0d0 / ct1scale
-      else if (keyword(1:12) .eq. 'CT-12-SCALE ') then
-         read (string,*,err=10,end=10)  ct2scale
-         if (ct2scale .gt. 1.0d0)  ct2scale = 1.0d0 / ct2scale
-      else if (keyword(1:12) .eq. 'CT-13-SCALE ') then
-         read (string,*,err=10,end=10)  ct3scale
-         if (ct3scale .gt. 1.0d0)  ct3scale = 1.0d0 / ct3scale
-      else if (keyword(1:12) .eq. 'CT-14-SCALE ') then
-         read (string,*,err=10,end=10)  ct4scale
-         if (ct4scale .gt. 1.0d0)  ct4scale = 1.0d0 / ct4scale
 c
 c     set control parameters for atomic multipole potentials
 c

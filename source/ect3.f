@@ -38,7 +38,12 @@ c     ##                                                              ##
 c     ##  subroutine ect3a -- CT double loop energy & analysis        ##
 c     ##                                                              ##
 c     ##################################################################
-
+c
+c     "ect3a" calculates the  charge transfer energy
+c     using a pairwise double loop
+c
+c
+c
       subroutine ect3a
       use action 
       use analyz
@@ -79,6 +84,8 @@ c     ##################################################################
       logical muti,mutk
       logical header,huge
       character*6 mode
+
+      header = .true.
 c
 c
 c     zero out the charge transfer energy contribution
@@ -89,7 +96,11 @@ c
       do i = 1, n
          aect(i) = 0.0d0
       end do
-      header = .true.
+c
+c     zero out local variables
+c
+      apre = 0.0d0
+      bexp = 0.0d0
 c
 c     perform dynamic allocation of some local arrays
 c
@@ -171,8 +182,26 @@ c
                aprek = abs(aprmct(kt))
                bexpi = abs(bprmct(it))
                bexpk = abs(bprmct(kt))
-               apre = sqrt(aprei*aprek)
-               bexp = 0.5d0*(bexpi + bexpk)
+
+               if ((aprei .gt. 0.0d0) .and. (aprek .gt. 0.0d0)) then
+                  if (aprerule .eq. "GEOMETRIC") then
+                     apre = sqrt(aprei*aprek)
+                  else if (aprerule .eq. "ARITHMETIC") then
+                     apre = 0.5d0*(aprei + aprek)
+                  else if (aprerule .eq. "HARMONIC") then
+                     apre = 2.0d0*aprei*aprek/(aprei+aprek)
+                  end if
+               endif
+               if ((bexpi .gt. 0.0d0) .and. (bexpk .gt. 0.0d0)) then
+                  if (bexprule .eq. "GEOMETRIC") then
+                     bexp = sqrt(bexpi*bexpk)
+                  else if (bexprule .eq. "ARITHMETIC") then
+                     bexp = 0.5d0*(bexpi + bexpk)
+                  else if (bexprule .eq. "HARMONIC") then
+                     bexp = 2.0d0*bexpi*bexpk/(bexpi + bexpk)
+                  end if
+               endif
+
                apre = apre*ctscale(k)
                if ((muti .and. .not.mutk) .or.
      &            (mutk .and. .not.muti)) then
@@ -328,9 +357,25 @@ c
                   aprek = abs(aprmct(kt))
                   bexpi = abs(bprmct(it))
                   bexpk = abs(bprmct(kt))
-                  
-                  apre = sqrt(aprei*aprek)
-                  bexp = 0.5d0*(bexpi + bexpk)
+
+                  if ((aprei .gt. 0.0d0) .and. (aprek .gt. 0.0d0)) then
+                     if (aprerule .eq. "GEOMETRIC") then
+                        apre = sqrt(aprei*aprek)
+                     else if (aprerule .eq. "ARITHMETIC") then
+                        apre = 0.5d0*(aprei + aprek)
+                     else if (aprerule .eq. "HARMONIC") then
+                        apre = 2.0d0*aprei*aprek/(aprei+aprek)
+                     end if
+                  endif
+                  if ((bexpi .gt. 0.0d0) .and. (bexpk .gt. 0.0d0)) then
+                     if (bexprule .eq. "GEOMETRIC") then
+                        bexp = sqrt(bexpi*bexpk)
+                     else if (bexprule .eq. "ARITHMETIC") then
+                        bexp = 0.5d0*(bexpi + bexpk)
+                     else if (bexprule .eq. "HARMONIC") then
+                        bexp = 2.0d0*bexpi*bexpk/(bexpi + bexpk)
+                     end if
+                  endif
 
                   apre = apre*ctscale(k)
 
@@ -345,15 +390,15 @@ c
 c
 c     use energy switching if near the cutoff distance
 c
-                     if (rik2 .gt. cut2) then
-                        rik = sqrt(rik2)
-                        rik3 = rik2 * rik
-                        rik4 = rik2 * rik2
-                        rik5 = rik2 * rik3
-                        taper = c5*rik5 + c4*rik4 + c3*rik3
-     &                             + c2*rik2 + c1*rik + c0
-                           e = e * taper
-                     end if
+                  if (rik2 .gt. cut2) then
+                     rik = sqrt(rik2)
+                     rik3 = rik2 * rik
+                     rik4 = rik2 * rik2
+                     rik5 = rik2 * rik3
+                     taper = c5*rik5 + c4*rik4 + c3*rik3
+     &                          + c2*rik2 + c1*rik + c0
+                        e = e * taper
+                  end if
 c
 c     scale the interaction based on its group membership
 c
@@ -485,6 +530,11 @@ c     zero out the CT energy contribution
       do i = 1, n
          aect(i) = 0.0d0
       end do
+c
+c     zero out local variables
+c
+      apre = 0.0d0
+      bexp = 0.0d0
       if (nct .eq. 0)  return
 c
 c     perform dynamic allocation of some local arrays
@@ -511,14 +561,14 @@ c
 !$OMP PARALLEL default(private) shared(nct,ict,
 !$OMP& jct,use,x,y,z,nctlst,ctlst,n12,n13,n14,n15,
 !$OMP& i12,i13,i14,i15,p12scale,p13scale,p14scale,ip11,np11,
-!$OMP& p15scale,p21scale,p31scale,p41scale,p51scale,
-!$OMP& use_group,off2,aprmct,bprmct,mut,elambda,
+!$OMP& p15scale,p21scale,p31scale,p41scale,p51scale,aprerule,
+!$OMP& use_group,off2,aprmct,bprmct,mut,elambda,bexprule,
 !$OMP& cut2,c0,c1,c2,c3,c4,c5,molcule,name,verbose,debug,header,iout)
 !$OMP& shared(ect,einter,nect,aect)
 !$OMP& firstprivate(ctscale)
 !$OMP DO reduction(+:ect,einter,nect,aect) schedule(guided)
 c
-c     find the van der Waals energy via neighbor list search
+c     find the charge transfer energy via neighbor list search
 c
       do ii = 1, nct 
          i = ict(ii)
@@ -583,9 +633,25 @@ c
                bexpi = abs(bprmct(it))
                bexpk = abs(bprmct(kt))
 
-               !alternative is to use mixing rules 
-               apre = sqrt(aprei*aprek)
-               bexp = 0.5d0*(bexpi + bexpk)
+
+               if ((aprei .gt. 0.0d0) .and. (aprek .gt. 0.0d0)) then
+                  if (aprerule .eq. "GEOMETRIC") then
+                     apre = sqrt(aprei*aprek)
+                  else if (aprerule .eq. "ARITHMETIC") then
+                     apre = 0.5d0*(aprei + aprek)
+                  else if (aprerule .eq. "HARMONIC") then
+                     apre = 2.0d0*aprei*aprek/(aprei+aprek)
+                  end if
+               endif
+               if ((bexpi .gt. 0.0d0) .and. (bexpk .gt. 0.0d0)) then
+                  if (bexprule .eq. "GEOMETRIC") then
+                     bexp = sqrt(bexpi*bexpk)
+                  else if (bexprule .eq. "ARITHMETIC") then
+                     bexp = 0.5d0*(bexpi + bexpk)
+                  else if (bexprule .eq. "HARMONIC") then
+                     bexp = 2.0d0*bexpi*bexpk/(bexpi + bexpk)
+                  end if
+               endif
 
                apre = apre*ctscale(k)
                if ((muti .and. .not.mutk) .or.

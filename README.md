@@ -1,4 +1,8 @@
 
+# Latest update (2020, May)
+
+* Flexible options for aprerule and bexprule for CT 
+
 # Latest update (2020, Mar)
 
 * Same exclusion rules are used for CT and polarization (atom-based)

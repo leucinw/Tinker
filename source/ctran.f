@@ -19,6 +19,8 @@ c     ct2scale  ct parameter by which 1-2 ct energy scaled
 c     ct3scale  ct parameter by which 1-3 ct energy scaled
 c     ct4scale  ct parameter by which 1-4 ct energy scaled
 c     ct5scale  ct parameter by which 1-5 ct energy scaled
+c     aprerule  combining rule for charge transfer prefactor
+c     bexprule  combining rule for charge transfer exponential 
 c
       module ctran
       use sizes
@@ -28,5 +30,6 @@ c
       integer, allocatable :: jct(:)
       real*8 aprmct(maxtyp)
       real*8 bprmct(maxtyp)
+      character*10 aprerule,bexprule
       save
       end

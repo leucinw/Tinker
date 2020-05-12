@@ -227,10 +227,10 @@ c
          polr(i) = 0.0d0
          athl(i) = 0.0d0
          adird(i) = 0.0d0
-         apena(i) = 0.0d0
-         apenc(i) = 0.0d0
          aprmct(i) = 0.0d0
          bprmct(i) = 0.0d0
+         apena(i) = 0.0d0
+         apenc(i) = 0.0d0
          do j = 1, maxval
             pgrp(j,i) = 0
          end do
@@ -305,6 +305,12 @@ c
       v4scale = 1.0d0
       v5scale = 1.0d0
       use_vcorr = .false.
+c   
+c     set default control parameters for charge transfer terms
+c
+       
+      aprerule = "GEOMETRIC"
+      bexprule = "ARITHMETIC"
 c   
 c     set default control parameters for charge flux 
 c

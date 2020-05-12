@@ -71,7 +71,20 @@ c
                bprmct(k) = bex
             end if
          end if
+         if ((keyword(1:9)) .eq. 'APRERULE ') then
+            call getnumb (record,k,next)
+            string = record(next:120) 
+            read (string,*,err=20,end=20)aprerule 
+  20        continue
+         end if 
+         if ((keyword(1:9)) .eq. 'BEXPRULE ') then
+            call getnumb (record,k,next)
+            string = record(next:120) 
+            read (string,*,err=30,end=30)bexprule 
+  30        continue
+         end if 
       end do
+
 c
 c     remove zero-sized atoms from the list of CT sites
 c
@@ -82,7 +95,6 @@ c
             ict(nct) = i
          end if
       end do
-      !write(*,*) "nct=",nct
 c
 c     turn off the CT potential if it is not used
 c
