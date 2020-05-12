@@ -1,8 +1,8 @@
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/1.txyz -k tinker.key E > Hexamer/1.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/2.txyz -k tinker.key E > Hexamer/2.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/3.txyz -k tinker.key E > Hexamer/3.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/4.txyz -k tinker.key E > Hexamer/4.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/5.txyz -k tinker.key E > Hexamer/5.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/6.txyz -k tinker.key E > Hexamer/6.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/7.txyz -k tinker.key E > Hexamer/7.out
-~/bin/tinkerOMM2019CFlux/analyze Hexamer/8.txyz -k tinker.key E > Hexamer/8.out
+../../source/analyze.x txyzs/1.txyz -k tinker.key E > AMOEBA+CF/1.out
+../../source/analyze.x txyzs/2.txyz -k tinker.key E > AMOEBA+CF/2.out
+../../source/analyze.x txyzs/3.txyz -k tinker.key E > AMOEBA+CF/3.out
+../../source/analyze.x txyzs/4.txyz -k tinker.key E > AMOEBA+CF/4.out
+../../source/analyze.x txyzs/5.txyz -k tinker.key E > AMOEBA+CF/5.out
+../../source/analyze.x txyzs/6.txyz -k tinker.key E > AMOEBA+CF/6.out
+../../source/analyze.x txyzs/7.txyz -k tinker.key E > AMOEBA+CF/7.out
+../../source/analyze.x txyzs/8.txyz -k tinker.key E > AMOEBA+CF/8.out
