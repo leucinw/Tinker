@@ -52,14 +52,14 @@ c     ##################################################################
       use cell
       use couple
       use energi
-      use polpot
-      use polgrp
       use group
       use molcul
       use inter 
       use iounit
       use inform
       use mutant
+      use polgrp
+      use polpot
       use shunt
       use usage
       implicit none
@@ -116,19 +116,34 @@ c
 c
 c     set interaction scaling coefficients for connected atoms
 c
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = ct1scale
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = p12scale
+            do k = 1, np11(i)
+               if (i12(j,i) .eq. ip11(k,i))
+     &            ctscale(i12(j,i)) = p21scale
+            end do
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = ct2scale
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = p13scale
+            do k = 1, np11(i)
+               if (i13(j,i) .eq. ip11(k,i))
+     &            ctscale(i13(j,i)) = p31scale
+            end do
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = ct3scale
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = p14scale
+            do k = 1, np11(i)
+               if (i14(j,i) .eq. ip11(k,i))
+     &            ctscale(i14(j,i)) = p41scale
+            end do
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = ct4scale
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = p15scale
+            do k = 1, np11(i)
+               if (i15(j,i) .eq. ip11(k,i))
+     &            ctscale(i15(j,i)) = p51scale
+            end do
          end do
-
 c
 c     decide whether to compute the current interaction
 c
@@ -228,17 +243,17 @@ c
 c
 c     reset interaction scaling coefficients for connected atoms
 c
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = 1.0d0
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = 1.0d0
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = 1.0d0
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = 1.0d0
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = 1.0d0
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = 1.0d0
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = 1.0d0
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = 1.0d0
          end do
       end do
 c
@@ -258,17 +273,33 @@ c
 c     set interaction scaling coefficients for connected atoms
 c
 
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = ct1scale
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = p12scale
+            do k = 1, np11(i)
+               if (i12(j,i) .eq. ip11(k,i))
+     &            ctscale(i12(j,i)) = p21scale
+            end do
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = ct2scale
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = p13scale
+            do k = 1, np11(i)
+               if (i13(j,i) .eq. ip11(k,i))
+     &            ctscale(i13(j,i)) = p31scale
+            end do
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = ct3scale
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = p14scale
+            do k = 1, np11(i)
+               if (i14(j,i) .eq. ip11(k,i))
+     &            ctscale(i14(j,i)) = p41scale
+            end do
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = ct4scale
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = p15scale
+            do k = 1, np11(i)
+               if (i15(j,i) .eq. ip11(k,i))
+     &            ctscale(i15(j,i)) = p51scale
+            end do
          end do
 c
 c     decide whether to compute the current interaction
@@ -373,17 +404,17 @@ c
 c
 c     reset interaction scaling coefficients for connected atoms
 c
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = 1.0d0
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = 1.0d0
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = 1.0d0
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = 1.0d0
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = 1.0d0
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = 1.0d0
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = 1.0d0
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = 1.0d0
          end do
       end do
 c
@@ -422,8 +453,8 @@ c
       use molcul
       use mutant
       use neigh
-      use polpot
       use polgrp
+      use polpot
       use shunt
       use usage
       implicit none
@@ -471,11 +502,16 @@ c
       mode = 'CT'
       call switch (mode)
 c
+c     call kpolar to allocate np11 etc
+c
+      call kpolar
+c
 c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(nct,ict,
 !$OMP& jct,use,x,y,z,nctlst,ctlst,n12,n13,n14,n15,
-!$OMP& i12,i13,i14,i15,ct1scale,ct2scale,ct3scale,ct4scale,ip11,np11,
+!$OMP& i12,i13,i14,i15,p12scale,p13scale,p14scale,ip11,np11,
+!$OMP& p15scale,p21scale,p31scale,p41scale,p51scale,
 !$OMP& use_group,off2,aprmct,bprmct,mut,elambda,
 !$OMP& cut2,c0,c1,c2,c3,c4,c5,molcule,name,verbose,debug,header,iout)
 !$OMP& shared(ect,einter,nect,aect)
@@ -492,17 +528,33 @@ c
 c
 c     set exclusion coefficients for connected atoms
 c
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = ct1scale
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = p12scale
+            do k = 1, np11(i)
+               if (i12(j,i) .eq. ip11(k,i))
+     &            ctscale(i12(j,i)) = p21scale
+            end do
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = ct2scale
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = p13scale
+            do k = 1, np11(i)
+               if (i13(j,i) .eq. ip11(k,i))
+     &            ctscale(i13(j,i)) = p31scale
+            end do
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = ct3scale
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = p14scale
+            do k = 1, np11(i)
+               if (i14(j,i) .eq. ip11(k,i))
+     &            ctscale(i14(j,i)) = p41scale
+            end do
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = ct4scale
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = p15scale
+            do k = 1, np11(i)
+               if (i15(j,i) .eq. ip11(k,i))
+     &            ctscale(i15(j,i)) = p51scale
+            end do
          end do
 c
 c     decide whether to compute the current interaction
@@ -586,17 +638,17 @@ c
 c
 c     reset exclusion coefficients for connected atoms
 c
-         do j = 1, np11(i)
-            ctscale(ip11(j,i)) = 1.0d0
+         do j = 1, n12(i)
+            ctscale(i12(j,i)) = 1.0d0
          end do
-         do j = 1, np12(i)
-            ctscale(ip12(j,i)) = 1.0d0
+         do j = 1, n13(i)
+            ctscale(i13(j,i)) = 1.0d0
          end do
-         do j = 1, np13(i)
-            ctscale(ip13(j,i)) = 1.0d0
+         do j = 1, n14(i)
+            ctscale(i14(j,i)) = 1.0d0
          end do
-         do j = 1, np14(i)
-            ctscale(ip14(j,i)) = 1.0d0
+         do j = 1, n15(i)
+            ctscale(i15(j,i)) = 1.0d0
          end do
       end do
 c
