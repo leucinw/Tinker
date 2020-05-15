@@ -78,9 +78,6 @@ c
             zab = z(ia) - z(ib)
             if (use_polymer)  call image (xab,yab,zab)
             rab = sqrt(xab*xab + yab*yab + zab*zab)
-            !if (i .eq. 1) then
-            !  write(*,*) "bond length CPU", rab
-            !end if
             dt = rab - ideal
 c
 c     harmonic potential uses Taylor expansion of Morse potential

@@ -1406,8 +1406,10 @@ c
          end if
          write (iout,fstr)  ev,nev
       end if
-      !if (use_ct .and. (nect.ne.0.or.ect.ne.0.0d0)) then
-      if (use_ct ) then
+c
+c     write out the charge transfer energy      
+c
+      if (use_ct .and. (nect.ne.0.or.ect.ne.0.0d0)) then
         if (abs(ect) .lt. 1.0d10) then
           fstr = '('' Charge Transfer'',12x,'//form1//')'
         else
@@ -1506,7 +1508,7 @@ c
    10 format (/,' Total Electric Charge :',12x,f13.5,' Electrons')
       write (iout,20)  netdpl,xdpl,ydpl,zdpl
    20 format (/,' Dipole Moment Magnitude :',10x,f13.3,' Debyes',
-     &        //,' Dipole X,Y,Z-Components :',10x,3f15.8)
+     &        //,' Dipole X,Y,Z-Components :',10x,3f13.3)
       write (iout,30)  xxqdp,xyqdp,xzqdp,yxqdp,yyqdp,
      &                 yzqdp,zxqdp,zyqdp,zzqdp
    30 format (/,' Quadrupole Moment Tensor :',9x,3f13.3,

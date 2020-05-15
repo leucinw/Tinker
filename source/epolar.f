@@ -24,7 +24,6 @@ c
 c
 c     choose the method for summing over polarization interactions
 c
-!!!   here pairwise is alway .false., so epolar0e is used
       pairwise = .false.
       if (pairwise) then
          if (use_ewald) then

@@ -351,13 +351,6 @@ c
       p41scale = 1.0d0
       p51scale = 1.0d0
 c
-c     default charge transfer atom-based scaling factors
-c
-      ct1scale = 0.0d0
-      ct2scale = 0.0d0
-      ct3scale = 0.0d0
-      ct4scale = 1.0d0
-c
 c     set default control parameters for induced dipoles
 c
       poltyp = 'MUTUAL'

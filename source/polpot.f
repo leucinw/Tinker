@@ -35,10 +35,6 @@ c     p21scale  scale factor for intra-group 1-2 polarization energy interaction
 c     p31scale  scale factor for intra-group 1-3 polarization energy interactions
 c     p41scale  scale factor for intra-group 1-4 polarization energy interactions
 c     p51scale  scale factor for intra-group 1-5 polarization energy interactions
-c     ct1scale  scale factor for intra-group charge transfer energy interactions
-c     ct2scale  scale factor for 1-2 group charge transfer energy interactions
-c     ct3scale  scale factor for 1-3 group charge transfer energy interactions
-c     ct4scale  scale factor for 1-4 group charge transfer energy interactions
 c==================================
 c     udiag     acceleration factor for induced dipole SCF iterations
 c     politer   maximum number of induced dipole SCF iterations

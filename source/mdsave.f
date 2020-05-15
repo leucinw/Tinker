@@ -28,6 +28,7 @@ c
       use inform
       use iounit
       use mdstuf
+      use molcul
       use moldyn
       use mpole
       use output
@@ -46,6 +47,7 @@ c
       integer moddump
       real*8 dt,epot,eksum
       real*8 pico,wt
+      real*8 volboxnow,dens
       logical exist
       character*7 ext
       character*240 endfile
@@ -146,6 +148,22 @@ c
   170 format (' Frame Number',13x,i10)
       write (iout,180)  xyzfile(1:trimtext(xyzfile))
   180 format (' Coordinate File',12x,a)
+c
+c     Record the current density 
+c
+      volboxnow = xbox*ybox*zbox 
+      dens = (1.0d24/volboxnow) * (totmass/avogadro)
+      if (digits .ge. 8) then
+         write (iout,245)  dens
+  245    format (' Current Density',3x,f19.8,' Grams/cc')
+      else if (digits .ge. 6) then
+         write (iout,255)  dens
+  255    format (' Current Density',3x,f17.6,' Grams/cc')
+      else
+         write (iout,265)  dens
+  265    format (' Current Density',3x,f15.4,' Grams/cc')
+      end if
+
 c
 c     update the information needed to restart the trajectory
 c
