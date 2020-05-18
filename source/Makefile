@@ -41,15 +41,17 @@
 ##  APBS_LIB_DIR    Directory with APBS Libraries
 ##  APBS_LIBS       APBS Libraries needed to build TINKER
 
-TINKERDIR =/home/liuchw/Softwares/tinkers/tinker8.2-intel13
+TINKERDIR = $(HOME)/tinker
 TINKER_LIBDIR = $(TINKERDIR)/lib
 BINDIR = $(TINKERDIR)/bin
-LINKDIR = /usr/local/bin 
+LINKDIR = /usr/local/bin
 
-FFTWDIR = =/home/liuchw/Softwares/FFTW338
-#FFTWDIR = /home/liuchw/Softwares/tinkers/Tinker2020/Tinker/fftw
+#FFTWDIR = =/home/liuchw/Softwares/FFTW338
+#FFTWDIR =/home/liuchw/Softwares/FFTW338-GNU
+FFTWDIR = /home/liuchw/Softwares/tinkers/Tinker2020/Tinker/fftw
 FFTW_LIBDIR = -L$(FFTWDIR)/lib
-FFTW_LIBS = -lfftw3_threads -lfftw3
+#FFTW_LIBS = -lfftw3_threads -lfftw3
+FFTW_LIBS = -lfftw3_threads -lfftw3 lfftw3_omp
 
 APBSDIR = $(TINKERDIR)/apbs
 APBS_INCDIR = -I$(APBSDIR)/include
@@ -69,7 +71,8 @@ APBS_LIBS = -lapbsmainroutines -lapbs -lmaloc -lapbsblas
 
 #F77 = gfortran
 #F77FLAGS = -c
-#OPTFLAGS = -Ofast -msse3 -fopenmp
+##OPTFLAGS = -Ofast -msse3 -fopenmp
+#OPTFLAGS = -msse3 -fopenmp
 #LIBDIR = -L. -L$(TINKER_LIBDIR)/linux
 #LIBS = 
 #LIBFLAGS = -crusv
