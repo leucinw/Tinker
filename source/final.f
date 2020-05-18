@@ -652,9 +652,12 @@ c
       if (allocated(b0))  deallocate (b0)
       if (allocated(jb))  deallocate (jb)
       if (allocated(theta0))  deallocate (theta0)
-      if (allocated(bp0))  deallocate (bp0)
-      if (allocated(jbp))  deallocate (jbp)
-      if (allocated(jtheta))  deallocate (jtheta)
+      if (allocated(bp1))  deallocate (bp1)
+      if (allocated(bp2))  deallocate (bp2)
+      if (allocated(jbp1))  deallocate (jbp1)
+      if (allocated(jbp2))  deallocate (jbp2)
+      if (allocated(jtheta1))  deallocate (jtheta1)
+      if (allocated(jtheta2))  deallocate (jtheta2)
 c
 c     deallocation of global arrays from module polar
 c

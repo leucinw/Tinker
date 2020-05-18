@@ -492,10 +492,10 @@ c
             else
                kcfa(nacf) = pc//pb//pa
             end if
-            jthetal(1,nacf) = jtt1 
-            jthetal(2,nacf) = jtt2 
-            jbpl(1,nacf) = jb1 
-            jbpl(2,nacf) = jb2 
+            jtheta1l(nacf) = jtt1 
+            jtheta2l(nacf) = jtt2 
+            jbp1l(nacf) = jb1 
+            jbp2l(nacf) = jb2 
 c
 c     angle bending parameters for 5-membered rings
 c

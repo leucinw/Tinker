@@ -31,8 +31,7 @@ c
       real*8 rba,rba2
       real*8 pjb
       real*8 frcx,frcy,frcz
-      integer ia,ib
-      integer i
+      integer ia,ib,i
       logical muta,mutb
       real*8 dmppot(*)
       real*8 dcfemx(*)
@@ -111,8 +110,7 @@ c
       real*8 term2xa,term2ya,term2za
       real*8 term2xc,term2yc,term2zc
       real*8 dot,term1
-      integer ia,ib,ic
-      integer i
+      integer ia,ib,ic,i
       logical muta,mutb,mutc
       real*8 dmppot(*)
       real*8 dcfemx(*)
@@ -123,10 +121,10 @@ c
         ia = iang(1,i)
         ib = iang(2,i)
         ic = iang(3,i)
-        pjbp1 = jbp(1,i)
-        pjbp2 = jbp(2,i)
-        pjtheta1 = jtheta(1,i) 
-        pjtheta2 = jtheta(2,i)
+        pjbp1 = jbp1(i)
+        pjbp2 = jbp2(i)
+        pjtheta1 = jtheta1(i) 
+        pjtheta2 = jtheta2(i)
 
         muta = mut(ia) 
         mutb = mut(ib) 

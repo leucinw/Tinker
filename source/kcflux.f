@@ -125,10 +125,10 @@ c
             do j = 1, maxnacf
                if (kcfa(j).eq.blank3 .or. kcfa(j).eq.pt3) then
                   kcfa(j) = pt3
-                  jthetal(1,j) = jtt1 
-                  jthetal(2,j) = jtt2 
-                  jbpl(1,j) = jb1 
-                  jbpl(2,j) = jb2 
+                  jtheta1l(j) = jtt1 
+                  jtheta2l(j) = jtt2 
+                  jbp1l(j) = jb1 
+                  jbp2l(j) = jb2 
                   goto 25 
                end if
             end do
@@ -160,13 +160,19 @@ c
 c     perform dynamic allocation of some global arrays
 c
       if (allocated(theta0))  deallocate (theta0)
-      if (allocated(bp0))  deallocate (bp0)
-      if (allocated(jbp))  deallocate (jbp)
-      if (allocated(jtheta))  deallocate (jtheta)
+      if (allocated(bp1))  deallocate (bp1)
+      if (allocated(bp2))  deallocate (bp2)
+      if (allocated(jbp1))  deallocate (jbp1)
+      if (allocated(jbp2))  deallocate (jbp2)
+      if (allocated(jtheta1))  deallocate (jtheta1)
+      if (allocated(jtheta2))  deallocate (jtheta2)
       allocate (theta0(nangle))
-      allocate (bp0(2,nangle))
-      allocate (jbp(2,nangle))
-      allocate (jtheta(2,nangle))
+      allocate (bp1(nangle))
+      allocate (bp2(nangle))
+      allocate (jbp1(nangle))
+      allocate (jbp2(nangle))
+      allocate (jtheta1(nangle))
+      allocate (jtheta2(nangle))
 c
 c     assign bond stretching parameters for each bond
 c
@@ -222,25 +228,25 @@ c
             ptbc = pc//pb
          end if
 
-         bp0(1,i) = 0.0d0
-         bp0(2,i) = 0.0d0
-         jbp(1,i) = 0.0d0
-         jbp(2,i) = 0.0d0
-         jtheta(1,i) = 0.0d0
-         jtheta(2,i) = 0.0d0
+         bp1(i) = 0.0d0
+         bp2(i) = 0.0d0
+         jbp1(i) = 0.0d0
+         jbp2(i) = 0.0d0
+         jtheta1(i) = 0.0d0
+         jtheta2(i) = 0.0d0
          do j = 1, na
            if (kcfa(j) .eq. pt3) then
-             jtheta(1,i) =jthetal(1,j)  
-             jtheta(2,i) =jthetal(2,j)  
-             jbp(1,i) = jbpl(1,j) 
-             jbp(2,i) = jbpl(2,j)
+             jtheta1(i) =jtheta1l(j)  
+             jtheta2(i) =jtheta2l(j)  
+             jbp1(i) = jbp1l(j) 
+             jbp2(i) = jbp2l(j)
            end if
            do k = 1, nbond
               if (kb(k) .eq. ptab) then
-                 bp0(1,i) = blen(k)
+                 bp1(i) = blen(k)
               end if
               if (kb(k) .eq. ptbc) then
-                 bp0(2,i) = blen(k)
+                 bp2(i) = blen(k)
               end if
            end do
          end do

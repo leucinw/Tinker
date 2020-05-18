@@ -189,12 +189,12 @@ c
 c     assign the charge flux parameters  
 c
          ptheta0 = anat(i)
-         pb10 = bp0(1,i)
-         pb20 = bp0(2,i)
-         pjbp1 = jbp(1,i)
-         pjbp2 = jbp(2,i)
-         pjtheta1 = jtheta(1,i) 
-         pjtheta2 = jtheta(2,i)
+         pb10 = bp1(i)
+         pb20 = bp2(i)
+         pjbp1 = jbp1(i)
+         pjbp2 = jbp2(i)
+         pjtheta1 = jtheta1(i) 
+         pjtheta2 = jtheta2(i)
          muta = mut(ia) 
          mutb = mut(ib) 
          mutc = mut(ic) 
