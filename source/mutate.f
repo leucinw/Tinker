@@ -159,6 +159,7 @@ c
       use sizes
       use atoms
       use charge
+      use chgpen
       use mpole
       use mutant
       use polar
@@ -191,6 +192,12 @@ c
          do i = 1, npolar
             if (mut(i)) then
                polarity(i) = polarity(i) * elambda
+            end if
+         end do
+         do i = 1, npole
+            k = ipole(i)
+            if (mut(k)) then
+               pencore(i) = pencore(i) * elambda
             end if
          end do
       end if
