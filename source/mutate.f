@@ -234,6 +234,6 @@ c
                jtheta2(i) = jtheta2(i) * elambda
             end if
          end do
-      end if 
+      end if
       return
       end
