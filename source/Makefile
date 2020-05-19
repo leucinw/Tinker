@@ -1548,7 +1548,7 @@ center.o: align.o
 charge.o:
 ctran.o: sizes.o
 cflux.o: sizes.o
-chrgflux.o: atomid.o atoms.o bound.o bndstr.o cflux.o group.o limits.o potent.o sizes.o usage.o mutant.o 
+chrgflux.o: atomid.o atoms.o bound.o bndstr.o cflux.o group.o limits.o potent.o sizes.o usage.o 
 chgpot.o:
 chgpen.o: sizes.o
 chkpole.o: atoms.o mpole.o sizes.o
@@ -1641,7 +1641,7 @@ elj3.o: action.o analyz.o atomid.o atoms.o bound.o boxes.o cell.o couple.o energ
 ect0.o: atomid.o atoms.o bound.o sizes.o ctran.o cell.o couple.o energi.o group.o mutant.o polgrp.o polpot.o shunt.o usage.o 
 ect1.o: sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o mutant.o  polgrp.o polpot.o shunt.o usage.o virial.o deriv.o inter.o molcul.o  
 ect3.o: action.o analyz.o sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o molcul.o mutant.o  polgrp.o polpot.o inter.o iounit.o inform.o shunt.o usage.o 
-echrgflux1.o:  atoms.o sizes.o atomid.o bound.o bndstr.o cflux.o limits.o deriv.o mutant.o  
+echrgflux1.o:  atoms.o sizes.o atomid.o bound.o bndstr.o cflux.o limits.o deriv.o 
 embed.o: angbnd.o atoms.o bndstr.o couple.o disgeo.o files.o inform.o iounit.o keys.o light.o math.o minima.o output.o refer.o restrn.o sizes.o tors.o units.o
 emetal.o: atomid.o atoms.o couple.o energi.o kchrge.o sizes.o
 emetal1.o: atomid.o atoms.o couple.o deriv.o energi.o kchrge.o sizes.o

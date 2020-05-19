@@ -22,7 +22,6 @@ c
       use bndstr
       use cflux
       use limits
-      use mutant
       implicit none
       real*8 ddqdx,ddqdy,ddqdz
       real*8 xa,ya,za
@@ -32,7 +31,6 @@ c
       real*8 pjb
       real*8 frcx,frcy,frcz
       integer ia,ib,i
-      logical muta,mutb
       real*8 dmppot(*)
       real*8 dcfemx(*)
       real*8 dcfemy(*)
@@ -44,11 +42,6 @@ c
         ia = ibnd(1,i)
         ib = ibnd(2,i)
         pjb = jb(i)
-        muta = mut(ia)
-        mutb = mut(ib)
-        if ((muta) .or. (mutb)) then 
-         pjb = pjb*elambda 
-        end if
         xa = x(ia) 
         ya = y(ia) 
         za = z(ia)
@@ -90,7 +83,6 @@ c
       use cflux
       use limits
       use math
-      use mutant
       implicit none
       real*8 xa,ya,za
       real*8 xb,yb,zb
@@ -111,7 +103,6 @@ c
       real*8 term2xc,term2yc,term2zc
       real*8 dot,term1
       integer ia,ib,ic,i
-      logical muta,mutb,mutc
       real*8 dmppot(*)
       real*8 dcfemx(*)
       real*8 dcfemy(*)
@@ -125,17 +116,6 @@ c
         pjbp2 = jbp2(i)
         pjtheta1 = jtheta1(i) 
         pjtheta2 = jtheta2(i)
-
-        muta = mut(ia) 
-        mutb = mut(ib) 
-        mutc = mut(ic) 
-        if ((muta) .or. (mutb) .or. (mutc)) then
-           pjbp1 = pjbp1*elambda
-           pjbp2 = pjbp2*elambda
-           pjtheta1 = pjtheta1*elambda
-           pjtheta2 = pjtheta2*elambda
-        end if
-
         xa = x(ia) 
         ya = y(ia) 
         za = z(ia)

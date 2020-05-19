@@ -11,7 +11,6 @@ c
       subroutine chrgflux
       use cflux
       use atoms
-      use mutant
       implicit none
       integer i
 c
@@ -54,7 +53,6 @@ c
       use group
       use limits
       use potent
-      use mutant
       use usage
       implicit none
       real*8 dq 
@@ -64,7 +62,6 @@ c
       integer ia,ib,i,j
       integer nha,nhb,n12a,n12b
       real*8 bigsign
-      logical muta,mutb
 
 c
 c     calculate the bond stretching energy term
@@ -76,11 +73,6 @@ c
          atomb = atomic(ib)
          pjb = jb(i)
          pb0 = bl(i)
-         muta = mut(ia)
-         mutb = mut(ib)
-         if ((muta) .or. (mutb)) then 
-          pjb = pjb*elambda 
-         end if
 c
 c     compute the value of the bond length deviation
 c
@@ -160,7 +152,6 @@ c
       use group
       use limits
       use math
-      use mutant
       use usage
       implicit none
       integer i,ia,ib,ic
@@ -176,7 +167,6 @@ c
       real*8 pjbp1,pjbp2
       real*8 pjtheta1,pjtheta2
       real*8 dq1,dq2
-      logical muta, mutb, mutc
 
 c
 c     loop over all angle in the system 
@@ -195,15 +185,6 @@ c
          pjbp2 = jbp2(i)
          pjtheta1 = jtheta1(i) 
          pjtheta2 = jtheta2(i)
-         muta = mut(ia) 
-         mutb = mut(ib) 
-         mutc = mut(ic) 
-         if ((muta) .or. (mutb) .or. (mutc)) then
-            pjbp1 = pjbp1*elambda
-            pjbp2 = pjbp2*elambda
-            pjtheta1 = pjtheta1*elambda
-            pjtheta2 = pjtheta2*elambda
-         end if
 c
 c     calculate the bond length and angle 
 c
