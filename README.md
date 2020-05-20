@@ -1,6 +1,7 @@
 
 # Latest update (2020, May)
 
+* Combining rules now supported for direct and mutual damping factors 
 * Flexible options for aprerule and bexprule for CT 
 
 # Latest update (2020, Mar)
