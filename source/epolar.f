@@ -568,8 +568,8 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,pdamp,thole,x,y,z,rpole,uind,n12,
 !$OMP& i12,n13,i13,n14,i14,n15,i15,np11,ip11,p12scale,p13scale,
-!$OMP& dirdamp,p21scale,p31scale,p41scale,p51scale, 
-!$OMP& p14scale,p15scale,nelst,elst,use_bounds,off2,f)
+!$OMP& dirdamp,p21scale,p31scale,p41scale,p51scale,dirdamprule, 
+!$OMP& p14scale,p15scale,nelst,elst,use_bounds,off2,f,mutdamprule)
 !$OMP& firstprivate(pscale) shared (ep)
 !$OMP DO reduction(+:ep) schedule(guided)
 c
@@ -1501,8 +1501,8 @@ c
 !$OMP PARALLEL default(private)
 !$OMP& shared(npole,ipole,pdamp,thole,x,y,z,rpole,uind,n12,i12,
 !$OMP& n13,i13,n14,i14,n15,i15,np11,ip11,p12scale,p13scale,p14scale,
-!$OMP& dirdamp,p21scale,p31scale,p41scale,p51scale,
-!$OMP& p15scale,nelst,elst,use_bounds,off2,f,aewald)
+!$OMP& dirdamp,p21scale,p31scale,p41scale,p51scale,dirdamprule,
+!$OMP& p15scale,nelst,elst,use_bounds,off2,f,aewald,mutdamprule)
 !$OMP& firstprivate(pscale) shared (ep)
 !$OMP DO reduction(+:ep) schedule(guided)
 c

@@ -1727,8 +1727,8 @@ c
 !$OMP& i14,n15,i15,np11,ip11,np12,ip12,np13,ip13,np14,ip14,p12scale,
 !$OMP& p13scale,p14scale,p15scale,p21scale,p31scale,p41scale,p51scale, 
 !$OMP& u1scale,u2scale,u3scale,u4scale,nelst,elst,use_bounds,
-!$OMP& off2,f,molcule,coptmax,copm,uopt,uoptp,poltyp)
-!$OMP& shared (ep,einter,dep,vir,ufld,dufld,use_cflux,
+!$OMP& off2,f,molcule,coptmax,copm,uopt,uoptp,poltyp,dirdamprule)
+!$OMP& shared (ep,einter,dep,vir,ufld,dufld,use_cflux,mutdamprule,
 !$OMP& dirdamp,damppot,ibnd,nbond,iang,nangle) 
 !$OMP& firstprivate(pscale,uscale)
 !$OMP DO reduction(+:ep,einter,dep,vir,ufld,dufld,
@@ -4572,7 +4572,7 @@ c
 !$OMP& i14,n15,i15,np11,ip11,np12,ip12,np13,ip13,np14,ip14,p12scale,
 !$OMP& p13scale,p14scale,p15scale,p21scale,p31scale,p41scale,p51scale,
 !$OMP& u1scale,u2scale,u3scale,u4scale,nelst,elst,use_bounds,
-!$OMP& use_cflux,ibnd,nbond,nangle,iang,
+!$OMP& use_cflux,ibnd,nbond,nangle,iang,dirdamprule,mutdamprule,
 !$OMP& off2,f,aewald,molcule,coptmax,copm,uopt,poltyp)
 !$OMP& shared (ep,einter,dep,vir,ufld,dufld,
 !$OMP& dirdamp,damppot)

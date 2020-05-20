@@ -2431,8 +2431,8 @@ c
 c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(n,npole,ipole,x,y,z,pdamp,thole,
-!$OMP& rpole,p12scale,p13scale,p14scale,p15scale,
-!$OMP& u1scale,u2scale,u3scale,u4scale,n12,i12,n13,
+!$OMP& rpole,p12scale,p13scale,p14scale,p15scale,mutdamprule,
+!$OMP& u1scale,u2scale,u3scale,u4scale,n12,i12,n13,dirdamprule,
 !$OMP& i13,n14,i14,n15,i15,np11,ip11,np12,ip12,np13,ip13,np14,ip14,
 !$OMP& nelst,elst,off2,aewald,aesq2,aesq2n,poltyp,ntpair,tindex,
 !$OMP& tdipdip,toffset,maxlocal,field,fieldt,maxelst,
@@ -3813,7 +3813,7 @@ c
 !$OMP& rpole,n12,n13,n14,n15,np11,np12,np13,np14,i12,i13,i14,i15,
 !$OMP% ip11,ip12,ip13,ip14,p2scale,p3scale,p4scale,p41scale,p5scale,
 !$OMP& d1scale,d2scale,d3scale,d4scale,use_intra,x,y,z,off2,fc,fd,fq,
-!$OMP& dirdamp,
+!$OMP& dirdamp,dirdamprule,mutdamprule,
 !$OMP& gkc,field,fieldp,fields,fieldps)
 !$OMP& firstprivate(dscale,pscale)
 !$OMP% shared(fieldt,fieldtp,fieldts,fieldtps)
@@ -4302,7 +4302,7 @@ c
 !$OMP PARALLEL default(private) shared(npole,ipole,pdamp,thole,rborn,
 !$OMP& uind,uinp,uinds,uinps,np11,np12,np13,np14,ip11,ip12,ip13,ip14,
 !$OMP& u1scale,u2scale,u3scale,u4scale,use_intra,x,y,z,off2,fd,gkc,
-!$OMP& field,fieldp,fields,fieldps)
+!$OMP& field,fieldp,fields,fieldps,dirdamprule,mutdamprule)
 !$OMP& firstprivate(uscale) shared(fieldt,fieldtp,fieldts,fieldtps)
 !$OMP DO reduction(+:fieldt,fieldtp,fieldts,fieldtps) schedule(guided)
 c
@@ -5935,7 +5935,7 @@ c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(n,npole,ipole,x,y,z,pdamp,
 !$OMP& thole,polarity,u1scale,u2scale,u3scale,u4scale,np11,ip11,
-!$OMP& np12,ip12,np13,ip13,np14,ip14,nulst,ulst,mindex,minv)
+!$OMP& np12,ip12,np13,ip13,np14,ip14,nulst,ulst,mindex,minv,mutdamprule)
 !$OMP& firstprivate (uscale)
 c
 c     determine the off-diagonal elements of the preconditioner
