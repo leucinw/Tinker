@@ -365,6 +365,8 @@ c
       u2scale = 1.0d0
       u3scale = 1.0d0
       u4scale = 1.0d0
+      dirdamprule = "MINIMAL"
+      mutdamprule = "MINIMAL"
 c
 c     set default control parameters for implicit solvation
 c

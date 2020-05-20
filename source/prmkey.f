@@ -416,6 +416,11 @@ c
       else if (keyword(1:16) .eq. 'MUTUAL-14-SCALE ') then
          read (string,*,err=10,end=10)  u4scale
          if (u4scale .gt. 1.0d0)  u4scale = 1.0d0 / u4scale
+
+      else if (keyword(1:12) .eq. 'DIRDAMPRULE ') then
+         call getword (record,dirdamprule,next)
+      else if (keyword(1:12) .eq. 'MUTDAMPRULE ') then
+         call getword (record,mutdamprule,next)
 c
 c     set control parameters for reaction field potentials
 c

@@ -311,7 +311,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -507,7 +511,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -579,7 +587,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -940,7 +952,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -1130,7 +1146,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -1203,7 +1223,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -1820,7 +1844,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                  pgamma = min(pdiri, dirdamp(k))
+                  if (dirdamprule .eq. "GEOMETRIC") then
+                     pgamma = sqrt(pdiri*dirdamp(k))
+                  else
+                     pgamma = min(pdiri,dirdamp(k))
+                  end if
                   damp  = pgamma*sqrt((r/damp)**3)
                   if (damp .gt. -50.0d0) then
                      expdamp= exp(-damp) 
@@ -2009,7 +2037,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -2081,7 +2113,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -2872,7 +2908,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -3069,7 +3109,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -3154,7 +3198,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -3545,7 +3593,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -3733,7 +3785,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -3821,7 +3877,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -4647,7 +4707,11 @@ c
                end do
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -4838,7 +4902,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)
@@ -4922,7 +4990,11 @@ c
                   end do
                   damp = pdi * pdamp(k)
                   if (damp .ne. 0.0d0) then
-                    pgamma = min(pti, thole(k))
+                    if (mutdamprule .eq. "GEOMETRIC") then
+                       pgamma = sqrt(pti*thole(k))
+                    else
+                       pgamma = min(pti,thole(k))
+                    end if
                     damp = -pgamma * (r/damp)**3
                     if (damp .gt. -50.0d0) then
                       expdamp = exp(damp)

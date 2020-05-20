@@ -224,7 +224,11 @@ c
                sc7 = 1.0d0
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -390,7 +394,11 @@ c
 
                      damp = pdi * pdamp(k)
                      if (damp .ne. 0.0d0) then
-                       pgamma = min(pdiri, dirdamp(k))
+                       if (dirdamprule .eq. "GEOMETRIC") then
+                          pgamma = sqrt(pdiri*dirdamp(k))
+                       else
+                          pgamma = min(pdiri,dirdamp(k))
+                       end if
                        damp  = pgamma*sqrt((r/damp)**3)
                        if (damp .gt. -50.0d0) then
                          expdamp= exp(-damp) 
@@ -655,7 +663,11 @@ c
                sc7 = 1.0d0
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -1027,7 +1039,11 @@ c
                sc7 = 1.0d0
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 
@@ -1213,7 +1229,11 @@ c
                      sc7 = 1.0d0
                      damp = pdi * pdamp(k)
                      if (damp .ne. 0.0d0) then
-                       pgamma = min(pdiri, dirdamp(k))
+                       if (dirdamprule .eq. "GEOMETRIC") then
+                          pgamma = sqrt(pdiri*dirdamp(k))
+                       else
+                          pgamma = min(pdiri,dirdamp(k))
+                       end if
                        damp  = pgamma*sqrt((r/damp)**3)
                        if (damp .gt. -50.0d0) then
                          expdamp = exp(-damp) 
@@ -1593,7 +1613,11 @@ c
                sc7 = 1.0d0
                damp = pdi * pdamp(k)
                if (damp .ne. 0.0d0) then
-                 pgamma = min(pdiri, dirdamp(k))
+                 if (dirdamprule .eq. "GEOMETRIC") then
+                    pgamma = sqrt(pdiri*dirdamp(k))
+                 else
+                    pgamma = min(pdiri,dirdamp(k))
+                 end if
                  damp  = pgamma*sqrt((r/damp)**3)
                  if (damp .gt. -50.0d0) then
                    expdamp= exp(-damp) 

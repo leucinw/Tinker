@@ -39,6 +39,8 @@ c==================================
 c     udiag     acceleration factor for induced dipole SCF iterations
 c     politer   maximum number of induced dipole SCF iterations
 c     poltyp    type of polarization potential (direct or mutual)
+c     dirdamprule  combining rule for charge polarization direct damping
+c     mutdamprule  combining rule for charge polarization mutual damping
 c
 c
       module polpot
@@ -57,5 +59,6 @@ c
       real*8 p41scale,p51scale
       real*8 udiag
       character*6 poltyp
+      character*10 dirdamprule,mutdamprule
       save
       end

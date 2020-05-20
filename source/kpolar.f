@@ -117,6 +117,19 @@ c
             read (string,*,err=20,end=20)  (copt(i),i=0,maxopt)
          end if
    20    continue
+
+         if ((keyword(1:12)) .eq. 'DIRDAMPRULE ') then
+            call getnumb (record,k,next)
+            string = record(next:120) 
+            read (string,*,err=24,end=24)dirdamprule 
+   24       continue
+         end if 
+         if ((keyword(1:12)) .eq. 'MUTDAMPRULE ') then
+            call getnumb (record,k,next)
+            string = record(next:120) 
+            read (string,*,err=26,end=26)mutdamprule 
+   26       continue
+         end if 
       end do
 c
 c     get maximum coefficient order for OPT induced dipoles

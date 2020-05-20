@@ -2247,7 +2247,11 @@ c
             scale5 = pscale(kk)
             damp = pdi * pdamp(k)
             if (damp .ne. 0.0d0) then
-               pgamma = min(pti,thole(k))
+               if (mutdamprule .eq. "GEOMETRIC") then
+                  pgamma = sqrt(pti*thole(k))
+               else
+                  pgamma = min(pti,thole(k))
+               end if
                damp = -pgamma * (r/damp)**3
                if (damp .gt. -50.0d0) then
                   scale3 = scale3*(1.0d0-exp(damp))
