@@ -160,8 +160,6 @@ c
                bexpi = abs(bprmct(it))
                bexpk = abs(bprmct(kt))
 
-               bexp = 100.0d0
-               apre = 0.0d0
                if ((aprei .gt. 0.0d0) .and. (aprek .gt. 0.0d0)) then
                   if (aprerule .eq. "GEOMETRIC") then
                      apre = sqrt(aprei*aprek)
@@ -449,10 +447,6 @@ c     set the coefficients for the switching function
 c
       mode = 'CT'
       call switch (mode)
-c
-c     call kpolar to allocate np11 etc
-c
-      call kpolar
 c
 c     OpenMP directives for the major loop structure
 c

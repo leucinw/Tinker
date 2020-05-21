@@ -76,7 +76,9 @@ c
       if (use_strbnd)  call kstrbnd
       if (use_urey)  call kurey
       if (use_angang)  call kangang
-
+c
+c     assign charge flux parameters
+c
       if (use_cflux) call kcflux
 c
 c     assign out-of-plane deformation potential parameters

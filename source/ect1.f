@@ -562,10 +562,6 @@ c
       mode = 'CT'
       call switch (mode)
 c
-c     call kpolar to allocate np11 etc
-c
-      call kpolar
-c
 c     OpenMP directives for the major loop structure
 c
 !$OMP PARALLEL default(private) shared(nct,ict,
