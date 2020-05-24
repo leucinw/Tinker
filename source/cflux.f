@@ -21,6 +21,6 @@ c
       real*8, allocatable :: jb(:)
       real*8, allocatable :: b0(:)
       real*8, allocatable :: pchrgflux(:)
-      logical dobond,doangle 
+      logical dobondcflux,doanglecflux 
       save
       end

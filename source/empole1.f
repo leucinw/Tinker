@@ -652,7 +652,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -683,7 +683,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -1129,7 +1129,7 @@ c
             mscale(i15(j,ii)) = 1.0d0
          end do
       end do
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -1160,7 +1160,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -1882,7 +1882,7 @@ c
 !$OMP END DO
 !$OMP END PARALLEL
 
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -1912,7 +1912,7 @@ c
             vir(3,3) = vir(3,3) + vzz
           end do
       end if
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -2087,7 +2087,7 @@ c
 c
 c     force due to charge flux-bond for self energy
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(selfpot,decfbselfemx,decfbselfemy,decfbselfemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -2118,7 +2118,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(selfpot,decfaselfemx,decfaselfemy,decfaselfemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -2816,7 +2816,7 @@ c
 c
 c     charge flux force
 c
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -2847,7 +2847,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -3315,7 +3315,7 @@ c
             mscale(i15(j,ii)) = 1.0d0
          end do
       end do
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -3346,7 +3346,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -3559,7 +3559,7 @@ c
 c
 c     force due to charge flux-bond for self energy
 c
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(selfpot,decfbselfemx,decfbselfemy,decfbselfemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -3590,7 +3590,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(selfpot,decfaselfemx,decfaselfemy,decfaselfemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -4352,7 +4352,7 @@ c
 c
 c     charge flux force
 c
-      if (use_cflux .and. use_chgpen .and. dobond) then 
+      if (use_cflux .and. use_chgpen .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -4383,7 +4383,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. use_chgpen .and. doangle) then
+      if (use_cflux .and. use_chgpen .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i)
@@ -4718,7 +4718,7 @@ c
         end do
       end if
 
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
         call cfbondem(cphi1d,decfbemx,decfbemy,decfbemz)
         do i = 1, npole
           ii = ipole(i)
@@ -4749,7 +4749,7 @@ c
         end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
         call cfangleem(cphi1d,decfaemx,decfaemy,decfaemz)
         do i = 1, npole
           ii = ipole(i) 

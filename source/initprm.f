@@ -314,8 +314,8 @@ c
 c   
 c     set default control parameters for charge flux 
 c
-      dobond = .false.
-      doangle = .false.      
+      dobondcflux = .false.
+      doanglecflux = .false.      
 c
 c     set default control parameters for charge-charge terms
 c

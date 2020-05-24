@@ -771,7 +771,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole
             ii = ipole(i) 
@@ -802,7 +802,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i) 
@@ -1417,7 +1417,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-         if (use_cflux .and. dobond) then 
+         if (use_cflux .and. dobondcflux) then 
              call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
              do i = 1, npole
                ii = ipole(i) 
@@ -1448,7 +1448,7 @@ c
              end do
          end if
 
-         if (use_cflux .and. doangle) then
+         if (use_cflux .and. doanglecflux) then
              call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
              do i = 1, npole 
                ii = ipole(i) 
@@ -2366,7 +2366,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole
             ii = ipole(i) 
@@ -2397,7 +2397,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i) 
@@ -3398,7 +3398,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(damppot,decfbepx,decfbepy,decfbepz)
           do i = 1, npole
             ii = ipole(i) 
@@ -3429,7 +3429,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(damppot,decfaepx,decfaepy,decfaepz)
           do i = 1, npole 
             ii = ipole(i) 
@@ -4085,7 +4085,7 @@ c
             uscale(ip14(j,ii)) = 1.0d0
          end do
       end do
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(damppot,decfbepx,decfbepy,decfbepz)
           do i = 1, npole
             ii = ipole(i) 
@@ -4116,7 +4116,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(damppot,decfaepx,decfaepy,decfaepz)
           do i = 1, npole 
             ii = ipole(i) 
@@ -5257,7 +5257,7 @@ c
 c
 c     Extra derivative terms due to charge flux
 c
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(damppot,decfbemx,decfbemy,decfbemz)
           do i = 1, npole
             ii = ipole(i) 
@@ -5288,7 +5288,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(damppot,decfaemx,decfaemy,decfaemz)
           do i = 1, npole 
             ii = ipole(i) 
@@ -6068,7 +6068,7 @@ c
         end do
       end if
 
-      if (use_cflux .and. dobond) then 
+      if (use_cflux .and. dobondcflux) then 
           call cfbondem(cphi1d,decfbeprx,decfbepry,decfbeprz)
           do i = 1, npole
             ii = ipole(i) 
@@ -6099,7 +6099,7 @@ c
           end do
       end if
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
           call cfangleem(cphi1d,decfaeprx,decfaepry,decfaeprz)
           do i = 1, npole 
             ii = ipole(i) 

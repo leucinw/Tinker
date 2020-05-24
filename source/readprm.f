@@ -344,7 +344,7 @@ c
             ia = 0
             ib = 0
             fj = 0.0d0
-            dobond = .true.
+            dobondcflux = .true.
             string = record(next:240)
             read (string,*,err=115,end=115) ia,ib,fj
   115       continue
@@ -479,7 +479,7 @@ c
             jtt2 = 0.0d0
             jb1 = 0.0d0
             jb2 = 0.0d0
-            doangle = .true.
+            doanglecflux = .true.
             string = record(next:240)
             read (string,*,err=165,end=165)ia,ib,ic,jtt1,jtt2,jb1,jb2
   165       continue

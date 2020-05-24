@@ -211,7 +211,7 @@ c
 c
 c     set charge flux j parameter using cflux-bond 
 c
-      if (use_cflux .and. dobond) then
+      if (use_cflux .and. dobondcflux) then
          do i = 1, nbond
             ia = ibnd(1,i)
             ib = ibnd(2,i)
@@ -222,7 +222,7 @@ c
 c     set charge flux j parameter using cflux-angle
 c
 
-      if (use_cflux .and. doangle) then
+      if (use_cflux .and. doanglecflux) then
          do i = 1, nangle 
             ia = iang(1,i)
             ib = iang(2,i)

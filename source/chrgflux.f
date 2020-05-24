@@ -28,8 +28,8 @@ c
 c
 c     chose the method for summing over charge flux
 c
-      if (dobond)  call chrgfluxb
-      if (doangle) call chrgfluxa
+      if (dobondcflux)  call chrgfluxb
+      if (doanglecflux) call chrgfluxa
       return
       end
 c
