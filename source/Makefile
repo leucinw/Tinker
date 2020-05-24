@@ -424,8 +424,8 @@ OBJS =	action.o \
 	katoms.o \
 	kbond.o \
 	kcflux.o \
-	kbonds.o \
 	kcfluxes.o \
+	kbonds.o \
 	kcharge.o \
 	kchrge.o \
 	kdipol.o \

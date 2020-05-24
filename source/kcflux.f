@@ -154,11 +154,6 @@ c     perform dynamic allocation of some global arrays
 c
       if (allocated(b0))  deallocate (b0)
       if (allocated(jb))  deallocate (jb)
-      allocate (b0(nbond))
-      allocate (jb(nbond))
-c
-c     perform dynamic allocation of some global arrays
-c
       if (allocated(theta0))  deallocate (theta0)
       if (allocated(bp1))  deallocate (bp1)
       if (allocated(bp2))  deallocate (bp2)
@@ -166,6 +161,8 @@ c
       if (allocated(jbp2))  deallocate (jbp2)
       if (allocated(jtheta1))  deallocate (jtheta1)
       if (allocated(jtheta2))  deallocate (jtheta2)
+      allocate (b0(nbond))
+      allocate (jb(nbond))
       allocate (theta0(nangle))
       allocate (bp1(nangle))
       allocate (bp2(nangle))
