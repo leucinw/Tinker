@@ -302,7 +302,7 @@ c
       dhal = 0.07d0
       v2scale = 0.0d0
       v3scale = 0.0d0
-      v4scale = 1.0d0
+      v4scale = 0.5d0
       v5scale = 1.0d0
       use_vcorr = .false.
 c   
@@ -313,8 +313,8 @@ c
       bexprule = "ARITHMETIC"
       ct2scale = 0.0d0
       ct3scale = 0.0d0
-      ct4scale = 0.0d0
-      ct5scale = 0.0d0
+      ct4scale = 0.5d0
+      ct5scale = 1.0d0
 c   
 c     set default control parameters for charge flux 
 c
@@ -337,7 +337,7 @@ c     set default control parameters for polarizable multipoles
 c
       m2scale = 0.0d0
       m3scale = 0.0d0
-      m4scale = 1.0d0
+      m4scale = 0.5d0
       m5scale = 1.0d0
       p2scale = 0.0d0
       p3scale = 0.0d0
