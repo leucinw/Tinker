@@ -329,6 +329,18 @@ c
          call getword (record,aprerule,next)
       else if (keyword(1:9) .eq. 'BEXPRULE ') then
          call getword (record,bexprule,next)
+      else if (keyword(1:13) .eq. 'CT-12-SCALE ') then
+         read (string,*,err=10,end=10)  ct2scale
+         if (ct2scale .gt. 1.0d0)  ct2scale = 1.0d0 / ct2scale
+      else if (keyword(1:13) .eq. 'CT-13-SCALE ') then
+         read (string,*,err=10,end=10)  ct3scale
+         if (ct2scale .gt. 1.0d0)  ct3scale = 1.0d0 / ct3scale
+      else if (keyword(1:13) .eq. 'CT-14-SCALE ') then
+         read (string,*,err=10,end=10)  ct4scale
+         if (ct4scale .gt. 1.0d0)  ct4scale = 1.0d0 / ct4scale
+      else if (keyword(1:13) .eq. 'CT-15-SCALE ') then
+         read (string,*,err=10,end=10)  ct5scale
+         if (ct5scale .gt. 1.0d0)  ct5scale = 1.0d0 / ct5scale
 c
 c     set control parameters for charge-charge potentials
 c

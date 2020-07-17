@@ -1521,12 +1521,13 @@ c
          ii = 0
          pol = 0.0d0
          thl = 0.39d0
+         dird = 0.70d0
          write (iout,60)
    60    format (/,' Enter Atom Number & Polarizability Values',
      &              ' [<CR>=Exit] :  ',$)
          read (input,70)  record
    70    format (a240)
-         read (record,*,err=80,end=80)  ii,pol,thl,dird
+         read (record,*,err=80,end=80) ii,pol,thl,dird
    80    continue
          if (ii .eq. 0) then
             query = .false.

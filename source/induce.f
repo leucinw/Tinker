@@ -526,7 +526,7 @@ c
       use potent
       use shunt
       implicit none
-      integer i,j,k,m
+      integer i,j,k,m,l
       integer ii,kk
       real*8 xr,yr,zr
       real*8 fgrp,r,r2
@@ -594,29 +594,29 @@ c
          qizz = rpole(13,i)
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = p12scale
-            do k = 1, np11(ii)
-               if (i12(j,ii) .eq. ip11(k,ii))
+            do l = 1, np11(ii)
+               if (i12(j,ii) .eq. ip11(l,ii))
      &            pscale(i12(j,ii)) = p21scale
             end do
          end do
          do j = 1, n13(ii)
             pscale(i13(j,ii)) = p13scale
-            do k = 1, np11(ii)
-               if (i13(j,ii) .eq. ip11(k,ii))
+            do l = 1, np11(ii)
+               if (i13(j,ii) .eq. ip11(l,ii))
      &            pscale(i13(j,ii)) = p31scale
             end do
          end do
          do j = 1, n14(ii)
             pscale(i14(j,ii)) = p14scale
-            do k = 1, np11(ii)
-               if (i14(j,ii) .eq. ip11(k,ii))
+            do l = 1, np11(ii)
+               if (i14(j,ii) .eq. ip11(l,ii))
      &            pscale(i14(j,ii)) = p41scale
             end do
          end do
          do j = 1, n15(ii)
             pscale(i15(j,ii)) = p15scale
-            do k = 1, np11(ii)
-               if (i15(j,ii) .eq. ip11(k,ii))
+            do l = 1, np11(ii)
+               if (i15(j,ii) .eq. ip11(l,ii))
      &            pscale(i15(j,ii)) = p51scale
             end do
          end do
@@ -699,31 +699,15 @@ c     reset exclusion coefficients for connected atoms
 c
          do j = 1, n12(ii)
             pscale(i12(j,ii)) = 1.0d0
-            do k = 1, np11(ii)
-               if (i12(j,ii) .eq. ip11(k,ii))
-     &            pscale(i12(j,ii)) = 1.0d0 
-            end do
          end do
          do j = 1, n13(ii)
             pscale(i13(j,ii)) = 1.0d0
-            do k = 1, np11(ii)
-               if (i13(j,ii) .eq. ip11(k,ii))
-     &            pscale(i13(j,ii)) = 1.0d0 
-            end do
          end do
          do j = 1, n14(ii)
             pscale(i14(j,ii)) = 1.0d0
-            do k = 1, np11(ii)
-               if (i14(j,ii) .eq. ip11(k,ii))
-     &            pscale(i14(j,ii)) = 1.0d0 
-            end do
          end do
          do j = 1, n15(ii)
             pscale(i15(j,ii)) = 1.0d0
-            do k = 1, np11(ii)
-               if (i15(j,ii) .eq. ip11(k,ii))
-     &            pscale(i15(j,ii)) = 1.0d0 
-            end do
          end do
       end do
 c
@@ -747,29 +731,29 @@ c
             qizz = rpole(13,i)
             do j = 1, n12(ii)
                pscale(i12(j,ii)) = p12scale
-               do k = 1, np11(ii)
-                  if (i12(j,ii) .eq. ip11(k,ii))
+               do l = 1, np11(ii)
+                  if (i12(j,ii) .eq. ip11(l,ii))
      &               pscale(i12(j,ii)) = p21scale
                end do
             end do
             do j = 1, n13(ii)
                pscale(i13(j,ii)) = p13scale
-               do k = 1, np11(ii)
-                  if (i13(j,ii) .eq. ip11(k,ii))
+               do l = 1, np11(ii)
+                  if (i13(j,ii) .eq. ip11(l,ii))
      &               pscale(i13(j,ii)) = p31scale
                end do
             end do
             do j = 1, n14(ii)
                pscale(i14(j,ii)) = p14scale
-               do k = 1, np11(ii)
-                  if (i14(j,ii) .eq. ip11(k,ii))
+               do l = 1, np11(ii)
+                  if (i14(j,ii) .eq. ip11(l,ii))
      &               pscale(i14(j,ii)) = p41scale
                end do
             end do
             do j = 1, n15(ii)
                pscale(i15(j,ii)) = p15scale
-               do k = 1, np11(ii)
-                  if (i15(j,ii) .eq. ip11(k,ii))
+               do l = 1, np11(ii)
+                  if (i15(j,ii) .eq. ip11(l,ii))
      &               pscale(i15(j,ii)) = p51scale
                end do
             end do
@@ -858,31 +842,15 @@ c     reset exclusion coefficients for connected atoms
 c
             do j = 1, n12(ii)
                pscale(i12(j,ii)) = 1.0d0
-               do k = 1, np11(ii)
-                  if (i12(j,ii) .eq. ip11(k,ii))
-     &               pscale(i12(j,ii)) = 1.0d0 
-               end do
             end do
             do j = 1, n13(ii)
                pscale(i13(j,ii)) = 1.0d0
-               do k = 1, np11(ii)
-                  if (i13(j,ii) .eq. ip11(k,ii))
-     &               pscale(i13(j,ii)) = 1.0d0 
-               end do
             end do
             do j = 1, n14(ii)
                pscale(i14(j,ii)) = 1.0d0
-               do k = 1, np11(ii)
-                  if (i14(j,ii) .eq. ip11(k,ii))
-     &               pscale(i14(j,ii)) = 1.0d0 
-               end do
             end do
             do j = 1, n15(ii)
                pscale(i15(j,ii)) = 1.0d0
-               do k = 1, np11(ii)
-                  if (i15(j,ii) .eq. ip11(k,ii))
-     &               pscale(i15(j,ii)) = 1.0d0 
-               end do
             end do
          end do
       end if

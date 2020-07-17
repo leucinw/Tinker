@@ -48,7 +48,7 @@ LINKDIR = /usr/local/bin
 
 #FFTWDIR = =/home/liuchw/Softwares/FFTW338
 #FFTWDIR =/home/liuchw/Softwares/FFTW338-GNU
-FFTWDIR = /home/liuchw/Softwares/tinkers/Tinker2020/Tinker/fftw
+FFTWDIR = /home/liuchw/Softwares/tinkers/Tinker-Github/AMOEBAplusCF/fftw/comp
 FFTW_LIBDIR = -L$(FFTWDIR)/lib
 #FFTW_LIBS = -lfftw3_threads -lfftw3
 FFTW_LIBS = -lfftw3_threads -lfftw3 lfftw3_omp
@@ -1548,7 +1548,7 @@ center.o: align.o
 charge.o:
 ctran.o: sizes.o
 cflux.o: sizes.o
-chrgflux.o: atomid.o atoms.o bound.o bndstr.o cflux.o group.o limits.o potent.o sizes.o usage.o 
+chrgflux.o: atomid.o atoms.o bound.o bndstr.o couple.o cflux.o group.o limits.o potent.o sizes.o usage.o 
 chgpot.o:
 chgpen.o: sizes.o
 chkpole.o: atoms.o mpole.o sizes.o
@@ -1638,9 +1638,9 @@ elj.o: atomid.o atoms.o bound.o boxes.o cell.o couple.o energi.o group.o light.o
 elj1.o: atomid.o atoms.o bound.o boxes.o cell.o couple.o deriv.o energi.o group.o inter.o light.o limits.o math.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o virial.o warp.o
 elj2.o: atomid.o atoms.o bound.o cell.o couple.o group.o hessn.o math.o shunt.o sizes.o vdw.o vdwpot.o warp.o
 elj3.o: action.o analyz.o atomid.o atoms.o bound.o boxes.o cell.o couple.o energi.o group.o inform.o inter.o iounit.o light.o limits.o math.o molcul.o neigh.o shunt.o sizes.o usage.o vdw.o vdwpot.o warp.o
-ect0.o: atomid.o atoms.o bound.o sizes.o ctran.o cell.o couple.o energi.o group.o mutant.o polgrp.o polpot.o shunt.o usage.o 
-ect1.o: sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o mutant.o  polgrp.o polpot.o shunt.o usage.o virial.o deriv.o inter.o molcul.o  
-ect3.o: action.o analyz.o sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o molcul.o mutant.o  polgrp.o polpot.o inter.o iounit.o inform.o shunt.o usage.o 
+ect0.o: atomid.o atoms.o bound.o sizes.o ctran.o cell.o couple.o energi.o group.o mutant.o shunt.o usage.o 
+ect1.o: sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o mutant.o shunt.o usage.o virial.o deriv.o inter.o molcul.o  
+ect3.o: action.o analyz.o sizes.o limits.o warp.o ctran.o atomid.o atoms.o bound.o cell.o couple.o energi.o group.o molcul.o mutant.o inter.o iounit.o inform.o shunt.o usage.o 
 echrgflux1.o:  atoms.o sizes.o atomid.o bound.o bndstr.o cflux.o limits.o deriv.o 
 embed.o: angbnd.o atoms.o bndstr.o couple.o disgeo.o files.o inform.o iounit.o keys.o light.o math.o minima.o output.o refer.o restrn.o sizes.o tors.o units.o
 emetal.o: atomid.o atoms.o couple.o energi.o kchrge.o sizes.o
@@ -1914,7 +1914,7 @@ polgrp.o:
 polpot.o:
 polymer.o: atoms.o bndstr.o bound.o boxes.o iounit.o keys.o sizes.o
 potent.o:
-potential.o: atomid.o atoms.o charge.o chgpot.o dipole.o files.o inform.o iounit.o katoms.o keys.o math.o minima.o moment.o mpole.o neigh.o output.o polar.o potent.o potfit.o ptable.o refer.o sizes.o titles.o units.o
+potential.o: sizes.o atomid.o atoms.o charge.o chgpot.o dipole.o files.o inform.o iounit.o katoms.o keys.o math.o minima.o moment.o mpole.o neigh.o output.o polar.o potent.o potfit.o ptable.o refer.o sizes.o titles.o units.o
 potfit.o: sizes.o
 precis.o:
 precise.o:

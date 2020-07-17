@@ -31,5 +31,7 @@ c
       real*8 aprmct(maxtyp)
       real*8 bprmct(maxtyp)
       character*10 aprerule,bexprule
+      real*8 ct2scale,ct3scale
+      real*8 ct4scale,ct5scale
       save
       end

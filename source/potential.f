@@ -1,7 +1,7 @@
 c
 c
 c     ##############################################################
-c     ##  COPYRIGHT (C) 2008 by C. Wu, Zhifeng Jing & Jay Ponder  ##
+c     ##  COPYRIGHT (C) 2008 by Chuanjie Wu & Jay William Ponder  ##
 c     ##                   All Rights Reserved                    ##
 c     ##############################################################
 c
@@ -18,14 +18,17 @@ c     target potential or optimizes electrostatic parameters
 c
 c
       program potential
+      use sizes
       use atoms
       use charge
       use files
       use inform
       use iounit
       use keys
+      use minima
       use mpole
       use neigh
+      use output
       use potent
       use potfit
       use titles
@@ -36,7 +39,6 @@ c
       integer igrd,icub
       integer next,mode
       integer nvar,nmodel
-      integer nresid
       integer maxpgrd
       integer nglist,nflist
       integer freeunit
@@ -47,13 +49,9 @@ c
       real*8 x0,y0,z0
       real*8 xx0,xy0,xz0
       real*8 yy0,yz0,zz0
-      real*8 grdmin
+      real*8 minimum,grdmin
+      real*8 potfit1
       real*8, allocatable :: xx(:)
-      real*8, allocatable :: xlo(:)
-      real*8, allocatable :: xhi(:)
-      real*8, allocatable :: gc(:)
-      real*8, allocatable :: presid(:)
-      real*8, allocatable :: pjac(:,:)
       logical exist,query
       logical dogrid,docube
       logical domodel,dopair
@@ -70,8 +68,8 @@ c
       character*240 potfile
       character*240 gridfile
       character*240 cubefile
-      external fitrsd
-      external potwrt
+      external potfit1
+      external optsave
 c
 c
 c     setup the computation and assign some default values
@@ -84,7 +82,6 @@ c
       dopair = .false.
       dotarget = .false.
       dofit = .false.
-      resp = 1.0d0
 c
 c     perform dynamic allocation of some global arrays
 c
@@ -92,6 +89,8 @@ c
       allocate (ipgrid(maxpgrd,maxref))
       allocate (pgrid(3,maxpgrd,maxref))
       allocate (epot(2,maxpgrd,maxref))
+      allocate (gatm(maxatm))
+      allocate (fatm(maxatm))
 c
 c     initialize target molecular dipole and quadrupole values
 c
@@ -124,7 +123,7 @@ c
    10 continue
       if (query) then
          write (iout,20)
-   20    format (/,' The Tinker Electrostatic Potential Utility Can :',
+   20    format (/,' The TINKER Electrostatic Potential Utility Can :',
      &           //,4x,'(1) Create an Input File for Gaussian CUBEGEN',
      &           /,4x,'(2) Get QM Potential from a Gaussian CUBE File',
      &           /,4x,'(3) Calculate the Model Potential for a System',
@@ -201,11 +200,10 @@ c
          end do
          close (unit=icub)
 c
-c     write the electrostatic potential to a Tinker POT file
+c     write the electrostatic potential to a TINKER POT file
 c
          potfile = filename(1:leng)
          call suffix (potfile,'pot','new')
-         ipot = freeunit ()
          open (unit=ipot,file=potfile,status ='new')
          rewind (unit=ipot)
          write (ipot,140)  npgrid(1),title(1:ltitle)
@@ -221,7 +219,7 @@ c
          close (unit=ipot)
          write (iout,160)  potfile(1:trimtext(potfile))
   160    format (/,' Electrostatic Potential Written To :  ',a)
-         goto 400
+         goto 380
       end if
 c
 c     read first structure and get electrostatic parameters
@@ -249,13 +247,8 @@ c
       close (unit=ixyz)
       if (nconf .gt. 1) then
          write (iout,170)  nconf
-  170    format (/,' Structures Used for Potential Analysis :',3x,i16)
+  170    format (/,' Structures Used for Potential Analysis :',i6)
       end if
-c
-c     perform dynamic allocation of some global arrays
-c
-      allocate (gatm(namax))
-      allocate (fatm(namax))
 c
 c     perform dynamic allocation of some local arrays
 c
@@ -297,9 +290,6 @@ c
                nflist = nflist + 1
                flist(nflist) = max(-namax,min(namax,flist(nflist)))
             end do
-         else if (keyword(1:12) .eq. 'RESP-WEIGHT ') then
-            read (string,*,err=200,end=200)  resp
-  200       continue
          else if (keyword(1:13) .eq. 'FIX-MONOPOLE ') then
             fit_mpl = .false.
          else if (keyword(1:11) .eq. 'FIX-DIPOLE ') then
@@ -309,16 +299,16 @@ c
          else if (keyword(1:14) .eq. 'TARGET-DIPOLE ') then
             use_dpl = .true.
             k = 1
-            read (string,*,err=210,end=210)  x0,y0,z0,k
-  210       continue
+            read (string,*,err=200,end=200)  x0,y0,z0,k
+  200       continue
             xdpl0(k) = x0
             ydpl0(k) = y0
             zdpl0(k) = z0
          else if (keyword(1:18) .eq. 'TARGET-QUADRUPOLE ') then
             use_qdp = .true.
             k = 1
-            read (string,*,err=220,end=220)  xx0,xy0,xz0,yy0,yz0,zz0,k
-  220       continue
+            read (string,*,err=210,end=210)  xx0,xy0,xz0,yy0,yz0,zz0,k
+  210       continue
             xxqdp0(k) = xx0
             xyqdp0(k) = xy0
             xzqdp0(k) = xz0
@@ -408,10 +398,10 @@ c
             inquire (file=xyz2file,exist=exist)
          end if
          do while (.not. exist)
-            write (iout,230)
-  230       format (/,' Enter Name of Second Coordinate File :  ',$)
-            read (input,240)  xyz2file
-  240       format (a240)
+            write (iout,220)
+  220       format (/,' Enter Name of Second Coordinate File :  ',$)
+            read (input,230)  xyz2file
+  230       format (a240)
             call basefile (xyz2file)
             call suffix (xyz2file,'xyz','old')
             inquire (file=xyz2file,exist=exist)
@@ -428,10 +418,10 @@ c
             inquire (file=potfile,exist=exist)
          end if
          do while (.not. exist)
-            write (iout,250)
-  250       format (/,' Enter Target Grid/Potential File Name :  ',$)
-            read (input,260)  potfile
-  260       format (a240)
+            write (iout,240)
+  240       format (/,' Enter Target Grid/Potential File Name :  ',$)
+            read (input,250)  potfile
+  250       format (a240)
             call basefile (potfile)
             call suffix (potfile,'pot','old')
             inquire (file=potfile,exist=exist)
@@ -444,11 +434,11 @@ c
       if (domodel .or. dopair .or. dotarget) then
          call nextarg (answer,exist)
          if (.not. exist) then
-            write (iout,270)
-  270       format (/,' Output Potential Value at Each Grid Point',
+            write (iout,260)
+  260       format (/,' Output Potential Value at Each Grid Point',
      &                 ' [N] :  ',$)
-            read (input,280)  record
-  280       format (a240)
+            read (input,270)  record
+  270       format (a240)
             next = 1
             call gettext (record,answer,next)
          end if
@@ -473,21 +463,21 @@ c     output the number of potential grid points to be used
 c
       do i = 1, nconf
          if (i .eq. 1) then
-            write (iout,290)
-  290       format ()
+            write (iout,280)
+  280       format ()
          end if
          if (npgrid(i) .gt. maxpgrd) then
-            write (iout,300)
-  300       format (' POTENTIAL  --  Too many Grid Points;',
+            write (iout,290)
+  290       format (' POTENTIAL  --  Too many Grid Points;',
      &                 ' Increase MAXGRID')
             call fatal
          else if (nconf .eq. 1) then
-            write (iout,310)  npgrid(1)
-  310       format (' Electrostatic Potential Grid Points :',6x,i16)
+            write (iout,300)  npgrid(1)
+  300       format (' Electrostatic Potential Grid Points :',6x,i10)
          else
-            write (iout,320)  i,npgrid(i)
-  320       format (' Potential Grid Points for Structure',i4,' :',
-     &                 2x,i16)
+            write (iout,310)  i,npgrid(i)
+  310       format (' Potential Grid Points for Structure',i4,' :',
+     &                 2x,i10)
          end if
       end do
 c
@@ -503,21 +493,21 @@ c
                xi = pgrid(1,i,j)
                yi = pgrid(2,i,j)
                zi = pgrid(3,i,j)
-               write (igrd,330)  xi,yi,zi
-  330          format (3f15.8)
+               write (igrd,320)  xi,yi,zi
+  320          format (3f15.8)
             end do
          end do
          close (unit=igrd)
-         write (iout,340)  gridfile(1:trimtext(gridfile))
-  340    format (/,' Gaussian CUBEGEN Input Written To :   ',a)
-         write (iout,350)
-  350    format (/,' Next, run the Gaussian CUBEGEN program; for',
+         write (iout,330)  gridfile(1:trimtext(gridfile))
+  330    format (/,' Gaussian CUBEGEN Input Written To :   ',a)
+         write (iout,340)
+  340    format (/,' Next, run the Gaussian CUBEGEN program; for',
      &              ' example:',
      &           /,' cubegen 0 potential=MP2 xxx.fchk',
      &              ' xxx.cube -5 h < xxx.grid',
      &           //,' See the Gaussian documentation for additional',
      &              ' details;',
-     &           /,' After CUBEGEN, rerun Tinker POTENTIAL using',
+     &           /,' After CUBEGEN, rerun TINKER POTENTIAL using',
      &              ' Option 2')
       end if
 c
@@ -526,23 +516,16 @@ c
       if (dofit) then
          grdmin = -1.0d0
          call nextarg (string,exist)
-         if (exist)  read (string,*,err=360,end=360)  grdmin
-  360    continue
+         if (exist)  read (string,*,err=350,end=350)  grdmin
+  350    continue
          if (grdmin .le. 0.0d0) then
-            write (iout,370)
-  370       format (/,' Enter RMS Gradient Termination Criterion',
-     &                 ' [0.001] :  ',$)
-            read (input,380)  grdmin
-  380       format (f20.0)
+            write (iout,360)
+  360       format (/,' Enter RMS Gradient Termination Criterion',
+     &                 ' [0.1] :  ',$)
+            read (input,370)  grdmin
+  370       format (f20.0)
          end if
-         if (grdmin .le. 0.0d0)  grdmin = 0.001d0
-      end if
-c
-c     print the parameter restraint value to be used in fitting
-c
-      if (dofit) then
-         write (iout,390)  resp
-  390    format (/,' Electrostatic Parameter Restraint Value :',f18.4)
+         if (grdmin .le. 0.0d0)  grdmin = 0.1d0
       end if
 c
 c     setup the potential computation for alternative models
@@ -580,8 +563,6 @@ c
                   call nblist
                   call induce
                end if
-!$OMP          PARALLEL default(private) shared(j,k,npgrid,pgrid,epot)
-!$OMP          DO
                do i = 1, npgrid(j)
                   xi = pgrid(1,i,j)
                   yi = pgrid(2,i,j)
@@ -589,8 +570,6 @@ c
                   call potpoint (xi,yi,zi,pot)
                   epot(k,i,j) = pot
                end do
-!$OMP          END DO
-!$OMP          END PARALLEL
             end do
          end do
          call potstat (dofull,domodel,dopair,dotarget)
@@ -599,7 +578,6 @@ c
 c     perform dynamic allocation of some global arrays
 c
       if (dofit) then
-         allocate (fit0(12*nconf*namax))
          allocate (fchg(maxtyp))
          allocate (fpol(13,maxtyp))
          allocate (fitchg(maxtyp))
@@ -608,8 +586,6 @@ c
 c     perform dynamic allocation of some local arrays
 c
          allocate (xx(12*nconf*namax))
-         allocate (xlo(12*nconf*namax))
-         allocate (xhi(12*nconf*namax))
          allocate (tmpchg(maxtyp))
          allocate (tmppol(maxtyp))
 c
@@ -617,40 +593,21 @@ c     zero the keyfile length to avoid parameter reprocessing
 c
          nkey = 0
 c
-c     set residual count and optimization parameters with bounds
+c     set parameters, run optimization, get final parameters
 c
+         nvar = 0
          do j = 1, maxtyp
             fitchg(j) = .false.
             fitpol(j) = .false.
          end do
-         nvar = 0
-         nresid = 0
          do j = 1, nconf
             call getref (j)
             call setelect
             call prmvar (nvar,xx)
-            nresid = nresid + npgrid(j)
          end do
-         do j = 1, nvar
-            fit0(j) = xx(j)
-            xlo(j) = xx(j) - 1000.0d0
-            xhi(j) = xx(j) + 1000.0d0
-         end do
-c
-c     perform dynamic allocation of some local arrays
-c
-         nresid = nresid + 10*nconf + nvar
-         allocate (gc(nvar))
-         allocate (presid(nresid))
-         allocate (pjac(nresid,nvar))
-c
-c     perform potential fit via least squares optimization
-c
-         call square (nvar,nresid,xlo,xhi,xx,presid,gc,pjac,
-     &                      grdmin,fitrsd,potwrt)
-c
-c     set the final electrostatic parameter values
-c
+         hguess = 1.0d-4
+         coordtype = 'NONE'
+         call ocvm (nvar,xx,minimum,grdmin,potfit1,optsave)
          nvar = 0
          do j = 1, maxtyp
             fitchg(j) = .false.
@@ -664,7 +621,7 @@ c
                tmpchg(k) = fitchg(k)
                tmppol(k) = fitpol(k)
             end do
-            call varprm (nvar,xx)
+            call varprm (nvar,xx,0,0.0d0)
             nvar = next
             do k = 1, maxtyp
                fitchg(k) = tmpchg(k)
@@ -683,8 +640,7 @@ c
          do j = 1, nconf
             call getref (j)
             call setelect
-            call varprm (nvar,xx)
-            call prmvar (nvar,xx)
+            call varprm (nvar,xx,0,0.0d0)
             if (use_mpole) then
                call chkpole
                call rotpole
@@ -695,8 +651,6 @@ c
                call nblist
                call induce
             end if
-!$OMP       PARALLEL default(private) shared(j,npgrid,pgrid,epot)
-!$OMP       DO
             do i = 1, npgrid(j)
                xi = pgrid(1,i,j)
                yi = pgrid(2,i,j)
@@ -704,8 +658,6 @@ c
                call potpoint (xi,yi,zi,pot)
                epot(1,i,j) = pot
             end do
-!$OMP       END DO
-!$OMP       END PARALLEL
          end do
          call prtfit
          call potstat (dofull,domodel,dopair,dotarget)
@@ -713,18 +665,13 @@ c
 c     perform deallocation of some local arrays
 c
          deallocate (xx)
-         deallocate (xlo)
-         deallocate (xhi)
-         deallocate (presid)
-         deallocate (gc)
-         deallocate (pjac)
          deallocate (tmpchg)
          deallocate (tmppol)
       end if
 c
 c     perform any final tasks before program exit
 c
-  400 continue
+  380 continue
       call final
       end
 c
@@ -741,6 +688,7 @@ c     potential values from an external disk file
 c
 c
       subroutine readpot (ipot,iconf)
+      use sizes
       use atoms
       use katoms
       use potfit
@@ -782,9 +730,8 @@ c
 c     set base atomic radii from consensus vdw values
 c
       do i = 1, n
-         rad(i) = 0.0d0
          atn = atmnum(type(i))
-         if (atn .ne. 0)  rad(i) = vdwrad(atn)
+         rad(i) = vdwrad(atn)
          if (rad(i) .eq. 0.0d0)  rad(i) = 1.7d0
       end do
 c
@@ -812,18 +759,19 @@ c
 c
 c     use potential grid points only for active grid atoms
 c
-      k = 0
-      do i = 1, npoint
+      k = npoint
+      npoint = 0
+      do i = 1, k
          if (gatm(ipgrid(i,iconf))) then
-            k = k + 1
-            ipgrid(k,iconf) = ipgrid(i,iconf)
-            pgrid(1,k,iconf) = pgrid(1,i,iconf)
-            pgrid(2,k,iconf) = pgrid(2,i,iconf)
-            pgrid(3,k,iconf) = pgrid(3,i,iconf)
-            epot(2,k,iconf) = epot(2,i,iconf)
+            npoint = npoint + 1
+            ipgrid(npoint,iconf) = ipgrid(i,iconf)
+            pgrid(1,npoint,iconf) = pgrid(1,i,iconf)
+            pgrid(2,npoint,iconf) = pgrid(2,i,iconf)
+            pgrid(3,npoint,iconf) = pgrid(3,i,iconf)
+            epot(2,npoint,iconf) = epot(2,i,iconf)
          end if
       end do
-      npgrid(iconf) = k
+      npgrid(iconf) = npoint
       return
       end
 c
@@ -840,6 +788,7 @@ c     radially distributed shells based on the molecular surface
 c
 c
       subroutine potgrid (iconf)
+      use sizes
       use atoms
       use iounit
       use katoms
@@ -1027,7 +976,6 @@ c
       call kdipole
       call kmpole
       call kpolar
-      call kcp
       return
       end
 c
@@ -1045,15 +993,13 @@ c     the system with a positive charge located at the grid point
 c
 c
       subroutine potpoint (xi,yi,zi,pot)
-      use atomid
+      use sizes
       use atoms
       use charge
       use chgpot
       use dipole
-      use mplpot
       use mpole
-      use chgpen
-      use polar 
+      use polar
       use potent
       use units
       implicit none
@@ -1066,18 +1012,13 @@ c
       real*8 r,r2,dotk
       real*8 rk2,rkr3
       real*8 rr1,rr3,rr5
-      real*8 rr1k,rr3k,rr5k
-      real*8 nuck,qk
-      real*8 alphak
-      real*8 dampk,expdampk
-      real*8, allocatable ::  scaleik(:)
       real*8 f,fi,ci,ck
       real*8 dkx,dky,dkz
       real*8 ukx,uky,ukz
       real*8 qkxx,qkxy,qkxz
       real*8 qkyy,qkyz,qkzz
       real*8 qkx,qky,qkz
-      real*8 dkr,qkr,ukr
+      real*8 scd,scq,scu
 c
 c
 c     zero out charge, dipole and multipole potential terms
@@ -1086,13 +1027,6 @@ c
       ed = 0.0d0
       em = 0.0d0
       ep = 0.0d0
-c
-c    charge penetration damping
-c
-      allocate (scaleik(5))
-      do k = 1, 5 
-         scaleik(k) = 1.0d0
-      end do
 c
 c     set charge of probe site and electrostatic constants
 c
@@ -1156,47 +1090,30 @@ c
             uky = uind(2,k)
             ukz = uind(3,k)
          else
-            ukx = 0.0d0
-            uky = 0.0d0
-            ukz = 0.0d0
+            uind(1,k) = 0.0d0
+            uind(2,k) = 0.0d0
+            uind(3,k) = 0.0d0
          end if
 c
-c     construct some common multipole and distance values
+c     construct some intermediate quadrupole values
 c
          qkx = qkxx*xr + qkxy*yr + qkxz*zr
          qky = qkxy*xr + qkyy*yr + qkyz*zr
          qkz = qkxz*xr + qkyz*yr + qkzz*zr
-         dkr = dkx*xr + dky*yr + dkz*zr
-         qkr = qkx*xr + qky*yr + qkz*zr
-         ukr = ukx*xr + uky*yr + ukz*zr
+c
+c     calculate scalar products for permanent and induced
+c
+         scd = dkx*xr + dky*yr + dkz*zr
+         scq = qkx*xr + qky*yr + qkz*zr
+         scu = ukx*xr + uky*yr + ukz*zr
+c
+c     compute the potential contributions for this interaction
+c
          rr1 = 1.0d0 / r
          rr3 = rr1 / r2
          rr5 = 3.0d0 * rr3 / r2
-c
-c     compute the potential contributions for this site
-c
-         alphak = penalpha(kk)
-         if (alphak .gt. 0.0d0) then
-            dampk = alphak*r
-            expdampk = exp(-dampk)
-            scaleik(1) = 1.0d0 -(1.0d0+0.5d0*dampk)*expdampk
-            scaleik(3) = 1.0d0 -(1.0d0+dampk+0.5d0*dampk**2)
-     &           *expdampk
-            scaleik(5) = 1.0d0 - (1.0d0+dampk+0.5d0*dampk**2
-     &           + (1.0d0/6.0d0)*dampk**3)*expdampk
-         
-            nuck = atomic(k)
-            qk = ck - nuck
-
-            rr1k = scaleik(1) * rr1
-            rr3k = scaleik(3) * rr3
-            rr5k = scaleik(5) * rr5
-            e = nuck*rr1 + qk*rr1k - dkr*rr3k + qkr*rr5k
-         else
-            e = ck*rr1 - dkr*rr3 + qkr*rr5
-         end if
-
-         ei = -ukr * rr3
+         e = ck*rr1 - scd*rr3 + scq*rr5
+         ei = -scu * rr3
 c
 c     increment the overall multipole and polarization terms
 c
@@ -1213,65 +1130,61 @@ c
       end
 c
 c
-c     ################################################################
-c     ##                                                            ##
-c     ##  subroutine fitrsd  --  residual values for potential fit  ##
-c     ##                                                            ##
-c     ################################################################
+c     ##############################################################
+c     ##                                                          ##
+c     ##  function potfit1  --  potential fit error and gradient  ##
+c     ##                                                          ##
+c     ##############################################################
 c
 c
-c     "fitrsd" computes residuals for electrostatic potential fitting
-c     including total charge restraints, dipole and quadrupole moment
-c     targets, and restraints to initial parameter values
+c     "potfit1" is a service routine that computes the RMS error
+c     and gradient for electrostatic parameters fit to a potential
 c
 c
-      subroutine fitrsd (nvar,nresid,xx,resid)
+      function potfit1 (xx,g)
+      use sizes
       use atoms
       use moment
       use neigh
       use potent
       use potfit
       implicit none
-      integer i,j,nvar
-      integer npoint
-      integer nresid
-      integer iresid
-      real*8 xi,yi,zi,pot
-      real*8 tscale
-      real*8 cscale
-      real*8 rscale
+      integer i,j,k,m
+      integer nvar,npoint
+      real*8 potfit1
+      real*8 pot,eps
+      real*8 e,e0
+      real*8 er,ec,et
+      real*8 xi,yi,zi
+      real*8 cscale,tscale
       real*8 xx(*)
-      real*8 resid(*)
+      real*8 g(*)
 c
 c
-c     initialize least squares residuals and scaling factors
+c     initialize scaling factors for error and gradient
 c
       npoint = 0
       do j = 1, nconf
          npoint = npoint + npgrid(j)
       end do
-      do j = 1, nresid
-         resid(j) = 0.0d0
-      end do
-      tscale = 300.0d0
-      cscale = 10000.0d0
-      rscale = 0.1d0 * sqrt(resp) * (dble(npoint)/dble(nvar))
+      cscale = 100000000.0d0 / dble(nconf)
+      tscale = 10000.0d0 / dble(nconf)
+      eps = 0.000001d0
 c
-c     initialize counters for parameters and residual components
+c     find total error by cycling over all conformations
 c
+      er = 0.0d0
+      ec = 0.0d0
+      et = 0.0d0
       nvar = 0
-      iresid = 0
       do j = 1, maxtyp
          fitchg(j) = .false.
          fitpol(j) = .false.
       end do
-c
-c     find least squares residuals via loop over conformations
-c
       do j = 1, nconf
          call getref (j)
          call setelect
-         call varprm (nvar,xx)
+         call varprm (nvar,xx,0,0.0d0)
          if (use_mpole)  call rotpole
          if (use_polar) then
             domlst = .true.
@@ -1280,204 +1193,137 @@ c
             call induce
          end if
 c
-c     get residuals due to potential error over grid points
+c     get the RMS potential error summed over grid points
 c
-!$OMP    PARALLEL default(private)
-!$OMP&    shared(j,npgrid,pgrid,epot,iresid,resid)
-!$OMP    DO
          do i = 1, npgrid(j)
             xi = pgrid(1,i,j)
             yi = pgrid(2,i,j)
             zi = pgrid(3,i,j)
             call potpoint (xi,yi,zi,pot)
             epot(1,i,j) = pot
-            resid(iresid+i) = (epot(1,i,j)-epot(2,i,j))
+            er = er + (epot(1,i,j)-epot(2,i,j))**2
          end do
-!$OMP    END DO
-!$OMP    END PARALLEL
-         iresid = iresid + npgrid(j)
 c
-c     get residuals from dipole and quadrupole target violations
+c     get deviation from integral net molecular charge
 c
          call momfull
+         ec = ec + cscale*(netchg-dble(nint(netchg)))**2
+c
+c     get deviation from dipole and quadrupole targets
+c
          if (use_dpl) then
-            resid(iresid+1) = (xdpl-xdpl0(j))*tscale
-            resid(iresid+2) = (ydpl-ydpl0(j))*tscale
-            resid(iresid+3) = (zdpl-zdpl0(j))*tscale
+            et = et + tscale*(xdpl-xdpl0(j))**2
+            et = et + tscale*(ydpl-ydpl0(j))**2
+            et = et + tscale*(zdpl-zdpl0(j))**2
          end if
          if (use_qdp) then
-            resid(iresid+4) = (xxqdp-xxqdp0(j))*tscale
-            resid(iresid+5) = (xyqdp-xyqdp0(j))*tscale
-            resid(iresid+6) = (xzqdp-xzqdp0(j))*tscale
-            resid(iresid+7) = (yyqdp-yyqdp0(j))*tscale
-            resid(iresid+8) = (yzqdp-yzqdp0(j))*tscale
-            resid(iresid+9) = (zzqdp-zzqdp0(j))*tscale
-         end if
-         iresid = iresid + 9
-c
-c     get residual due to total molecular charge restraint
-c
-         iresid = iresid + 1
-         resid(iresid) = (netchg-dble(nint(netchg)))*cscale
-      end do
-c
-c     get residuals due to deviation from initial parameters
-c
-      do i = 1, nvar
-         iresid = iresid + 1
-         resid(iresid) = (xx(i)-fit0(i))*rscale
-      end do
-      return
-      end
-c
-c
-c     #############################################################
-c     ##                                                         ##
-c     ##  subroutine varprm  --  optimization to electrostatics  ##
-c     ##                                                         ##
-c     #############################################################
-c
-c
-c     "varprm" copies the current optimization values into the
-c     corresponding electrostatic potential energy parameters
-c
-c
-      subroutine varprm (nvar,xx)
-      use atoms
-      use charge
-      use mpole
-      use potent
-      use potfit
-      use units
-      implicit none
-      integer i,j
-      integer ii,it
-      integer nvar
-      real*8 dterm,qterm
-      real*8 xx(*)
-      logical done
-c
-c
-c     translate optimization values back to partial charges
-c
-      do i = 1, nion
-         done = .true.
-         ii = iion(i)
-         it = type(ii)
-         if (fatm(ii))  done = .false.
-         if (.not. done) then
-            if (fitchg(it)) then
-               done = .true.
-               pchg(i) = fchg(it)
-            end if
-         end if
-         if (.not. done) then
-            if (pchg(i) .ne. 0.0d0) then
-               nvar = nvar + 1
-               pchg(i) = xx(nvar)
-            end if
-            fitchg(it) = .true.
-            fchg(it) = pchg(i)
+            et = et + tscale*(xxqdp-xxqdp0(j))**2
+            et = et + tscale*(xyqdp-xyqdp0(j))**2
+            et = et + tscale*(xzqdp-xzqdp0(j))**2
+            et = et + tscale*(yyqdp-yyqdp0(j))**2
+            et = et + tscale*(yzqdp-yzqdp0(j))**2
+            et = et + tscale*(zzqdp-zzqdp0(j))**2
          end if
       end do
+      er = sqrt(er/dble(npoint))
+      potfit1 = er + ec + et
 c
-c     conversion factors for dipole and quadrupole moments
+c     compute numerical gradient for electrostatic parameters
 c
-      dterm = bohr
-      qterm = bohr**2 / 3.0d0
-c
-c     translate optimization values back to atomic multipoles
-c
-      do i = 1, npole
-         done = .true.
-         ii = ipole(i)
-         it = type(ii)
-         if (fatm(ii))  done = .false.
-         if (.not. done) then
-            if (fitpol(it)) then
-               done = .true.
-               do j = 1, 13
-                  pole(j,i) = fpol(j,it)
-               end do
+      m = nvar
+      do k = 1, m
+         er = 0.0d0
+         ec = 0.0d0
+         et = 0.0d0
+         nvar = 0
+         do j = 1, maxtyp
+            fitchg(j) = .false.
+            fitpol(j) = .false.
+         end do
+         do j = 1, nconf
+            call getref (j)
+            call setelect
+            call varprm (nvar,xx,k,-0.5d0*eps)
+            if (use_mpole)  call rotpole
+            if (use_polar) then
+               domlst = .true.
+               doulst = .true.
+               call nblist
+               call induce
             end if
-         end if
-         if (.not. done) then
-            if (fit_mpl .and. pole(1,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(1,i) = xx(nvar)
-            end if
-            if (fit_dpl .and. pole(2,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(2,i) = dterm * xx(nvar)
-            end if
-            if (fit_dpl .and. pole(3,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(3,i) = dterm * xx(nvar)
-            end if
-            if (fit_dpl .and. pole(4,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(4,i) = dterm * xx(nvar)
-            end if
-            if (fit_qdp .and. pole(5,i).ne.0.0d0) then
-               if (pole(5,i).ne.pole(9,i) .and.
-     &             pole(5,i).ne.pole(13,i)) then
-                  nvar = nvar + 1
-                  pole(5,i) = qterm * xx(nvar)
-                  if (pole(9,i) .eq. pole(13,i)) then
-                     pole(9,i) = -0.5d0 * pole(5,i)
-                     pole(13,i) = pole(9,i)
-                  end if
-               end if
-            end if
-            if (fit_qdp .and. pole(6,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(6,i) = qterm * xx(nvar)
-               pole(8,i) = qterm * xx(nvar)
-            end if
-            if (fit_qdp .and. pole(7,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(7,i) = qterm * xx(nvar)
-               pole(11,i) = qterm * xx(nvar)
-            end if
-            if (fit_qdp .and. pole(9,i).ne.0.0d0) then
-               if (pole(9,i).ne.pole(5,i) .and.
-     &             pole(9,i).ne.pole(13,i)) then
-                  nvar = nvar + 1
-                  pole(9,i) = qterm * xx(nvar)
-                  if (pole(5,i) .eq. pole(13,i)) then
-                     pole(5,i) = -0.5d0 * pole(9,i)
-                     pole(13,i) = pole(5,i)
-                  end if
-               end if
-            end if
-            if (fit_qdp .and. pole(10,i).ne.0.0d0) then
-               nvar = nvar + 1
-               pole(10,i) = qterm * xx(nvar)
-               pole(12,i) = qterm * xx(nvar)
-            end if
-            if (fit_qdp .and. pole(13,i).ne.0.0d0) then
-               if (pole(5,i) .eq. pole(9,i)) then
-                  nvar = nvar + 1
-                  pole(13,i) = qterm * xx(nvar)
-                  pole(5,i) = -0.5d0 * pole(13,i)
-                  pole(9,i) = pole(5,i)
-               else
-                  pole(13,i) = -pole(5,i) - pole(9,i)
-               end if
-            end if
-            fitpol(it) = .true.
-            do j = 1, 13
-               fpol(j,it) = pole(j,i)
+            do i = 1, npgrid(j)
+               xi = pgrid(1,i,j)
+               yi = pgrid(2,i,j)
+               zi = pgrid(3,i,j)
+               call potpoint (xi,yi,zi,pot)
+               epot(1,i,j) = pot
+               er = er + (epot(1,i,j)-epot(2,i,j))**2
             end do
-         end if
+            call momfull
+            ec = ec + cscale*(netchg-dble(nint(netchg)))**2
+            if (use_dpl) then
+               et = et + tscale*(xdpl-xdpl0(j))**2
+               et = et + tscale*(ydpl-ydpl0(j))**2
+               et = et + tscale*(zdpl-zdpl0(j))**2
+            end if
+            if (use_qdp) then
+               et = et + tscale*(xxqdp-xxqdp0(j))**2
+               et = et + tscale*(xyqdp-xyqdp0(j))**2
+               et = et + tscale*(xzqdp-xzqdp0(j))**2
+               et = et + tscale*(yyqdp-yyqdp0(j))**2
+               et = et + tscale*(yzqdp-yzqdp0(j))**2
+               et = et + tscale*(zzqdp-zzqdp0(j))**2
+            end if
+         end do
+         er = sqrt(er/dble(npoint))
+         e0 = er + ec + et
+         er = 0.0d0
+         ec = 0.0d0
+         et = 0.0d0
+         nvar = 0
+         do j = 1, maxtyp
+            fitchg(j) = .false.
+            fitpol(j) = .false.
+         end do
+         do j = 1, nconf
+            call getref (j)
+            call setelect
+            call varprm (nvar,xx,k,0.5d0*eps)
+            if (use_mpole)  call rotpole
+            if (use_polar) then
+               domlst = .true.
+               doulst = .true.
+               call nblist
+               call induce
+            end if
+            do i = 1, npgrid(j)
+               xi = pgrid(1,i,j)
+               yi = pgrid(2,i,j)
+               zi = pgrid(3,i,j)
+               call potpoint (xi,yi,zi,pot)
+               epot(1,i,j) = pot
+               er = er + (epot(1,i,j)-epot(2,i,j))**2
+            end do
+            call momfull
+            ec = ec + cscale*(netchg-dble(nint(netchg)))**2
+            if (use_dpl) then
+               et = et + tscale*(xdpl-xdpl0(j))**2
+               et = et + tscale*(ydpl-ydpl0(j))**2
+               et = et + tscale*(zdpl-zdpl0(j))**2
+            end if
+            if (use_qdp) then
+               et = et + tscale*(xxqdp-xxqdp0(j))**2
+               et = et + tscale*(xyqdp-xyqdp0(j))**2
+               et = et + tscale*(xzqdp-xzqdp0(j))**2
+               et = et + tscale*(yyqdp-yyqdp0(j))**2
+               et = et + tscale*(yzqdp-yzqdp0(j))**2
+               et = et + tscale*(zzqdp-zzqdp0(j))**2
+            end if
+         end do
+         er = sqrt(er/dble(npoint))
+         e = er + ec + et
+         g(k) = (e-e0) / eps
       end do
-c
-c     check chiral multipoles and rotate into global frame
-c
-      if (use_mpole) then
-         call chkpole
-         call rotpole
-      end if
       return
       end
 c
@@ -1494,6 +1340,7 @@ c     corresponding electrostatic potential energy parameters
 c
 c
       subroutine prmvar (nvar,xx)
+      use sizes
       use atomid
       use atoms
       use charge
@@ -1504,7 +1351,6 @@ c
       implicit none
       integer i,j,k
       integer ii,it
-      integer kk,kt
       integer nvar
       real*8 dterm,qterm
       real*8 ci,cj
@@ -1514,10 +1360,20 @@ c
       character*17 prmtyp
 c
 c
-c     conversion factors for dipole and quadrupole moments
+c     convert dipole and quadrupole moments to atomic units
 c
       dterm = 1.0d0 / bohr
       qterm = 3.0d0 / bohr**2
+      do i = 1, npole
+         do j = 2, 4
+            pole(j,i) = dterm * pole(j,i)
+         end do
+         do j = 5, 13
+            pole(j,i) = qterm * pole(j,i)
+         end do
+      end do
+      dterm = bohr
+      qterm = bohr**2 / 3.0d0
 c
 c     regularize charges and multipoles to desired precision
 c
@@ -1526,16 +1382,12 @@ c
          pchg(i) = dble(nint(pchg(i)/eps)) * eps
       end do
       do i = 1, npole
-         pole(1,i) = dble(nint(pole(1,i)/eps)) * eps
-         do j = 2, 4
-            pole(j,i) = dble(nint(dterm*pole(j,i)/eps)) * eps/dterm
-         end do
-         do j = 5, 13
-            pole(j,i) = dble(nint(qterm*pole(j,i)/eps)) * eps/qterm
+         do j = 1, 13
+            pole(j,i) = dble(nint(pole(j,i)/eps)) * eps
          end do
       end do
 c
-c     enforce integer net charge over partial charges
+c     maintain integer net charge over partial charges
 c
       k = 0
       big = 0.0d0
@@ -1544,7 +1396,7 @@ c
          sum = sum + pchg(i)
          ci = abs(pchg(i))
          if (ci .gt. big) then
-            do j = 1, nion
+            do j = 1, n
                cj = abs(pchg(j))
                if (i.ne.j .and. ci.eq.cj)  goto 10
             end do
@@ -1554,14 +1406,9 @@ c
          end if
       end do
       sum = sum - dble(nint(sum))
-      if (k .ne. 0) then
-         kk = iion(k)
-         kt = type(kk)
-         pchg(k) = pchg(k) - sum
-         fchg(kt) = pchg(k)
-      end if
+      if (k .ne. 0)  pchg(k) = pchg(k) - sum
 c
-c     enforce integer net charge over atomic multipoles
+c     maintain integer net charge over atomic multipoles
 c
       k = 0
       big = 0.0d0
@@ -1570,7 +1417,7 @@ c
          sum = sum + pole(1,i)
          ci = abs(pole(1,i))
          if (ci .gt. big) then
-            do j = 1, npole
+            do j = 1, n
                cj = abs(pole(1,j))
                if (i.ne.j .and. ci.eq.cj)  goto 20
             end do
@@ -1580,14 +1427,9 @@ c
          end if
       end do
       sum = sum - dble(nint(sum))
-      if (k .ne. 0) then
-         kk = ipole(k)
-         kt = type(kk)
-         pole(1,k) = pole(1,k) - sum
-         fpol(1,kt) = pole(1,k)
-      end if
+      if (k .ne. 0)  pole(1,k) = pole(1,k) - sum
 c
-c     enforce traceless quadrupole at each multipole site
+c     maintain traceless quadrupole at each multipole site
 c
       do i = 1, npole
          sum = pole(5,i) + pole(9,i) + pole(13,i)
@@ -1596,12 +1438,7 @@ c
          if (big .eq. abs(pole(5,i)))  k = 5
          if (big .eq. abs(pole(9,i)))  k = 9
          if (big .eq. abs(pole(13,i)))  k = 13
-         if (k .ne. 0) then
-            ii = ipole(i)
-            it = type(ii)
-            pole(k,i) = pole(k,i) - sum
-            fpol(k,it) = pole(k,i)
-         end if
+         if (k .ne. 0)  pole(k,i) = pole(k,i) - sum
       end do
 c
 c     list active atoms when not all are used in optimization
@@ -1637,7 +1474,7 @@ c
          write (iout,60)
    60    format (/,' Potential Fitting of Electrostatic Parameters :',
      &           //,1x,'Parameter',6x,'Atom Type',9x,'Category',
-     &              12x,'Value',9x,'Fixed',/)
+     &              12x,'Value',8x,'Fixed',/)
       end if
 c
 c     get optimization parameters from partial charge values
@@ -1655,11 +1492,11 @@ c
             if (pchg(i) .ne. 0.0d0) then
                nvar = nvar + 1
                xx(nvar) = pchg(i)
-               write (iout,70)  nvar,it,'Charge  ',xx(nvar)
-   70          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,70)  nvar,it,'Charge  ',pchg(i)
+   70          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
                write (iout,80)  it,'Charge  ',pchg(i)
-   80          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+   80          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
          end if
       end do
@@ -1679,112 +1516,283 @@ c
             if (fit_mpl .and. pole(1,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = pole(1,i)
-               write (iout,90)  nvar,it,'Monopole',xx(nvar)
-   90          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,90)  nvar,it,'Monopole',pole(1,i)
+   90          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
                write (iout,100)  it,'Monopole',pole(1,i)
-  100          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+  100          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_dpl .and. pole(2,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = dterm * pole(2,i)
-               write (iout,110)  nvar,it,'X-Dipole',xx(nvar)
-  110          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,110)  nvar,it,'X-Dipole',pole(2,i)
+  110          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,120)  it,'X-Dipole',dterm*pole(2,i)
-  120          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,120)  it,'X-Dipole',pole(2,i)
+  120          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_dpl .and. pole(3,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = dterm * pole(3,i)
-               write (iout,130)  nvar,it,'Y-Dipole',xx(nvar)
-  130          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,130)  nvar,it,'Y-Dipole',pole(3,i)
+  130          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,140)  it,'Y-Dipole',dterm*pole(3,i)
-  140          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,140)  it,'Y-Dipole',pole(3,i)
+  140          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_dpl .and. pole(4,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = dterm * pole(4,i)
-               write (iout,150)  nvar,it,'Z-Dipole',xx(nvar)
-  150          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,150)  nvar,it,'Z-Dipole',pole(4,i)
+  150          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,160)  it,'Z-Dipole',dterm*pole(4,i)
-  160          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,160)  it,'Z-Dipole',pole(4,i)
+  160          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(5,i).ne.0.0d0) then
                if (pole(5,i).ne.pole(9,i) .and.
      &             pole(5,i).ne.pole(13,i)) then
                   nvar = nvar + 1
                   xx(nvar) = qterm * pole(5,i)
-                  write (iout,170)  nvar,it,'XX-Quad ',xx(nvar)
-  170             format (i6,7x,i8,13x,a8,6x,f12.5)
+                  write (iout,170)  nvar,it,'XX-Quad ',pole(5,i)
+  170             format (i6,7x,i8,13x,a8,5x,f12.5)
                else
-                  write (iout,180)    it,'XX-Quad ',qterm*pole(5,i)
-  180             format (4x,'--',7x,i8,13x,a8,6x,f12.5)
+                  write (iout,180)    it,'XX-Quad ',pole(5,i)
+  180             format (4x,'--',7x,i8,13x,a8,5x,f12.5)
                end if
             else
-               write (iout,190)  it,'XX-Quad ',qterm*pole(5,i)
-  190          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,190)  it,'XX-Quad ',pole(5,i)
+  190          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(6,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = qterm * pole(6,i)
-               write (iout,200)  nvar,it,'XY-Quad ',xx(nvar)
-  200          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,200)  nvar,it,'XY-Quad ',pole(6,i)
+  200          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,210)  it,'XY-Quad ',qterm*pole(6,i)
-  210          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,210)  it,'XY-Quad ',pole(6,i)
+  210          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(7,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = qterm * pole(7,i)
-               write (iout,220)  nvar,it,'XZ-Quad ',xx(nvar)
-  220          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,220)  nvar,it,'XZ-Quad ',pole(7,i)
+  220          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,230)  it,'XZ-Quad ',qterm*pole(7,i)
-  230          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,230)  it,'XZ-Quad ',pole(7,i)
+  230          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(9,i).ne.0.0d0) then
                if (pole(9,i).ne.pole(5,i) .and.
      &             pole(9,i).ne.pole(13,i)) then
                   nvar = nvar + 1
                   xx(nvar) = qterm * pole(9,i)
-                  write (iout,240)  nvar,it,'YY-Quad ',xx(nvar)
-  240             format (i6,7x,i8,13x,a8,6x,f12.5)
+                  write (iout,240)  nvar,it,'YY-Quad ',pole(9,i)
+  240             format (i6,7x,i8,13x,a8,5x,f12.5)
                else
-                  write (iout,250)  it,'YY-Quad ',qterm*pole(9,i)
-  250             format (4x,'--',7x,i8,13x,a8,6x,f12.5)
+                  write (iout,250)  it,'YY-Quad ',pole(9,i)
+  250             format (4x,'--',7x,i8,13x,a8,5x,f12.5)
                end if
             else
-               write (iout,260)  it,'YY-Quad ',qterm*pole(9,i)
-  260          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,260)  it,'YY-Quad ',pole(9,i)
+  260          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(10,i).ne.0.0d0) then
                nvar = nvar + 1
                xx(nvar) = qterm * pole(10,i)
-               write (iout,270)  nvar,it,'YZ-Quad ',xx(nvar)
-  270          format (i6,7x,i8,13x,a8,6x,f12.5)
+               write (iout,270)  nvar,it,'YZ-Quad ',pole(10,i)
+  270          format (i6,7x,i8,13x,a8,5x,f12.5)
             else
-               write (iout,280)  it,'YZ-Quad ',qterm*pole(10,i)
-  280          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,280)  it,'YZ-Quad ',pole(10,i)
+  280          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
             if (fit_qdp .and. pole(13,i).ne.0.0d0) then
                if (pole(5,i) .eq. pole(9,i)) then
                   nvar = nvar + 1
                   xx(nvar) = qterm * pole(13,i)
-                  write (iout,290)  nvar,it,'ZZ-Quad ',xx(nvar)
-  290             format (i6,7x,i8,13x,a8,6x,f12.5)
+                  write (iout,290)  nvar,it,'ZZ-Quad ',pole(13,i)
+  290             format (i6,7x,i8,13x,a8,5x,f12.5)
                else
-                  write (iout,300)  it,'ZZ-Quad ',qterm*pole(13,i)
-  300             format (4x,'--',7x,i8,13x,a8,6x,f12.5)
+                  write (iout,300)  it,'ZZ-Quad ',pole(13,i)
+  300             format (4x,'--',7x,i8,13x,a8,5x,f12.5)
                end if
             else
-               write (iout,310)  it,'ZZ-Quad ',qterm*pole(13,i)
-  310          format (4x,'--',7x,i8,13x,a8,6x,f12.5,10x,'X')
+               write (iout,310)  it,'ZZ-Quad ',pole(13,i)
+  310          format (4x,'--',7x,i8,13x,a8,5x,f12.5,10x,'X')
             end if
          end if
       end do
+c
+c     reconvert dipole and quadrupole moments to original units
+c
+      do i = 1, npole
+         do j = 2, 4
+            pole(j,i) = dterm * pole(j,i)
+         end do
+         do j = 5, 13
+            pole(j,i) = qterm * pole(j,i)
+         end do
+      end do
+      return
+      end
+c
+c
+c     #############################################################
+c     ##                                                         ##
+c     ##  subroutine varprm  --  optimization to electrostatics  ##
+c     ##                                                         ##
+c     #############################################################
+c
+c
+c     "varprm" copies the current optimization values into the
+c     corresponding electrostatic potential energy parameters
+c
+c
+      subroutine varprm (nvar,xx,ivar,eps)
+      use sizes
+      use atoms
+      use charge
+      use mpole
+      use potent
+      use potfit
+      implicit none
+      integer i,j
+      integer ii,it
+      integer nvar,ivar
+      real*8 eps
+      real*8 xx(*)
+      logical done
+c
+c
+c     translate optimization values back to partial charges
+c
+      do i = 1, nion
+         done = .true.
+         ii = iion(i)
+         it = type(ii)
+         if (fatm(ii))  done = .false.
+         if (.not. done) then
+            if (fitchg(it)) then
+               done = .true.
+               pchg(i) = fchg(it)
+            end if
+         end if
+         if (.not. done) then
+            if (pchg(i) .ne. 0.0d0) then
+               nvar = nvar + 1
+               pchg(i) = xx(nvar)
+               if (ivar .eq. nvar)  pchg(i) = pchg(i) + eps
+            end if
+            fitchg(it) = .true.
+            fchg(it) = pchg(i)
+         end if
+      end do
+c
+c     translate optimization values back to atomic multipoles
+c
+      do i = 1, npole
+         done = .true.
+         ii = ipole(i)
+         it = type(ii)
+         if (fatm(ii))  done = .false.
+         if (.not. done) then
+            if (fitpol(it)) then
+               done = .true.
+               do j = 1, 13
+                  pole(j,i) = fpol(j,it)
+               end do
+            end if
+         end if
+         if (.not. done) then
+            if (fit_mpl .and. pole(1,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(1,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(1,i) = pole(1,i) + eps
+            end if
+            if (fit_dpl .and. pole(2,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(2,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(2,i) = pole(2,i) + eps
+            end if
+            if (fit_dpl .and. pole(3,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(3,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(3,i) = pole(3,i) + eps
+            end if
+            if (fit_dpl .and. pole(4,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(4,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(4,i) = pole(4,i) + eps
+            end if
+            if (fit_qdp .and. pole(5,i).ne.0.0d0) then
+               if (pole(5,i).ne.pole(9,i) .and.
+     &             pole(5,i).ne.pole(13,i)) then
+                  nvar = nvar + 1
+                  pole(5,i) = xx(nvar)
+                  if (ivar .eq. nvar)  pole(5,i) = pole(5,i) + eps
+                  if (pole(9,i) .eq. pole(13,i)) then
+                     pole(9,i) = -0.5d0 * pole(5,i)
+                     pole(13,i) = pole(9,i)
+                  end if
+               end if
+            end if
+            if (fit_qdp .and. pole(6,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(6,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(6,i) = pole(6,i) + eps
+               pole(8,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(8,i) = pole(8,i) + eps
+            end if
+            if (fit_qdp .and. pole(7,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(7,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(7,i) = pole(7,i) + eps
+               pole(11,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(11,i) = pole(11,i) + eps
+            end if
+            if (fit_qdp .and. pole(9,i).ne.0.0d0) then
+               if (pole(9,i).ne.pole(5,i) .and.
+     &             pole(9,i).ne.pole(13,i)) then
+                  nvar = nvar + 1
+                  pole(9,i) = xx(nvar)
+                  if (ivar .eq. nvar)  pole(9,i) = pole(9,i) + eps
+                  if (pole(5,i) .eq. pole(13,i)) then
+                     pole(5,i) = -0.5d0 * pole(9,i)
+                     pole(13,i) = pole(5,i)
+                  end if
+               end if
+            end if
+            if (fit_qdp .and. pole(10,i).ne.0.0d0) then
+               nvar = nvar + 1
+               pole(10,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(10,i) = pole(10,i) + eps
+               pole(12,i) = xx(nvar)
+               if (ivar .eq. nvar)  pole(12,i) = pole(12,i) + eps
+            end if
+            if (fit_qdp .and. pole(13,i).ne.0.0d0) then
+               if (pole(5,i) .eq. pole(9,i)) then
+                  nvar = nvar + 1
+                  pole(13,i) = xx(nvar)
+                  if (ivar .eq. nvar)  pole(13,i) = pole(13,i) + eps
+                  pole(5,i) = -0.5d0 * pole(13,i)
+                  pole(9,i) = pole(5,i)
+               else
+                  pole(13,i) = -pole(5,i) - pole(9,i)
+               end if
+            end if
+            fitpol(it) = .true.
+            do j = 1, 13
+               fpol(j,it) = pole(j,i)
+            end do
+         end if
+      end do
+c
+c     check chiral multipoles and rotate into global frame
+c
+      if (use_mpole) then
+         call chkpole
+         call rotpole
+      end if
       return
       end
 c
@@ -1801,6 +1809,7 @@ c     potential over a set of grid points
 c
 c
       subroutine potstat (dofull,domodel,dopair,dotarget)
+      use sizes
       use atoms
       use files
       use iounit
@@ -1994,14 +2003,14 @@ c
          write (iout,190)  pave2,mave2,tave,uave,rmsd
   190    format (' Average Potential Value for Target :',11x,f12.4,
      &           /,' Average Potential Magnitude for Target :',7x,f12.4,
-     &           //,' Average Signed Potential Difference :',10x,f12.4,
+     &           /,' Average Signed Potential Difference :',10x,f12.4,
      &           /,' Average Unsigned Potential Difference :',8x,f12.4,
      &           /,' Root Mean Square Potential Difference :',8x,f12.4)
       else if (dopair) then
          write (iout,200)  pave2,mave2,tave,uave,rmsd
-  200    format (' Average Potential Value for Model2 :',10x,f12.4,
-     &           /,' Average Potential Magnitude for Model2 :',6x,f12.4,
-     &           //,' Average Signed Potential Difference :',10x,f12.4,
+  200    format (' Average Potential Value for Model 2 :',10x,f12.4,
+     &           /,' Average Potential Magnitude for Model 2 :',6x,f12.4,
+     &           /,' Average Signed Potential Difference :',10x,f12.4,
      &           /,' Average Unsigned Potential Difference :',8x,f12.4,
      &           /,' Root Mean Square Potential Difference :',8x,f12.4)
       end if
@@ -2021,6 +2030,7 @@ c     charge or multipole model to an electrostatic potential grid
 c
 c
       subroutine prtfit
+      use sizes
       use atoms
       use charge
       use files
@@ -2097,13 +2107,10 @@ c
          end do
       end do
 c
-c     conversion factors for dipole and quadrupole moments
+c     output the optimized atomic multipole values to the keyfile
 c
       dterm = 1.0d0 / bohr
       qterm = 3.0d0 / bohr**2
-c
-c     output the optimized atomic multipole values to the keyfile
-c
       header = .true.
       do i = 1, maxtyp
          fitpol(i) = .false.
@@ -2190,27 +2197,5 @@ c
          end do
       end do
       close (unit=ikey)
-      return
-      end
-c
-c
-c     ###########################################################
-c     ##                                                       ##
-c     ##  subroutine potwrt  --  least squares output routine  ##
-c     ##                                                       ##
-c     ###########################################################
-c
-c
-      subroutine potwrt (niter,nresid,xx,gs,resid)
-      implicit none
-      integer niter
-      integer nresid
-      real*8 xx(*)
-      real*8 gs(*)
-      real*8 resid(*)
-c
-c
-c     information to be printed at each least squares iteration
-c
       return
       end

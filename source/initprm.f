@@ -311,6 +311,10 @@ c
        
       aprerule = "GEOMETRIC"
       bexprule = "ARITHMETIC"
+      ct2scale = 0.0d0
+      ct3scale = 0.0d0
+      ct4scale = 0.0d0
+      ct5scale = 0.0d0
 c   
 c     set default control parameters for charge flux 
 c
