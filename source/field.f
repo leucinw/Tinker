@@ -41,7 +41,7 @@ c
       use_angtor = .true.
       use_tortor = .true.
       use_vdw = .true.
-      use_cflux = .false.
+      use_cflux = .true.
       use_ct = .true.
       use_chgpen = .true.
       use_charge = .true.
