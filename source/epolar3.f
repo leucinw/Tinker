@@ -108,7 +108,7 @@ c
       real*8 vali,valk
       real*8 alphai,alphak
       real*8 term1,term2,term3
-      real*8 dmpi(7),dmpk(7)
+      real*8 dmpi(7),dmpk(7),dmpik(7)
       real*8, allocatable :: pscale(:)
       logical header,huge
       character*6 mode
@@ -315,19 +315,20 @@ c
                   corek = pcore(kk)
                   valk = pval(kk)
                   alphak = palpha(kk)
-                  call dampdir (r,alphai,alphak,dmpi,dmpk)
+c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
+                  call damppole(r,7,alphai,alphak,dmpi,dmpk,dmpik)
                   scalek = pscale(k)
                   rr3 = f * scalek / (r*r2)
                   rr5 = 3.0d0 * rr3 / r2
                   rr7 = 5.0d0 * rr5 / r2
-                  rr3i = dmpi(3) * rr3
-                  rr5i = dmpi(5) * rr5
-                  rr7i = dmpi(7) * rr7
-                  rr3k = dmpk(3) * rr3
-                  rr5k = dmpk(5) * rr5
-                  rr7k = dmpk(7) * rr7
-                  e = uir*(corek*rr3+valk*rr3k)
-     &                   - ukr*(corei*rr3+vali*rr3i)
+                  rr3i = dmpik(3) * rr3
+                  rr5i = dmpik(5) * rr5
+                  rr7i = dmpik(7) * rr7
+                  rr3k = dmpik(3) * rr3
+                  rr5k = dmpik(5) * rr5
+                  rr7k = dmpik(7) * rr7
+                  e = uir*(corek*dmpi(1)*rr3+valk*rr3k)
+     &                   - ukr*(corei*dmpk(1)*rr3+vali*rr3i)
      &                   + diu*rr3i + dku*rr3k
      &                   + 2.0d0*(qiu*rr5i-qku*rr5k)
      &                   - dkr*uir*rr5k - dir*ukr*rr5i
