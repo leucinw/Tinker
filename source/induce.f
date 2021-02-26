@@ -840,22 +840,22 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   rr3k = dmpik(3) * rr3
                   rr5k = dmpik(5) * rr5
                   rr7k = dmpik(7) * rr7
-                  fid(1) = -xr*(rr3*dmpi(1)*corek + rr3k*valk
+                  fid(1) = -xr*(rr3*dmpi(3)*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkx + 2.0d0*rr5k*qkx        
-                  fid(2) = -yr*(rr3*dmpi(1)*corek + rr3k*valk
+                  fid(2) = -yr*(rr3*dmpi(3)*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dky + 2.0d0*rr5k*qky
-                  fid(3) = -zr*(rr3*dmpi(1)*corek + rr3k*valk
+                  fid(3) = -zr*(rr3*dmpi(3)*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkz + 2.0d0*rr5k*qkz
-                  fkd(1) = xr*(rr3*dmpk(1)*corei + rr3i*vali
+                  fkd(1) = xr*(rr3*dmpk(3)*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*dix - 2.0d0*rr5i*qix
-                  fkd(2) = yr*(rr3*dmpk(1)*corei + rr3i*vali
+                  fkd(2) = yr*(rr3*dmpk(3)*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*diy - 2.0d0*rr5i*qiy
-                  fkd(3) = zr*(rr3*dmpk(1)*corei + rr3i*vali
+                  fkd(3) = zr*(rr3*dmpk(3)*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*diz - 2.0d0*rr5i*qiz
                end if
@@ -1119,22 +1119,22 @@ c                        call dampdir (r,alphai,alphak,dmpi,dmpk)
                         rr3k = dmpik(3) * rr3
                         rr5k = dmpik(5) * rr5
                         rr7k = dmpik(7) * rr7
-                        fid(1) = -xr*(rr3*dmpi(1)*corek + rr3k*valk
+                        fid(1) = -xr*(rr3*dmpi(3)*corek + rr3k*valk
      &                              - rr5k*dkr + rr7k*qkr)
      &                              - rr3k*dkx + 2.0d0*rr5k*qkx        
-                        fid(2) = -yr*(rr3*dmpi(1)*corek + rr3k*valk
+                        fid(2) = -yr*(rr3*dmpi(3)*corek + rr3k*valk
      &                              - rr5k*dkr+rr7k*qkr)
      &                              - rr3k*dky + 2.0d0*rr5k*qky
-                        fid(3) = -zr*(rr3*dmpi(1)*corek + rr3k*valk
+                        fid(3) = -zr*(rr3*dmpi(3)*corek + rr3k*valk
      &                              - rr5k*dkr+rr7k*qkr)
      &                              - rr3k*dkz + 2.0d0*rr5k*qkz
-                        fkd(1) = xr*(rr3*dmpk(1)*corei + rr3i*vali
+                        fkd(1) = xr*(rr3*dmpk(3)*corei + rr3i*vali
      &                              + rr5i*dir + rr7i*qir)
      &                              - rr3i*dix - 2.0d0*rr5i*qix
-                        fkd(2) = yr*(rr3*dmpk(1)*corei + rr3i*vali
+                        fkd(2) = yr*(rr3*dmpk(3)*corei + rr3i*vali
      &                              + rr5i*dir + rr7i*qir)
      &                              - rr3i*diy - 2.0d0*rr5i*qiy
-                        fkd(3) = zr*(rr3*dmpk(1)*corei + rr3i*vali
+                        fkd(3) = zr*(rr3*dmpk(3)*corei + rr3i*vali
      &                              + rr5i*dir + rr7i*qir)
      &                              - rr3i*diz - 2.0d0*rr5i*qiz
                      end if
@@ -3786,7 +3786,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   rr3k = bn(1) - (1.0d0-scalek*dmpik(3))*rr3
                   rr5k = bn(2) - (1.0d0-scalek*dmpik(5))*rr5
                   rr7k = bn(3) - (1.0d0-scalek*dmpik(7))*rr7
-                  rr3 = bn(1) - (1.0d0-scalek*dmpi(1))*rr3
+                  rr3 = bn(1) - (1.0d0-scalek*dmpi(3))*rr3
                   fid(1) = -xr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkx + 2.0d0*rr5k*qkx
@@ -3796,7 +3796,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   fid(3) = -zr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkz + 2.0d0*rr5k*qkz
-                  rr3 = bn(1) - (1.0d0-scalek*dmpk(1))*rr3
+                  rr3 = bn(1) - (1.0d0-scalek*dmpk(3))*rr3
                   fkd(1) = xr*(rr3*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*dix - 2.0d0*rr5i*qix
@@ -3814,7 +3814,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   rr3k = bn(1) - (1.0d0-scalek*dmpik(3))*rr3
                   rr5k = bn(2) - (1.0d0-scalek*dmpik(5))*rr5
                   rr7k = bn(3) - (1.0d0-scalek*dmpik(7))*rr7
-                  rr3 = bn(1) - (1.0d0-scalek*dmpi(1))*rr3
+                  rr3 = bn(1) - (1.0d0-scalek*dmpi(3))*rr3
                   fip(1) = -xr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkx + 2.0d0*rr5k*qkx
@@ -3824,7 +3824,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   fip(3) = -zr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkz + 2.0d0*rr5k*qkz
-                  rr3 = bn(1) - (1.0d0-scalek*dmpk(1))*rr3
+                  rr3 = bn(1) - (1.0d0-scalek*dmpk(3))*rr3
                   fkp(1) = xr*(rr3*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*dix - 2.0d0*rr5i*qix
