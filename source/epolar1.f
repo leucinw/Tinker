@@ -7064,7 +7064,8 @@ c
       real*8 psr3,psr5,psr7
       real*8 dsr3,dsr5,dsr7
       real*8 usr3,usr5
-      real*8 rr3core,rr5core
+      real*8 rr3corei,rr5corei
+      real*8 rr3corek,rr5corek
       real*8 rr3i,rr5i
       real*8 rr7i,rr9i
       real*8 rr3k,rr5k
@@ -7105,7 +7106,8 @@ c
       real*8 term1,term2,term3
       real*8 term4,term5
       real*8 term6,term7
-      real*8 term1core
+      real*8 term1corei
+      real*8 term1corek
       real*8 term1i,term2i,term3i
       real*8 term4i,term5i,term6i
       real*8 term7i,term8i
@@ -7512,16 +7514,18 @@ c
                   valk = pval(kk)
                   alphak = palpha(kk)
                   call damppole (r,9,alphai,alphak,dmpi,dmpk,dmpik)
-                  rr3core = bn(1) - (1.0d0-dscale(k))*rr3
-                  rr5core = bn(2) - (1.0d0-dscale(k))*rr5
-                  rr3i = bn(1) - (1.0d0-dscale(k)*dmpi(3))*rr3
-                  rr5i = bn(2) - (1.0d0-dscale(k)*dmpi(5))*rr5
-                  rr7i = bn(3) - (1.0d0-dscale(k)*dmpi(7))*rr7
-                  rr9i = bn(4) - (1.0d0-dscale(k)*dmpi(9))*rr9
-                  rr3k = bn(1) - (1.0d0-dscale(k)*dmpk(3))*rr3
-                  rr5k = bn(2) - (1.0d0-dscale(k)*dmpk(5))*rr5
-                  rr7k = bn(3) - (1.0d0-dscale(k)*dmpk(7))*rr7
-                  rr9k = bn(4) - (1.0d0-dscale(k)*dmpk(9))*rr9
+                  rr3corei = bn(1) - (1.0d0-dscale(k)*dmpi(3))*rr3
+                  rr5corei = bn(2) - (1.0d0-dscale(k)*dmpi(5))*rr5
+                  rr3corek = bn(1) - (1.0d0-dscale(k)*dmpk(3))*rr3
+                  rr5corek = bn(2) - (1.0d0-dscale(k)*dmpk(5))*rr5
+                  rr3i = bn(1) - (1.0d0-dscale(k)*dmpik(3))*rr3
+                  rr5i = bn(2) - (1.0d0-dscale(k)*dmpik(5))*rr5
+                  rr7i = bn(3) - (1.0d0-dscale(k)*dmpik(7))*rr7
+                  rr9i = bn(4) - (1.0d0-dscale(k)*dmpik(9))*rr9
+                  rr3k = bn(1) - (1.0d0-dscale(k)*dmpik(3))*rr3
+                  rr5k = bn(2) - (1.0d0-dscale(k)*dmpik(5))*rr5
+                  rr7k = bn(3) - (1.0d0-dscale(k)*dmpik(7))*rr7
+                  rr9k = bn(4) - (1.0d0-dscale(k)*dmpik(9))*rr9
                   rr5ik = bn(2) - (1.0d0-wscale(k)*dmpik(5))*rr5
                   rr7ik = bn(3) - (1.0d0-wscale(k)*dmpik(7))*rr7
                end if
@@ -7781,7 +7785,8 @@ c     get the field gradient for direct polarization force
 c
                else if (use_chgpen) then
                   term1i = rr3i - rr5i*xr*xr
-                  term1core = rr3core - rr5core*xr*xr
+                  term1corei = rr3corei - rr5corei*xr*xr
+                  term1corek = rr3corek - rr5corek*xr*xr
                   term2i = 2.0d0*rr5i*xr 
                   term3i = rr7i*xr*xr - rr5i
                   term4i = 2.0d0*rr5i
@@ -7793,16 +7798,17 @@ c
                   term4k = 2.0d0*rr5k
                   term5k = 5.0d0*rr7k*xr
                   term6k = rr9k*xr*xr
-                  tixx = vali*term1i + corei*term1core  
+                  tixx = vali*term1i + corei*term1corek  
      &                      + dix*term2i - dir*term3i
      &                      - qixx*term4i + qix*term5i - qir*term6i
      &                      + (qiy*yr+qiz*zr)*rr7i
-                  tkxx = valk*term1k + corek*term1core
+                  tkxx = valk*term1k + corek*term1corei
      &                      - dkx*term2k + dkr*term3k
      &                      - qkxx*term4k + qkx*term5k - qkr*term6k
      &                      + (qky*yr+qkz*zr)*rr7k
                   term1i = rr3i - rr5i*yr*yr
-                  term1core = rr3core - rr5core*yr*yr
+                  term1corei = rr3corei - rr5corei*yr*yr
+                  term1corek = rr3corek - rr5corek*yr*yr
                   term2i = 2.0d0*rr5i*yr
                   term3i = rr7i*yr*yr - rr5i
                   term4i = 2.0d0*rr5i
@@ -7814,16 +7820,17 @@ c
                   term4k = 2.0d0*rr5k
                   term5k = 5.0d0*rr7k*yr
                   term6k = rr9k*yr*yr
-                  tiyy = vali*term1i + corei*term1core
+                  tiyy = vali*term1i + corei*term1corek
      &                      + diy*term2i - dir*term3i
      &                      - qiyy*term4i + qiy*term5i - qir*term6i
      &                      + (qix*xr+qiz*zr)*rr7i
-                  tkyy = valk*term1k + corek*term1core
+                  tkyy = valk*term1k + corek*term1corei
      &                      - dky*term2k + dkr*term3k
      &                      - qkyy*term4k + qky*term5k - qkr*term6k
      &                      + (qkx*xr+qkz*zr)*rr7k
                   term1i = rr3i - rr5i*zr*zr
-                  term1core = rr3core - rr5core*zr*zr
+                  term1corei = rr3corei - rr5corei*zr*zr
+                  term1corek = rr3corek - rr5corek*zr*zr
                   term2i = 2.0d0*rr5i*zr
                   term3i = rr7i*zr*zr - rr5i
                   term4i = 2.0d0*rr5i
@@ -7835,17 +7842,18 @@ c
                   term4k = 2.0d0*rr5k
                   term5k = 5.0d0*rr7k*zr
                   term6k = rr9k*zr*zr
-                  tizz = vali*term1i + corei*term1core
+                  tizz = vali*term1i + corei*term1corek
      &                      + diz*term2i - dir*term3i
      &                      - qizz*term4i + qiz*term5i - qir*term6i
      &                      + (qix*xr+qiy*yr)*rr7i
-                  tkzz = valk*term1k + corek*term1core
+                  tkzz = valk*term1k + corek*term1corei
      &                      - dkz*term2k + dkr*term3k
      &                      - qkzz*term4k + qkz*term5k - qkr*term6k
      &                      + (qkx*xr+qky*yr)*rr7k
                   term2i = rr5i*xr 
                   term1i = yr * term2i
-                  term1core = rr5core*xr*yr
+                  term1corei = rr5corei*xr*yr
+                  term1corek = rr5corek*xr*yr
                   term3i = rr5i*yr
                   term4i = yr * (rr7i*xr)
                   term5i = 2.0d0*rr5i
@@ -7860,17 +7868,18 @@ c
                   term6k = 2.0d0*rr7k*xr
                   term7k = 2.0d0*rr7k*yr
                   term8k = yr*rr9k*xr
-                  tixy = -vali*term1i - corei*term1core 
+                  tixy = -vali*term1i - corei*term1corek 
      &                      + diy*term2i + dix*term3i
      &                      - dir*term4i - qixy*term5i + qiy*term6i
      &                      + qix*term7i - qir*term8i
-                  tkxy = -valk*term1k - corek*term1core 
+                  tkxy = -valk*term1k - corek*term1corei 
      &                      - dky*term2k - dkx*term3k
      &                      + dkr*term4k - qkxy*term5k + qky*term6k
      &                      + qkx*term7k - qkr*term8k
                   term2i = rr5i*xr
                   term1i = zr * term2i
-                  term1core = rr5core*xr*zr
+                  term1corei = rr5corei*xr*zr
+                  term1corek = rr5corek*xr*zr
                   term3i = rr5i*zr
                   term4i = zr * (rr7i*xr)
                   term5i = 2.0d0*rr5i
@@ -7885,17 +7894,18 @@ c
                   term6k = 2.0d0*rr7k*xr
                   term7k = 2.0d0*rr7k*zr
                   term8k = zr*rr9k*xr
-                  tixz = -vali*term1i - corei*term1core
+                  tixz = -vali*term1i - corei*term1corek
      &                      + diz*term2i + dix*term3i
      &                      - dir*term4i - qixz*term5i + qiz*term6i
      &                      + qix*term7i - qir*term8i
-                  tkxz = -valk*term1k - corek*term1core
+                  tkxz = -valk*term1k - corek*term1corei
      &                      - dkz*term2k - dkx*term3k
      &                      + dkr*term4k - qkxz*term5k + qkz*term6k
      &                      + qkx*term7k - qkr*term8k
                   term2i = rr5i*yr
                   term1i = zr * term2i
-                  term1core = rr5core*yr*zr
+                  term1corei = rr5corei*yr*zr
+                  term1corek = rr5corek*yr*zr
                   term3i = rr5i*zr
                   term4i = zr * (rr7i*yr)
                   term5i = 2.0d0*rr5i
@@ -7910,11 +7920,11 @@ c
                   term6k = 2.0d0*rr7k*yr
                   term7k = 2.0d0*rr7k*zr
                   term8k = zr*rr9k*yr
-                  tiyz = -vali*term1i - corei*term1core
+                  tiyz = -vali*term1i - corei*term1corek
      &                      + diz*term2i + diy*term3i
      &                      - dir*term4i - qiyz*term5i + qiz*term6i
      &                      + qiy*term7i - qir*term8i
-                  tkyz = -valk*term1k - corek*term1core
+                  tkyz = -valk*term1k - corek*term1corei
      &                      - dkz*term2k - dky*term3k
      &                      + dkr*term4k - qkyz*term5k + qkz*term6k
      &                      + qky*term7k - qkr*term8k

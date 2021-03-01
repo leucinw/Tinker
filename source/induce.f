@@ -3796,6 +3796,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   fid(3) = -zr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkz + 2.0d0*rr5k*qkz
+                  rr3 = rr2 * rr1
                   rr3 = bn(1) - (1.0d0-scalek*dmpk(3))*rr3
                   fkd(1) = xr*(rr3*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
@@ -3824,6 +3825,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
                   fip(3) = -zr*(rr3*corek + rr3k*valk
      &                        - rr5k*dkr + rr7k*qkr)
      &                        - rr3k*dkz + 2.0d0*rr5k*qkz
+                  rr3 = rr2 * rr1
                   rr3 = bn(1) - (1.0d0-scalek*dmpk(3))*rr3
                   fkp(1) = xr*(rr3*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
