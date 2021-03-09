@@ -587,6 +587,7 @@ c
       real*8 r,r2,rr3,rr5,rr7
       real*8 rr3i,rr5i,rr7i
       real*8 rr3k,rr5k,rr7k
+      real*8 rr3ik,rr5ik,rr7ik
       real*8 ci,dix,diy,diz
       real*8 qixx,qixy,qixz
       real*8 qiyy,qiyz,qizz
@@ -606,7 +607,7 @@ c
       real*8 pgamma
       real*8 fid(3),fkd(3)
       real*8 fip(3),fkp(3)
-      real*8 dmpi(7),dmpk(7)
+      real*8 dmpi(7),dmpk(7),dmpik(7)
       real*8, allocatable :: dscale(:)
       real*8, allocatable :: pscale(:)
       real*8 field(3,*)
@@ -829,7 +830,8 @@ c
                   corek = pcore(kk)
                   valk = pval(kk)
                   alphak = palpha(kk)
-                  call dampdir (r,alphai,alphak,dmpi,dmpk)
+c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
+                  call damppole(r,7,alphai,alphak,dmpi,dmpk,dmpik)
                   rr3 = 1.0d0 / (r*r2)
                   rr5 = 3.0d0 * rr3 / r2
                   rr7 = 5.0d0 * rr5 / r2
@@ -857,12 +859,37 @@ c
                   fkd(3) = zr*(rr3*corei + rr3i*vali
      &                        + rr5i*dir + rr7i*qir)
      &                        - rr3i*diz - 2.0d0*rr5i*qiz
+c
+c     this is a hack to make the p dipoles two-center
+c
+                  print*,"Taco"
+                  rr3ik = dmpik(3) * rr3
+                  rr5ik = dmpik(5) * rr5
+                  rr7ik = dmpik(7) * rr7
+                  fip(1) = -xr*(rr3i*corek + rr3ik*valk
+     &                        - rr5ik*dkr + rr7ik*qkr)
+     &                        - rr3ik*dkx + 2.0d0*rr5ik*qkx        
+                  fip(2) = -yr*(rr3i*corek + rr3ik*valk
+     &                        - rr5ik*dkr + rr7ik*qkr)
+     &                        - rr3ik*dky + 2.0d0*rr5ik*qky
+                  fip(3) = -zr*(rr3i*corek + rr3ik*valk
+     &                        - rr5ik*dkr + rr7ik*qkr)
+     &                        - rr3ik*dkz + 2.0d0*rr5ik*qkz
+                  fkp(1) = xr*(rr3k*corei + rr3ik*vali
+     &                        + rr5ik*dir + rr7ik*qir)
+     &                        - rr3ik*dix - 2.0d0*rr5ik*qix
+                  fkp(2) = yr*(rr3k*corei + rr3ik*vali
+     &                        + rr5ik*dir + rr7ik*qir)
+     &                        - rr3ik*diy - 2.0d0*rr5ik*qiy
+                  fkp(3) = zr*(rr3k*corei + rr3ik*vali
+     &                        + rr5ik*dir + rr7ik*qir)
+     &                        - rr3ik*diz - 2.0d0*rr5ik*qiz
                end if
                do j = 1, 3
                   field(j,ii) = field(j,ii) + fid(j)*dscale(k)
                   field(j,kk) = field(j,kk) + fkd(j)*dscale(k)
-                  fieldp(j,ii) = fieldp(j,ii) + fid(j)*pscale(k)
-                  fieldp(j,kk) = fieldp(j,kk) + fkd(j)*pscale(k)
+                  fieldp(j,ii) = fieldp(j,ii) + fip(j)*pscale(k)
+                  fieldp(j,kk) = fieldp(j,kk) + fkp(j)*pscale(k)
                end do
             end if
          end do
@@ -1244,6 +1271,7 @@ c
       integer ii,kk
       real*8 xr,yr,zr
       real*8 r,r2,rr3,rr5
+      real*8 rr3i,rr3k,rr5i,rr5k
       real*8 dix,diy,diz
       real*8 pix,piy,piz
       real*8 dkx,dky,dkz
@@ -1258,6 +1286,7 @@ c
       real*8 pdi,pti,pgamma
       real*8 fid(3),fkd(3)
       real*8 fip(3),fkp(3)
+      real*8 dmpi(5),dmpk(5)
       real*8 dmpik(5)
       real*8, allocatable :: uscale(:)
       real*8, allocatable :: wscale(:)
@@ -1385,18 +1414,24 @@ c
                   corek = pcore(kk)
                   valk = pval(kk)
                   alphak = palpha(kk)
-                  call dampmut (r,alphai,alphak,dmpik)
-                  scale3 = wscale(k) * dmpik(3)
-                  scale5 = wscale(k) * dmpik(5)
+c                  call dampmut (r,alphai,alphak,dmpik)
+                  call damppole(r,5,alphai,alphak,dmpi,dmpk,dmpik)
+c                  scale3 = wscale(k) * dmpik(3)
+c                  scale5 = wscale(k) * dmpik(5)
                end if
-               rr3 = -scale3 / (r*r2)
-               rr5 = 3.0d0 * scale5 / (r*r2*r2)
-               fid(1) = rr3*dkx + rr5*dkr*xr
-               fid(2) = rr3*dky + rr5*dkr*yr
-               fid(3) = rr3*dkz + rr5*dkr*zr
-               fkd(1) = rr3*dix + rr5*dir*xr
-               fkd(2) = rr3*diy + rr5*dir*yr
-               fkd(3) = rr3*diz + rr5*dir*zr
+               rr3i = -wscale(k) * dmpi(3) / (r*r2)
+               rr5i = 3.0d0 * wscale(k) * dmpi(5) / (r*r2*r2)
+               rr3k = -wscale(k) * dmpk(3) / (r*r2)
+               rr5k = 3.0d0 * wscale(k) * dmpk(5) / (r*r2*r2)
+               fid(1) = rr3k*dkx + rr5k*dkr*xr
+               fid(2) = rr3k*dky + rr5k*dkr*yr
+               fid(3) = rr3k*dkz + rr5k*dkr*zr
+               fkd(1) = rr3i*dix + rr5i*dir*xr
+               fkd(2) = rr3i*diy + rr5i*dir*yr
+               fkd(3) = rr3i*diz + rr5i*dir*zr
+c     giving the p dipoles two-center damping
+               rr3 = -wscale(k) * dmpik(3) / (r*r2)
+               rr5 = 3.0d0 * wscale(k) * dmpik(5) / (r*r2*r2)
                fip(1) = rr3*pkx + rr5*pkr*xr
                fip(2) = rr3*pky + rr5*pkr*yr
                fip(3) = rr3*pkz + rr5*pkr*zr
