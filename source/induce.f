@@ -613,6 +613,7 @@ c
       real*8 field(3,*)
       real*8 fieldp(3,*)
       character*6 mode
+
 c
 c
 c     zero out the value of the field at each site
