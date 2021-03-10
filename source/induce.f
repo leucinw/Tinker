@@ -486,6 +486,7 @@ c
 c     check the convergence of the mutual induced dipoles
 c
             epsold = eps
+c            print*,"eps coming at ya",epsd,epsp
             eps = max(epsd,epsp)
             eps = debye * sqrt(eps/dble(npolar))
             if (debug) then
@@ -499,7 +500,7 @@ c
    20          format (i8,7x,f16.10)
             end if
             if (eps .lt. poleps)  done = .true.
-            if (eps .gt. epsold)  done = .true.
+c            if (eps .gt. epsold)  done = .true.
             if (iter .lt. miniter)  done = .false.
             if (iter .ge. politer)  done = .true.
 c
@@ -607,7 +608,7 @@ c
       real*8 pgamma
       real*8 fid(3),fkd(3)
       real*8 fip(3),fkp(3)
-      real*8 dmpi(7),dmpk(7),dmpik(7)
+      real*8 dmpi(9),dmpk(9),dmpik(9)
       real*8, allocatable :: dscale(:)
       real*8, allocatable :: pscale(:)
       real*8 field(3,*)
@@ -832,7 +833,7 @@ c
                   valk = pval(kk)
                   alphak = palpha(kk)
 c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
-                  call damppole(r,7,alphai,alphak,dmpi,dmpk,dmpik)
+                  call damppole(r,9,alphai,alphak,dmpi,dmpk,dmpik)
                   rr3 = 1.0d0 / (r*r2)
                   rr5 = 3.0d0 * rr3 / r2
                   rr7 = 5.0d0 * rr5 / r2
@@ -863,7 +864,7 @@ c                  call dampdir (r,alphai,alphak,dmpi,dmpk)
 c
 c     this is a hack to make the p dipoles two-center
 c
-                  print*,"Taco"
+c                  print*,"Taco"
                   rr3ik = dmpik(3) * rr3
                   rr5ik = dmpik(5) * rr5
                   rr7ik = dmpik(7) * rr7
@@ -1287,8 +1288,8 @@ c
       real*8 pdi,pti,pgamma
       real*8 fid(3),fkd(3)
       real*8 fip(3),fkp(3)
-      real*8 dmpi(5),dmpk(5)
-      real*8 dmpik(5)
+      real*8 dmpi(9),dmpk(9)
+      real*8 dmpik(9)
       real*8, allocatable :: uscale(:)
       real*8, allocatable :: wscale(:)
       real*8 field(3,*)
@@ -1416,10 +1417,11 @@ c
                   valk = pval(kk)
                   alphak = palpha(kk)
 c                  call dampmut (r,alphai,alphak,dmpik)
-                  call damppole(r,5,alphai,alphak,dmpi,dmpk,dmpik)
-c                  scale3 = wscale(k) * dmpik(3)
-c                  scale5 = wscale(k) * dmpik(5)
+                  call damppole(r,9,alphai,alphak,dmpi,dmpk,dmpik)
+                  scale3 = wscale(k) * dmpik(3)
+                  scale5 = wscale(k) * dmpik(5)
                end if
+c               print*,"Taco Tuesday"
                rr3i = -wscale(k) * dmpi(3) / (r*r2)
                rr5i = 3.0d0 * wscale(k) * dmpi(5) / (r*r2*r2)
                rr3k = -wscale(k) * dmpk(3) / (r*r2)
@@ -1430,20 +1432,27 @@ c                  scale5 = wscale(k) * dmpik(5)
                fkd(1) = rr3i*dix + rr5i*dir*xr
                fkd(2) = rr3i*diy + rr5i*dir*yr
                fkd(3) = rr3i*diz + rr5i*dir*zr
+c     don't do this because these aren't used 
 c     giving the p dipoles two-center damping
-               rr3 = -wscale(k) * dmpik(3) / (r*r2)
-               rr5 = 3.0d0 * wscale(k) * dmpik(5) / (r*r2*r2)
-               fip(1) = rr3*pkx + rr5*pkr*xr
-               fip(2) = rr3*pky + rr5*pkr*yr
-               fip(3) = rr3*pkz + rr5*pkr*zr
-               fkp(1) = rr3*pix + rr5*pir*xr
-               fkp(2) = rr3*piy + rr5*pir*yr
-               fkp(3) = rr3*piz + rr5*pir*zr
+c               rr3 = -wscale(k) * dmpik(3) / (r*r2)
+c               rr5 = 3.0d0 * wscale(k) * dmpik(5) / (r*r2*r2)
+c               fip(1) = rr3k*pkx + rr5k*pkr*xr
+c               fip(2) = rr3k*pky + rr5k*pkr*yr
+c               fip(3) = rr3k*pkz + rr5k*pkr*zr
+c               fkp(1) = rr3i*pix + rr5i*pir*xr
+c               fkp(2) = rr3i*piy + rr5i*pir*yr
+c               fkp(3) = rr3i*piz + rr5i*pir*zr
+c               fip(1) = 0.0d0
+c               fip(2) = 0.0d0
+c               fip(3) = 0.0d0
+c               fkp(1) = 0.0d0
+c               fkp(2) = 0.0d0
+c               fkp(3) = 0.0d0
                do j = 1, 3
                   field(j,ii) = field(j,ii) + fid(j)
                   field(j,kk) = field(j,kk) + fkd(j)
-                  fieldp(j,ii) = fieldp(j,ii) + fip(j)
-                  fieldp(j,kk) = fieldp(j,kk) + fkp(j)
+                  fieldp(j,ii) = fieldp(j,ii) + fid(j)
+                  fieldp(j,kk) = fieldp(j,kk) + fkd(j)
                end do
             end if
          end do
