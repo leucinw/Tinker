@@ -262,19 +262,24 @@ c     on the lambda mutation parameter "elambda"
 c
 c
       subroutine altelec
+      use angbnd
       use atoms
+      use bndstr
+      use cflux
       use charge
+      use chgpen
       use chgtrn
-      use ctrpot
+      use mplpot
       use mpole
       use mutant
       use polar
       use potent
       implicit none
       integer i,j,k
+      integer ia,ib,ic
 c
 c
-c     set electrostatic parameters for partial charge models
+c     set scaled parameters for partial charge models
 c
       if (use_charge) then
          do i = 1, nion
@@ -282,10 +287,11 @@ c
             if (mut(k)) then
                pchg(i) = pchg(i) * elambda
             end if
+            pchg0(i) = pchg(i)
          end do
       end if
 c
-c     set electrostatic parameters for polarizable multipole models
+c     set scaled parameters for polarizable multipole models
 c
       if (use_mpole) then
          do i = 1, npole
@@ -294,6 +300,12 @@ c
                do j = 1, 13
                   pole(j,i) = pole(j,i) * elambda
                end do
+               mono0(i) = pole(1,i)
+               if (use_chgpen) then
+                  pcore(i) = pcore(i) * elambda
+                  pval(i) = pval(i) * elambda
+                  pval0(i) = pval(i)
+               end if
             end if
          end do
       end if
@@ -307,13 +319,41 @@ c
          end do
       end if
 c
-c   set charge transfer prefactor for charge transfer model 
+c     set scaled parameters for charge transfer models
 c
-      if (use_chgtrn .and. ctrntyp .eq. "COMBINED") then
+      if (use_chgtrn) then
          do i = 1, npole
             k = ipole(i)
             if (mut(k)) then
-              chgct(i) = chgct(i) * elambda
+               chgct(i) = chgct(i) * elambda
+            end if
+         end do
+      end if
+c
+c     set scaled parameters for bond stretch charge flux
+c
+      if (use_chgflx) then
+         do i = 1, nbond
+            ia = ibnd(1,i)
+            ib = ibnd(2,i)
+            if (mut(ia) .or. mut(ib)) then
+               bflx(i) = bflx(i) * elambda
+            end if
+         end do
+      end if
+c
+c     set scaled parameters for angle bend charge flux
+c
+      if (use_chgflx) then
+         do i = 1, nangle
+            ia = iang(1,i)
+            ib = iang(2,i)
+            ic = iang(3,i)
+            if (mut(ia) .or. mut(ib) .or. mut(ic)) then
+               aflx(1,i) = aflx(1,i) * elambda
+               aflx(2,i) = aflx(2,i) * elambda
+               abflx(1,i) = abflx(1,i) * elambda
+               abflx(2,i) = abflx(2,i) * elambda
             end if
          end do
       end if
